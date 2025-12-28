@@ -1,0 +1,62 @@
+# Core dumps
+core.*
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Output directories
+out/
+out_vep/
+logs_*/
+
+# Temporary and test files
+tmp/
+*.tmp
+tmp.tsv
+test.variants.tsv
+duplicated_rows.tsv
+
+# Large data files (VCF, BAM, etc.)
+*.vcf
+*.vcf.gz
+*.vcf.gz.tbi
+*.bam
+*.bam.bai
+*.cram
+*.cram.crai
+
+# Compressed outputs
+*.tsv.gz
+*.tsv.gz.tbi
+
+# SLURM log files
+*.out
+*.err
+slurm-*.out
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Singularity containers (optional - uncomment if containers are large)
+# containers/*.sif
+# containers/*.simg
+
+# Resource files (optional - these may be symlinks)
+# resources/
+# VEP_CACHE/
+# VEP_PLUGINS/
+# VEP_PLUGINS_ALL/
