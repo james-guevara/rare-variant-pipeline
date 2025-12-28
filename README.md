@@ -318,8 +318,12 @@ If using this pipeline, please cite:
 
 ## License
 
-[Specify your license here]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
-[Your contact information]
+**James Guevara**
+University of California, San Diego
+Email: guevara.james@gmail.com
+
+For questions, issues, or contributions, please open an issue on GitHub or contact via email.
