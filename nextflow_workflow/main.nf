@@ -39,16 +39,18 @@ def getInputVcf(chrom) {
 process DROP_GENOTYPES {
     tag "${chrom}"
     cpus 4
-    memory '8 GB'
-    time '30m'
+    memory '16 GB'
+    time '4h'
     
     input:
-    tuple val(chrom), path(vcf)
+    tuple val(chrom), path(vcf), path(tbi)
     
     output:
     val chrom, emit: chrom
     path "*.sites.vcf.gz", emit: vcf
     path "*.sites.vcf.gz.tbi", emit: tbi
+    tuple val(chrom), path(vcf), path(tbi), emit: input_vcf
+
     
     script:
     """
@@ -64,7 +66,7 @@ process VEP_ANNOTATE {
     tag "${chrom}"
     cpus 8
     memory '32 GB'
-    time '2h'
+    time '8h'
     
     input:
     val chrom
@@ -74,6 +76,7 @@ process VEP_ANNOTATE {
     val chrom, emit: chrom
     path "*.vep.vcf.gz", emit: vcf
     path "*.vep.vcf.gz.tbi", emit: tbi
+
     
     script:
     """
@@ -104,7 +107,7 @@ process SPLIT_VEP {
     tag "${chrom}"
     cpus 1
     memory "4 GB"
-    time "30m"
+    time "4h"
     
     input:
     val chrom
@@ -134,7 +137,7 @@ process REFORMAT_VARIANTS {
     tag "${chrom}"
     cpus 4
     memory '16 GB'
-    time '30m'
+    time '4h'
     
     input:
     val chrom
@@ -144,7 +147,7 @@ process REFORMAT_VARIANTS {
     val chrom, emit: chrom
     path "*.reformatted.tsv.gz", emit: reformatted
     path "*.bed", emit: bed
-    path "*.consequential.tsv.gz", emit: conseq_tsv
+    tuple val(chrom), path("*.consequential.tsv.gz"), emit: conseq_tsv
     path "*.consequential.bed", emit: conseq_bed
     
     script:
@@ -169,8 +172,7 @@ process SCATTER_BED {
     path conseq_bed
     
     output:
-    val chrom, emit: chrom
-    path "chunk_*.bed", emit: chunks
+    tuple val(chrom), path("chunk_*.bed"), emit: chunks
     
     script:
     """
@@ -188,11 +190,11 @@ process SCATTER_BED {
 process FAMILY_QUERY {
     tag "${chrom}_chunk${chunk_id}"
     cpus 1
-    memory '8 GB'
-    time '1h'
+    memory '16 GB'
+    time '4h'
     
     input:
-    tuple val(chrom), val(chunk_id), path(bed_chunk), path(input_vcf)
+    tuple val(chrom), val(chunk_id), path(bed_chunk), path(input_vcf), path(input_tbi)
     
     output:
     tuple val(chrom), path("*.genotypes.tsv.gz"), emit: genotypes
@@ -238,8 +240,8 @@ process GATHER_GENOTYPES {
 process RESOLVE_GENOTYPES {
     tag "${chrom}"
     cpus 1
-    memory '8 GB'
-    time '30m'
+    memory '16 GB'
+    time '4h'
     
     input:
     tuple val(chrom), path(family_genotypes)
@@ -258,7 +260,7 @@ process MERGE_VARIANTS {
     tag "${chrom}"
     cpus 1
     memory '16 GB'
-    time '30m'
+    time '4h'
     publishDir "${params.outdir}/merged", mode: 'copy'
     
     input:
@@ -275,15 +277,16 @@ process MERGE_VARIANTS {
         --out ${chrom}.merged.tsv.gz
     """
 }
-
 workflow {
     // Create channel from comma-separated chromosome list
     chroms_ch = Channel.fromList(params.chroms.tokenize(','))
     
-    // Create input channel with chrom and vcf path
+    // Create input channel with chrom, vcf path, and tbi path
     input_ch = chroms_ch.map { chrom -> 
         def vcf_path = params.vcf_pattern.replace('{chrom}', chrom)
-        return tuple(chrom, file("${params.vcf_dir}/${vcf_path}"))
+        def vcf_file = file("${params.vcf_dir}/${vcf_path}")
+        def tbi_file = file("${params.vcf_dir}/${vcf_path}.tbi")
+        return tuple(chrom, vcf_file, tbi_file)
     }
     
     DROP_GENOTYPES(input_ch)
@@ -292,21 +295,23 @@ workflow {
     REFORMAT_VARIANTS(SPLIT_VEP.out.chrom, SPLIT_VEP.out.tsv)
     SCATTER_BED(REFORMAT_VARIANTS.out.chrom, REFORMAT_VARIANTS.out.conseq_bed)
     
-    // Create indexed chunks for parallel processing - join with input to get vcf
-    chunks_with_vcf = SCATTER_BED.out.chrom
-        .join(input_ch)
-        .join(SCATTER_BED.out.chunks)
-        .flatMap { chrom, vcf, chunks ->
+    // Join scatter output with input VCF+TBI (propagated from DROP_GENOTYPES)
+    vcf_by_chrom = DROP_GENOTYPES.out.input_vcf
+    
+    // Create chunks with VCF+TBI for family query
+    chunks_with_vcf = SCATTER_BED.out.chunks
+        .join(vcf_by_chrom)
+        .flatMap { chrom, chunks, vcf, tbi ->
             chunks.collect { chunk_file ->
                 def chunk_id = chunk_file.name.replace('chunk_', '').replace('.bed', '')
-                return tuple(chrom, chunk_id, chunk_file, vcf)
+                return tuple(chrom, chunk_id, chunk_file, vcf, tbi)
             }
         }
     
     FAMILY_QUERY(chunks_with_vcf)
     
     // Group by chrom for gather
-    gathered = FAMILY_QUERY.out.genotypes.groupTuple()
+    gathered = FAMILY_QUERY.out.genotypes.groupTuple(size: params.n_chunks)
     
     GATHER_GENOTYPES(gathered)
     RESOLVE_GENOTYPES(GATHER_GENOTYPES.out.genotypes)

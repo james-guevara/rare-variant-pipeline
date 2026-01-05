@@ -10,11 +10,15 @@ from pathlib import Path
 
 CONSEQUENTIAL_IMPACTS = {"HIGH", "MODERATE"}
 
-def write_output(df, path, separator="\t"):
+def write_output(df, path, separator="	"):
     """Write dataframe to TSV, gzipped if path ends with .gz"""
+    import io
     if path.endswith(".gz"):
-        with gzip.open(path, "wt") as f:
-            df.write_csv(f, separator=separator)
+        # Write to buffer, then compress
+        buffer = io.BytesIO()
+        df.write_csv(buffer, separator=separator)
+        with gzip.open(path, "wb") as f:
+            f.write(buffer.getvalue())
     else:
         df.write_csv(path, separator=separator)
 

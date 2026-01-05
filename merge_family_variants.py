@@ -8,6 +8,7 @@ import polars as pl
 import argparse
 import sys
 import gzip
+import io
 
 def main(fam_path, var_path, out_path):
     """
@@ -42,8 +43,11 @@ def main(fam_path, var_path, out_path):
     
     # Write output (gzipped if .gz extension)
     if out_path.endswith(".gz"):
-        with gzip.open(out_path, "wt") as f:
-            result.write_csv(f, separator="\t")
+        # Write to buffer first, then compress (polars write_csv to gzip handle corrupts data)
+        buffer = io.BytesIO()
+        result.write_csv(buffer, separator="\t")
+        with gzip.open(out_path, "wb") as f:
+            f.write(buffer.getvalue())
     else:
         result.write_csv(out_path, separator="\t")
     

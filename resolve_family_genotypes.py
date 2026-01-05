@@ -108,10 +108,13 @@ def resolve_family(tsv_path: str, output_path: str):
 
         # Write output (gzipped if .gz extension)
         if output_path.endswith(".gz"):
-            with gzip.open(output_path, "wt") as f:
-                out.write_csv(f, separator="\t")
+            import io
+            buffer = io.BytesIO()
+            out.write_csv(buffer, separator="	")
+            with gzip.open(output_path, "wb") as f:
+                f.write(buffer.getvalue())
         else:
-            out.write_csv(output_path, separator="\t")
+            out.write_csv(output_path, separator="	")
         
         print(f"Wrote {out.height} rows -> {output_path}", file=sys.stderr)
 
