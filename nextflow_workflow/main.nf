@@ -240,7 +240,7 @@ process GATHER_GENOTYPES {
 process RESOLVE_GENOTYPES {
     tag "${chrom}"
     cpus 1
-    memory '16 GB'
+    memory '64 GB'
     time '4h'
     
     input:
@@ -259,7 +259,7 @@ process RESOLVE_GENOTYPES {
 process MERGE_VARIANTS {
     tag "${chrom}"
     cpus 1
-    memory '16 GB'
+    memory '64 GB'
     time '4h'
     publishDir "${params.outdir}/merged", mode: 'copy'
     
