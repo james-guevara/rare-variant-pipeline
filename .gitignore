@@ -1,0 +1,27 @@
+# Output directories
+out_*/
+output_*/
+
+# Nextflow
+.nextflow/
+.nextflow.log*
+work/
+trace*.txt
+report*.html
+timeline*.html
+
+# Logs
+logs/
+*.out
+*.err
+slurm-*.out
+
+# Test files
+*.test.tsv
+core.*
+
+# Large data
+*.vcf
+*.vcf.gz
+*.tsv.gz
+*.tbi
