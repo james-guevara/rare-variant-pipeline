@@ -1,6 +1,0 @@
-GAP="/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/beds/merged/gap.sorted.merged.bed"
-SEGDUP="/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/beds/merged/genomicSuperDups.sorted.merged.bed"
-RMSK="/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/beds/merged/rmsk.sorted.merged.bed"
-REPEATS="/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/beds/merged/simpleRepeat.sorted.merged.bed"
-CONSTRAINT="/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/gnomAD/Genomic_constraint/constraint_z_genome_1kb.qc.download.txt.gz"
-GENEBAYES="/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/GeneBayes/output/Supplementary_Table_1.tsv"
