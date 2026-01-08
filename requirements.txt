@@ -1,0 +1,4 @@
+polars>=0.19.0
+polars-bio>=0.1.0
+cyvcf2>=0.30.0
+numpy>=1.24.0
