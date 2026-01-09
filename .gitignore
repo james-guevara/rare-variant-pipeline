@@ -1,0 +1,26 @@
+# Nextflow
+.nextflow/
+.nextflow.log*
+work/
+output/
+reports/
+
+# Temp files
+tmp/
+old/
+
+# Large data files
+*.vcf.gz
+*.vcf.gz.tbi
+*.ped
+
+# Symlinks to external resources
+VEP_CACHE
+resources
+
+# Python
+__pycache__/
+*.pyc
+
+# Lock file (environment specific)
+python_env.txt
