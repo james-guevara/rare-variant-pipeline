@@ -10,7 +10,7 @@ process SCATTER_BED {
     tuple val(chrom), path(bed)
 
     output:
-    tuple val(chrom), path("${chrom}.chunk_*.bed"), emit: chunks
+    tuple val(chrom), path("${chrom}.chunk_*.bed"), env(N_CHUNKS), emit: chunks
 
     script:
     """
@@ -22,6 +22,7 @@ process SCATTER_BED {
         split -l ${params.regions_per_chunk} -d --additional-suffix=.bed ${bed} ${chrom}.chunk_
     fi
 
-    echo "Chromosome: ${chrom}, Total regions: \$n_regions, Chunks created: \$(ls ${chrom}.chunk_*.bed | wc -l)"
+    N_CHUNKS=\$(ls ${chrom}.chunk_*.bed | wc -l)
+    echo "Chromosome: ${chrom}, Total regions: \$n_regions, Chunks created: \$N_CHUNKS"
     """
 }

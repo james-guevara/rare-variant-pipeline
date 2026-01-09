@@ -12,15 +12,19 @@ workflow FAMILY_PROCESSING {
     input_vcfs          // tuple(chrom, vcf, tbi) - original VCFs with genotypes
 
     main:
-    // Scatter BED into chunks
+    // Scatter BED into chunks - now emits (chrom, chunks, n_chunks)
     SCATTER_BED(consequential_bed)
 
-    // Join scatter output with input VCFs
+    // Extract chunk counts per chromosome for groupTuple
+    chunk_counts = SCATTER_BED.out.chunks
+        .map { chrom, chunks, n_chunks -> tuple(chrom, n_chunks.toInteger()) }
+
+    // Join scatter output with input VCFs and flatten chunks
     chunks_with_vcf = SCATTER_BED.out.chunks
         .join(input_vcfs)
-        .flatMap { chrom, chunks, vcf, tbi ->
-            def chunkList = chunks instanceof List ? chunks : [chunks]; chunkList.collect { chunk_file ->
-                def chunk_id = chunk_file.name.replace('chunk_', '').replace('.bed', '')
+        .flatMap { chrom, chunks, n_chunks, vcf, tbi ->
+            def chunkList = chunks instanceof List ? chunks : [chunks]
+            chunkList.collect { chunk_file ->
                 return tuple(chrom, chunk_file, vcf, tbi)
             }
         }
@@ -28,13 +32,21 @@ workflow FAMILY_PROCESSING {
     // Query family genotypes per chunk
     FAMILY_QUERY(chunks_with_vcf)
 
-    // Gather chunks by chromosome (wait for all chunks per chrom)
-    gathered = FAMILY_QUERY.out.genotypes.groupTuple()
+    // Add chunk count back to FAMILY_QUERY output for groupTuple sizing
+    family_query_with_count = FAMILY_QUERY.out.genotypes
+        .combine(chunk_counts, by: 0)  // (chrom, genotypes_file, n_chunks)
+
+    // Gather chunks by chromosome with known size - enables immediate completion
+    gathered = family_query_with_count
+        .map { chrom, genotypes, n_chunks -> tuple( groupKey(chrom, n_chunks), genotypes ) }
+        .groupTuple()
+        .map { chrom_key, genotypes -> tuple(chrom_key.toString(), genotypes) }
+
     GATHER_GENOTYPES(gathered)
 
     // Resolve genotypes (one row per variant per family)
     RESOLVE_GENOTYPES(GATHER_GENOTYPES.out.genotypes)
 
     emit:
-    resolved = RESOLVE_GENOTYPES.out.resolved  // tuple(chrom, resolved.tsv.gz)
+    resolved = RESOLVE_GENOTYPES.out.resolved
 }
