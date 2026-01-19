@@ -1,4 +1,4 @@
-// Module: Gather genotype chunks into single file per chromosome
+// Module: Gather resolved genotype chunks into single file per chromosome
 
 process GATHER_GENOTYPES {
     tag "${chrom}"
@@ -7,19 +7,19 @@ process GATHER_GENOTYPES {
     time '30m'
 
     input:
-    tuple val(chrom), path(genotype_chunks)
+    tuple val(chrom), path(resolved_chunks)
 
     output:
-    tuple val(chrom), path("${chrom}.family_genotypes.tsv"), emit: genotypes
+    tuple val(chrom), path("${chrom}.resolved_genotypes.tsv"), emit: resolved
 
     script:
     """
     # Header from first chunk
-    head -1 \$(ls *.genotypes.tsv | sort -V | head -1) > ${chrom}.family_genotypes.tsv
+    head -1 \$(ls *.resolved.tsv | sort -V | head -1) > ${chrom}.resolved_genotypes.tsv
 
     # Data from all chunks (skip headers)
-    for f in \$(ls *.genotypes.tsv | sort -V); do
+    for f in \$(ls *.resolved.tsv | sort -V); do
         tail -n +2 "\$f"
-    done >> ${chrom}.family_genotypes.tsv
+    done >> ${chrom}.resolved_genotypes.tsv
     """
 }
