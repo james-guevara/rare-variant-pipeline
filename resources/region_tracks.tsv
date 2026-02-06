@@ -1,0 +1,36 @@
+# UCSC Genome Browser region tracks for variant annotation (hg38)
+#
+# This manifest describes BED files used for region-based variant annotation.
+# Used by: scripts/download_region_tracks.sh
+#
+# Columns:
+#   name        - Output filename (without .bed)
+#   url         - Download URL
+#   category    - filter (flag problematic regions) or annotate (add functional context)
+#   extract     - Column extraction rule: "cut:FIELDS" or "awk:EXPRESSION"
+#                 UCSC database tables have `bin` as column 1 (skip it).
+#                 Use 1-indexed field numbers.
+#   description - What this track is and why it's useful
+#
+# To add a new track:
+#   1. Find the table at https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/
+#   2. Check the .sql schema file to identify column positions
+#   3. Add a row below with the extraction rule
+#
+# For non-UCSC sources (ENCODE, GIAB, etc.), set url to the direct download link
+# and extract to "none" if the file is already in BED format.
+#
+#name	url	category	extract	description
+genomicSuperDups	https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/genomicSuperDups.txt.gz	filter	cut:2-4	Segmental duplications. Variants in segdups are prone to mismapping artifacts.
+simpleRepeat	https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/simpleRepeat.txt.gz	filter	cut:2-5	Simple/tandem repeats (TRF). Indel calling errors enriched here. Cols: chrom,start,end,name.
+rmsk	https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/rmsk.txt.gz	filter	awk:{print $6,$7,$8,$11,$12,$13}	RepeatMasker. All interspersed repeats (LINE, SINE, LTR, DNA, etc). Cols: chrom,start,end,repName,repClass,repFamily.
+windowmaskerSdust	https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/windowmaskerSdust.txt.gz	filter	cut:2-4	Low-complexity regions (SDust). Catches LCRs that simpleRepeat/RepeatMasker miss; false positives cluster here.
+gap	https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/gap.txt.gz	filter	cut:2-4	Assembly gaps: centromeres, telomeres, heterochromatin, scaffold gaps. Variants near gaps are unreliable.
+microsat	https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/microsat.txt.gz	filter	cut:2-5	Microsatellite repeats (2-6bp units). Additional flag for indel calling errors from polymerase slippage.
+nestedRepeats	https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/nestedRepeats.txt.gz	filter	cut:2-4	Nested/interrupted repeats. Complex repeat structures where alignment is particularly difficult.
+chainSelf	https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/chainSelf.txt.gz	filter	cut:3-5	Self-chain alignments (paralogous regions). Extends beyond segDups to catch more distant paralogy.
+encodeCcreCombined	https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/encodeCcreCombined.txt.gz	annotate	cut:2-5	ENCODE candidate cis-regulatory elements (926K). Classified: PLS (promoter), pELS/dELS (enhancer), CTCF, DNase-H3K4me3. Cols: chrom,start,end,name.
+cpgIslandExt	https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cpgIslandExt.txt.gz	annotate	cut:2-5	CpG islands. Mark promoter regions; variants here may affect gene regulation. Cols: chrom,start,end,name.
+phastConsElements100way	https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/phastConsElements100way.txt.gz	annotate	cut:2-5	Conserved elements (100 vertebrates, phastCons). Noncoding variants in conserved elements are more likely functional. Cols: chrom,start,end,score.
+gwasCatalog	https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/gwasCatalog.txt.gz	annotate	cut:2-5	NHGRI-EBI GWAS Catalog hits. Flag convergence between rare variants and common-variant GWAS signals. Cols: chrom,start,end,name(trait).
+encodeBlacklist	https://www.encodeproject.org/files/ENCFF356LFX/@@download/ENCFF356LFX.bed.gz	filter	none	ENCODE unified blacklist (~910 regions). Anomalous signal in NGS experiments — variants here are almost certainly artifacts.

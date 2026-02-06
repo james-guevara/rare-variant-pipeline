@@ -16,7 +16,10 @@ old/
 
 # Symlinks to external resources
 VEP_CACHE
-resources
+
+# Downloaded region BED files (fetched via scripts/download_region_tracks.sh)
+resources/repeats/
+resources/regions/
 
 # Python
 __pycache__/
