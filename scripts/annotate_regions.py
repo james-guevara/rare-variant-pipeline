@@ -77,6 +77,116 @@ def add_bed_overlap(
     return lf.join(coord_counts.lazy(), on=[chrom_col, start_col, end_col], how="left")
 
 
+def add_rmsk_overlap(
+    lf: pl.LazyFrame,
+    bed_path: str,
+    chrom_col: str,
+    start_col: str,
+    end_col: str,
+) -> pl.LazyFrame:
+    """Add RepeatMasker overlap count plus repClass and repFamily columns.
+
+    rmsk.bed expected format: chrom, start, end, swScore, strand, repName, repClass, repFamily
+    """
+    coords = lf.select([chrom_col, start_col, end_col]).unique().collect()
+
+    bed = pl.scan_csv(bed_path, separator="\t", has_header=False).select([
+        pl.col("column_1").alias("chrom"),
+        pl.col("column_2").cast(pl.Int64).alias("start"),
+        pl.col("column_3").cast(pl.Int64).alias("end"),
+        pl.col("column_4").cast(pl.Int64).alias("swScore"),
+        pl.col("column_7").alias("repClass"),
+    ])
+
+    v_iv = coords.select([
+        pl.col(chrom_col).alias("chrom"),
+        pl.col(start_col).cast(pl.Int64).alias("start"),
+        pl.col(end_col).cast(pl.Int64).alias("end"),
+    ])
+
+    # Get overlapping pairs
+    pairs = pb.overlap(v_iv, bed, use_zero_based=True, output_type="polars.DataFrame")
+
+    if pairs.height == 0:
+        return lf.with_columns(
+            pl.lit(0).alias("rmsk"),
+            pl.lit(None).cast(pl.Utf8).alias("rmsk_repClass"),
+        )
+
+    # Per-variant: count overlaps, pick the best hit (highest swScore) for class
+    summary = (
+        pairs.group_by(["chrom_1", "start_1", "end_1"])
+        .agg([
+            pl.len().alias("rmsk"),
+            pl.col("repClass_2").sort_by("swScore_2", descending=True).first().alias("rmsk_repClass"),
+        ])
+        .rename({"chrom_1": chrom_col, "start_1": start_col, "end_1": end_col})
+    )
+
+    # Cast back to match original types
+    summary = summary.with_columns([
+        pl.col(start_col).cast(coords.schema[start_col]),
+        pl.col(end_col).cast(coords.schema[end_col]),
+    ])
+
+    return lf.join(summary.lazy(), on=[chrom_col, start_col, end_col], how="left").with_columns(
+        pl.col("rmsk").fill_null(0),
+    )
+
+
+def add_gap_overlap(
+    lf: pl.LazyFrame,
+    bed_path: str,
+    chrom_col: str,
+    start_col: str,
+    end_col: str,
+) -> pl.LazyFrame:
+    """Add assembly gap overlap count plus gap type column.
+
+    gap.bed expected format: chrom, start, end, type
+    """
+    coords = lf.select([chrom_col, start_col, end_col]).unique().collect()
+
+    bed = pl.scan_csv(bed_path, separator="\t", has_header=False).select([
+        pl.col("column_1").alias("chrom"),
+        pl.col("column_2").cast(pl.Int64).alias("start"),
+        pl.col("column_3").cast(pl.Int64).alias("end"),
+        pl.col("column_4").alias("gap_type"),
+    ])
+
+    v_iv = coords.select([
+        pl.col(chrom_col).alias("chrom"),
+        pl.col(start_col).cast(pl.Int64).alias("start"),
+        pl.col(end_col).cast(pl.Int64).alias("end"),
+    ])
+
+    pairs = pb.overlap(v_iv, bed, use_zero_based=True, output_type="polars.DataFrame")
+
+    if pairs.height == 0:
+        return lf.with_columns(
+            pl.lit(0).alias("gap"),
+            pl.lit(None).cast(pl.Utf8).alias("gap_type"),
+        )
+
+    summary = (
+        pairs.group_by(["chrom_1", "start_1", "end_1"])
+        .agg([
+            pl.len().alias("gap"),
+            pl.col("gap_type_2").first().alias("gap_type"),
+        ])
+        .rename({"chrom_1": chrom_col, "start_1": start_col, "end_1": end_col})
+    )
+
+    summary = summary.with_columns([
+        pl.col(start_col).cast(coords.schema[start_col]),
+        pl.col(end_col).cast(coords.schema[end_col]),
+    ])
+
+    return lf.join(summary.lazy(), on=[chrom_col, start_col, end_col], how="left").with_columns(
+        pl.col("gap").fill_null(0),
+    )
+
+
 def parse_manifest(manifest_path: str) -> list[dict]:
     """Parse region_tracks.tsv manifest, return list of track dicts."""
     tracks = []
@@ -164,7 +274,14 @@ def main():
 
         t0 = time.time()
         print(f"ADD   {name} <- {bed_path}", file=sys.stderr, end="", flush=True)
-        lf = add_bed_overlap(lf, bed_path, name, args.chrom_col, args.start_col, args.end_col)
+
+        if name == "rmsk":
+            lf = add_rmsk_overlap(lf, bed_path, args.chrom_col, args.start_col, args.end_col)
+        elif name == "gap":
+            lf = add_gap_overlap(lf, bed_path, args.chrom_col, args.start_col, args.end_col)
+        else:
+            lf = add_bed_overlap(lf, bed_path, name, args.chrom_col, args.start_col, args.end_col)
+
         print(f"  ({time.time() - t0:.1f}s)", file=sys.stderr)
 
     # Write output
