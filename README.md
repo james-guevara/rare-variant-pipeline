@@ -329,6 +329,60 @@ Per-allele INFO fields (extracted by `reformat_variants.py`):
 | `gnomad_lof_pLI_canonical` | gnomAD pLI for canonical transcript |
 | `gnomad_lof_oe_ci_upper_canonical` | gnomAD LOEUF for canonical transcript |
 
+## Post-Pipeline Region Annotation
+
+After the pipeline produces per-chromosome parquet files, you can add region-based annotations (repeat overlaps, blacklist flags, regulatory elements, etc.) using `annotate_regions.py`.
+
+### Setup
+
+1. Define tracks in the manifest (`resources/region_tracks.tsv`)
+2. Download the BED files:
+   ```bash
+   bash scripts/download_region_tracks.sh
+   ```
+
+### Usage
+
+```bash
+# Annotate with all downloaded tracks
+python scripts/annotate_regions.py output/indexed/chr22.parquet \
+    -o output/annotated/chr22.parquet \
+    --manifest resources/region_tracks.tsv \
+    --regions-dir resources/regions/
+
+# Annotate with specific BEDs only
+python scripts/annotate_regions.py output/indexed/chr22.parquet \
+    -o output/annotated/chr22.parquet \
+    --regions-dir resources/regions/ \
+    --beds rmsk.bed encodeBlacklist.bed windowmaskerSdust.bed
+
+# Re-run after adding new tracks (skips already-annotated columns)
+python scripts/annotate_regions.py output/annotated/chr22.parquet \
+    -o output/annotated/chr22.parquet \
+    --manifest resources/region_tracks.tsv \
+    --regions-dir resources/regions/ \
+    --skip-existing
+```
+
+Each track adds an overlap count column (e.g., `rmsk`, `encodeBlacklist`, `windowmaskerSdust`). To add a new annotation, add a row to `resources/region_tracks.tsv`, download it, and re-run with `--skip-existing`.
+
+### Available tracks
+
+See `resources/region_tracks.tsv` for the full list. Key tracks:
+
+| Track | Category | Description |
+|-------|----------|-------------|
+| `genomicSuperDups` | filter | Segmental duplications |
+| `simpleRepeat` | filter | Simple/tandem repeats (TRF) |
+| `rmsk` | filter | RepeatMasker (LINE, SINE, LTR, DNA transposons) |
+| `windowmaskerSdust` | filter | Low-complexity regions |
+| `gap` | filter | Assembly gaps (centromeres, telomeres) |
+| `encodeBlacklist` | filter | ENCODE unified blacklist (~910 artifact regions) |
+| `encodeCcreCombined` | annotate | ENCODE cis-regulatory elements (promoter, enhancer, CTCF) |
+| `cpgIslandExt` | annotate | CpG islands |
+| `phastConsElements100way` | annotate | Conserved elements (100 vertebrates) |
+| `gwasCatalog` | annotate | NHGRI-EBI GWAS Catalog hits |
+
 ## Configuration
 
 Edit `nextflow.config` to customize:
