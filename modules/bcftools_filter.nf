@@ -16,7 +16,7 @@ process BCFTOOLS_FILTER {
 
     script:
     """
-    bcftools view -G --threads ${task.cpus} -O z -o ${chrom}.sites.vcf.gz ${vcf}
+    bcftools view -G -r ${chrom} --threads ${task.cpus} -O z -o ${chrom}.sites.vcf.gz ${vcf}
     bcftools index --threads ${task.cpus} ${chrom}.sites.vcf.gz
     """
 }

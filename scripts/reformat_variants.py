@@ -1,6 +1,10 @@
 """
 Reformat multi-allelic VCF annotations and add genomic constraint/annotation layers.
 Fully lazy/streaming with polars where possible.
+
+Supports two modes:
+  --mode coding     (default) Filter to HIGH/MODERATE IMPACT variants
+  --mode regulatory  Intersect with regulatory BED tracks (ABC, PsychENCODE, etc.)
 """
 import polars as pl
 import polars_bio as pb
@@ -9,6 +13,22 @@ import sys
 from pathlib import Path
 
 CONSEQUENTIAL_IMPACTS = {"HIGH", "MODERATE"}
+
+# Expected regulatory BED filenames in --regulatory-beds directory
+REGULATORY_TRACKS = {
+    "abc": "abc_enhancers.bed",           # ABC enhancer-gene predictions (4+ cols: chrom, start, end, target_gene, score)
+    "psychencode": "psychencode.bed",     # PsychENCODE brain enhancers
+    "chromhmm": "chromhmm_fetal_brain.bed",  # Roadmap ChromHMM fetal brain active states
+    "phastcons": "phastConsElements.bed", # phastCons conserved elements
+    "ccre": "encodeCcreCombined.bed",     # ENCODE cCREs
+}
+
+# Problematic region BED filenames (relative to resources_dir/repeats/)
+PROBLEMATIC_TRACKS = [
+    "genomicSuperDups.bed",
+    "simpleRepeat.bed",
+    "encodeBlacklist.bed",
+]
 
 
 def add_gnomad_constraint_by_gene(
@@ -114,31 +134,171 @@ def add_bed_overlap_flag(
     """Add overlap count with BED regions. Only collects unique coordinates (small)."""
     # Only collect unique coordinates - much smaller than full data
     coords = lf.select([chrom_col, start_col, end_col]).unique().collect()
-    
+
     bed = pl.scan_csv(bed_path, separator="\t", has_header=False).select([
         pl.col("column_1").alias("chrom"),
         pl.col("column_2").cast(pl.Int64).alias("start"),
         pl.col("column_3").cast(pl.Int64).alias("end"),
     ])
-    
+
     v_iv = coords.select([
         pl.col(chrom_col).alias("chrom"),
         pl.col(start_col).cast(pl.Int64).alias("start"),
         pl.col(end_col).cast(pl.Int64).alias("end"),
     ])
-    
+
     counts = pb.count_overlaps(v_iv, bed, use_zero_based=True, output_type="polars.DataFrame")
-    
+
     # Add overlap count to coordinates
     coord_counts = coords.with_columns(counts.select(pl.col("count").alias(prefix)))
-    
+
     # Join back to lazy frame
     return lf.join(coord_counts.lazy(), on=[chrom_col, start_col, end_col], how="left")
 
 
+def filter_regulatory(
+    lf: pl.LazyFrame,
+    beds_dir: str,
+    chrom_col: str = "#CHROM",
+    start_col: str = "POS0",
+    end_col: str = "END",
+) -> pl.LazyFrame:
+    """Keep only variants overlapping regulatory BED regions.
+    Also adds columns identifying which tracks were hit and ABC target genes."""
+    beds_path = Path(beds_dir)
+
+    # Collect unique coordinates once for all intersections
+    coords = lf.select([chrom_col, start_col, end_col]).unique().collect()
+    v_iv = coords.select([
+        pl.col(chrom_col).alias("chrom"),
+        pl.col(start_col).cast(pl.Int64).alias("start"),
+        pl.col(end_col).cast(pl.Int64).alias("end"),
+    ])
+
+    # Start with all-zero flag columns
+    flag_df = coords.clone()
+
+    for track_name, bed_filename in REGULATORY_TRACKS.items():
+        bed_file = beds_path / bed_filename
+        col_name = f"in_{track_name}"
+
+        if not bed_file.exists():
+            print(f"WARNING: Regulatory BED not found: {bed_file}, skipping {track_name}", file=sys.stderr)
+            flag_df = flag_df.with_columns(pl.lit(0).alias(col_name))
+            continue
+
+        if track_name == "abc":
+            # ABC has extra columns: chrom, start, end, target_gene, score
+            bed = pl.scan_csv(str(bed_file), separator="\t", has_header=False)
+            bed_cols = bed.collect_schema().names()
+
+            bed_intervals = bed.select([
+                pl.col("column_1").alias("chrom"),
+                pl.col("column_2").cast(pl.Int64).alias("start"),
+                pl.col("column_3").cast(pl.Int64).alias("end"),
+            ])
+
+            # Overlap to get flags
+            pairs = pb.overlap(
+                v_iv, bed_intervals,
+                use_zero_based=True, output_type="polars.DataFrame",
+            )
+
+            if len(pairs) > 0:
+                # Also extract target gene and score from ABC BED
+                bed_with_meta = bed.select([
+                    pl.col("column_1").alias("chrom"),
+                    pl.col("column_2").cast(pl.Int64).alias("start"),
+                    pl.col("column_3").cast(pl.Int64).alias("end"),
+                    pl.col("column_4").alias("abc_target_gene") if len(bed_cols) > 3 else pl.lit(None).alias("abc_target_gene"),
+                    pl.col("column_5").cast(pl.Float64, strict=False).alias("abc_score") if len(bed_cols) > 4 else pl.lit(None).cast(pl.Float64).alias("abc_score"),
+                ]).collect()
+
+                # Get overlap pairs with ABC metadata
+                abc_pairs = pb.overlap(
+                    v_iv, bed_with_meta.lazy(),
+                    use_zero_based=True, output_type="polars.DataFrame",
+                )
+
+                # Aggregate: pick best ABC score and its target gene per variant
+                abc_summ = (
+                    abc_pairs.group_by(["chrom_1", "start_1", "end_1"])
+                    .agg([
+                        pl.col("abc_score_2").max().alias("abc_score"),
+                        # target gene from the row with max ABC score
+                        pl.col("abc_target_gene_2").sort_by("abc_score_2", descending=True).first().alias("abc_target_gene"),
+                    ])
+                    .rename({"chrom_1": chrom_col, "start_1": start_col, "end_1": end_col})
+                    .with_columns([
+                        pl.col(start_col).cast(pl.Utf8),
+                        pl.col(end_col).cast(pl.Utf8),
+                    ])
+                )
+                flag_df = flag_df.join(abc_summ, on=[chrom_col, start_col, end_col], how="left")
+            else:
+                flag_df = flag_df.with_columns([
+                    pl.lit(None).cast(pl.Float64).alias("abc_score"),
+                    pl.lit(None).cast(pl.Utf8).alias("abc_target_gene"),
+                ])
+
+            # Binary flag: did this variant overlap any ABC region?
+            counts = pb.count_overlaps(v_iv, bed_intervals, use_zero_based=True, output_type="polars.DataFrame")
+            flag_df = flag_df.with_columns(
+                (counts.select(pl.col("count")) > 0).cast(pl.Int32).to_series().alias(col_name)
+            )
+        else:
+            # Standard BED: just chrom, start, end
+            bed = pl.scan_csv(str(bed_file), separator="\t", has_header=False).select([
+                pl.col("column_1").alias("chrom"),
+                pl.col("column_2").cast(pl.Int64).alias("start"),
+                pl.col("column_3").cast(pl.Int64).alias("end"),
+            ])
+
+            counts = pb.count_overlaps(v_iv, bed, use_zero_based=True, output_type="polars.DataFrame")
+            flag_df = flag_df.with_columns(
+                (counts.select(pl.col("count")) > 0).cast(pl.Int32).to_series().alias(col_name)
+            )
+
+    # Build "in any regulatory track" filter
+    track_flag_cols = [f"in_{t}" for t in REGULATORY_TRACKS]
+    existing_flags = [c for c in track_flag_cols if c in flag_df.columns]
+    any_hit = pl.lit(False)
+    for col in existing_flags:
+        any_hit = any_hit | (pl.col(col) > 0)
+    flag_df = flag_df.with_columns(any_hit.alias("in_any_regulatory"))
+
+    # Join flags back to main LazyFrame, then filter
+    lf_with_flags = lf.join(flag_df.lazy(), on=[chrom_col, start_col, end_col], how="left")
+    return lf_with_flags.filter(pl.col("in_any_regulatory"))
+
+
+def filter_problematic_regions(
+    lf: pl.LazyFrame,
+    resources_dir: str,
+    chrom_col: str = "#CHROM",
+    start_col: str = "POS0",
+    end_col: str = "END",
+) -> pl.LazyFrame:
+    """Exclude variants in segdups, simple repeats, and ENCODE blacklist regions."""
+    res = Path(resources_dir)
+
+    for bed_filename in PROBLEMATIC_TRACKS:
+        bed_file = res / "repeats" / bed_filename
+        flag_name = f"_exclude_{Path(bed_filename).stem}"
+
+        if not bed_file.exists():
+            print(f"WARNING: Problematic region BED not found: {bed_file}, skipping", file=sys.stderr)
+            continue
+
+        lf = add_bed_overlap_flag(lf, str(bed_file), flag_name, chrom_col, start_col, end_col)
+        lf = lf.filter(pl.col(flag_name) == 0).drop(flag_name)
+
+    return lf
+
+
 def clean_column_names(lf: pl.LazyFrame) -> pl.LazyFrame:
     """Clean up column names from bcftools +split-vep output.
-    
+
     - Rename '(null)' to 'INFO'
     - Strip 'CSQ' prefix from VEP columns (added by -p CSQ flag)
     """
@@ -161,22 +321,22 @@ def strip_csq_from_info(lf: pl.LazyFrame) -> pl.LazyFrame:
 
 def reformat_variants_lazy(tsv_path: str) -> pl.LazyFrame:
     lf = pl.scan_csv(tsv_path, separator="\t", infer_schema_length=0)
-    
+
     # Clean column names first (handle (null) -> INFO, strip CSQ prefix)
     lf = clean_column_names(lf)
-    
+
     # Strip CSQ blob from INFO column
     lf = strip_csq_from_info(lf)
-    
+
     idx = pl.col("ALLELE_NUM").cast(pl.Int32, strict=False).fill_null(1).sub(1)
     per_allele_fields = ["AC", "AF", "AQ", "MLEAC", "MLEAF"]
-    
+
     lf = lf.with_columns(
         pl.col("ALT").str.split(",").list.get(idx, null_on_oob=True).alias("ALT_specific"),
         *[pl.col("INFO").str.extract(f"{field}=([^;]+)", 1).str.split(",").list.get(idx, null_on_oob=True).fill_null("NA").alias(field)
           for field in per_allele_fields],
     )
-    
+
     # Reorder columns
     cols = lf.collect_schema().names()
     if "ALT" in cols and "ALT_specific" in cols:
@@ -212,8 +372,12 @@ if __name__ == "__main__":
     parser.add_argument("--consequential", required=True)
     parser.add_argument("--consequential-bed", required=True)
     parser.add_argument("--resources-dir", required=True)
+    parser.add_argument("--mode", choices=["coding", "regulatory"], default="coding")
+    parser.add_argument("--regulatory-beds", help="Directory containing regulatory BED files")
+    parser.add_argument("--filter-repeats", action="store_true",
+                        help="Exclude variants in problematic regions (segdups, repeats, blacklist)")
     args = parser.parse_args()
-    
+
     res = Path(args.resources_dir)
     constraint = res / "gnomAD/constraint/gnomad.v4.1.constraint_metrics.tsv"
     segdups = res / "repeats/genomicSuperDups.bed"
@@ -231,19 +395,29 @@ if __name__ == "__main__":
         .pipe(add_gnomad_constraint_by_transcript, str(constraint), feature_col="Feature")
         .pipe(add_gnomad_constraint_by_gene, str(constraint), gene_col="SYMBOL")
     )
-    
+
     print(f"Writing {args.output}...", file=sys.stderr)
     lf.sink_csv(args.output, separator="\t")
-    
+
     print(f"Writing {args.bed}...", file=sys.stderr)
     create_merged_bed(lf, args.bed)
-    
-    if "IMPACT" in lf.collect_schema().names():
-        lf_conseq = lf.filter(pl.col("IMPACT").is_in(list(CONSEQUENTIAL_IMPACTS)))
-        print(f"Writing {args.consequential}...", file=sys.stderr)
-        lf_conseq.sink_csv(args.consequential, separator="\t")
-        print(f"Writing {args.consequential_bed}...", file=sys.stderr)
-        create_merged_bed(lf_conseq, args.consequential_bed)
-    else:
-        print("ERROR: IMPACT column not found", file=sys.stderr)
-        sys.exit(1)
+
+    # Branch: coding vs regulatory filtering
+    if args.mode == "coding":
+        if "IMPACT" not in lf.collect_schema().names():
+            print("ERROR: IMPACT column not found", file=sys.stderr)
+            sys.exit(1)
+        lf_filtered = lf.filter(pl.col("IMPACT").is_in(list(CONSEQUENTIAL_IMPACTS)))
+    elif args.mode == "regulatory":
+        if not args.regulatory_beds:
+            print("ERROR: --regulatory-beds is required when --mode=regulatory", file=sys.stderr)
+            sys.exit(1)
+        lf_filtered = filter_regulatory(lf, args.regulatory_beds)
+
+    if args.filter_repeats:
+        lf_filtered = filter_problematic_regions(lf_filtered, args.resources_dir)
+
+    print(f"Writing {args.consequential} ({args.mode} mode)...", file=sys.stderr)
+    lf_filtered.sink_csv(args.consequential, separator="\t")
+    print(f"Writing {args.consequential_bed}...", file=sys.stderr)
+    create_merged_bed(lf_filtered, args.consequential_bed)

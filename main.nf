@@ -18,6 +18,12 @@ params.chroms = "chr22"
 // Input VCFs
 params.vcf_dir = "/expanse/projects/sebat1/s3/data/sebat/SSC_JG/gatk"
 params.vcf_pattern = "{chrom}.masked.vcf.gz"
+params.single_vcf = null  // null = per-chrom mode (default); set to VCF path for single-VCF mode
+
+// Variant filtering mode
+params.mode = "coding"           // "coding" (HIGH/MODERATE IMPACT) or "regulatory" (BED intersection)
+params.filter_repeats = false    // Exclude problematic regions before family genotyping
+params.regulatory_beds = "${projectDir}/resources/regulatory"
 
 // Family query settings
 params.regions_per_chunk = 1000
@@ -49,11 +55,21 @@ params.resources_dir = "${projectDir}/resources"
 // ============================================================================
 
 def buildInputChannel(chroms_str, vcf_dir, vcf_pattern) {
-    Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
-        def vcf_path = vcf_pattern.replace('{chrom}', chrom)
-        def vcf_file = file("${vcf_dir}/${vcf_path}")
-        def tbi_file = file("${vcf_dir}/${vcf_path}.tbi")
-        return tuple(chrom, vcf_file, tbi_file)
+    if (params.single_vcf) {
+        // Single VCF: all chroms point to the same file, extracted by region downstream
+        Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
+            def vcf_file = file(params.single_vcf)
+            def tbi_file = file("${params.single_vcf}.tbi")
+            return tuple(chrom, vcf_file, tbi_file)
+        }
+    } else {
+        // Per-chrom VCFs (current behavior)
+        Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
+            def vcf_path = vcf_pattern.replace('{chrom}', chrom)
+            def vcf_file = file("${vcf_dir}/${vcf_path}")
+            def tbi_file = file("${vcf_dir}/${vcf_path}.tbi")
+            return tuple(chrom, vcf_file, tbi_file)
+        }
     }
 }
 

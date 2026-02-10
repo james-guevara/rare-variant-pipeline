@@ -16,8 +16,8 @@ process SPLIT_VEP {
 
     script:
     """
-    bcftools +split-vep -p CSQ -HH -d -s :missense+ \
-        -f '%CHROM\t%POS0\t%END\t%POS\t%REF\t%ALT\t%ID\t%QUAL\t%INFO\t%CSQ\n' \
+    bcftools +split-vep -p CSQ -HH -d \
+        -f '%CHROM\t%POS0\t%END\t%POS\t%REF\t%ALT\t%ID\t%QUAL\t%FILTER\t%INFO\t%CSQ\n' \
         -A '\t' \
         ${vep_vcf} > ${chrom}.variants.tsv
     """
