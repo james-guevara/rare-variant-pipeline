@@ -1,9 +1,9 @@
 """
 Join FILTER column from per-chrom VCFs onto merged pipeline output.
 
-For each chromosome, extracts (CHROM, POS, REF, ALT, FILTER) from the
-source VCF (split to biallelic with bcftools norm -m-), then left-joins
-onto the merged TSV on (CHROM, POS, REF, ALT_specific).
+For each chromosome, extracts (CHROM, POS, FILTER) from the source VCF
+using bcftools query, then left-joins onto the merged TSV on (#CHROM, POS).
+FILTER is per-site in VCF so no multi-allelic splitting is needed.
 
 Usage:
     python join_filter.py \
@@ -21,16 +21,10 @@ from pathlib import Path
 
 
 def extract_filter_from_vcf(vcf_path: str) -> pl.DataFrame:
-    """Extract (CHROM, POS, REF, ALT, FILTER) from VCF, split multi-allelics."""
-    cmd = [
-        "bcftools", "norm", "-m-", vcf_path,
-        "-Ou",  # uncompressed BCF to pipe
-        "|",
-        "bcftools", "query", "-f", "%CHROM\\t%POS\\t%REF\\t%ALT\\t%FILTER\\n",
-    ]
+    """Extract (CHROM, POS, FILTER) from VCF. FILTER is per-site."""
     result = subprocess.run(
-        f"bcftools norm -m- {vcf_path} -Ou | bcftools query -f '%CHROM\\t%POS\\t%REF\\t%ALT\\t%FILTER\\n'",
-        shell=True, capture_output=True, text=True,
+        ["bcftools", "query", "-f", "%CHROM\t%POS\t%FILTER\n", vcf_path],
+        capture_output=True, text=True,
     )
     if result.returncode != 0:
         print(f"ERROR: bcftools failed: {result.stderr}", file=sys.stderr)
@@ -39,19 +33,17 @@ def extract_filter_from_vcf(vcf_path: str) -> pl.DataFrame:
     lines = result.stdout.strip().split("\n")
     if not lines or lines == [""]:
         return pl.DataFrame(schema={
-            "#CHROM": pl.Utf8, "POS": pl.Utf8, "REF": pl.Utf8,
-            "ALT_specific": pl.Utf8, "FILTER": pl.Utf8,
+            "#CHROM": pl.Utf8, "POS": pl.Utf8, "FILTER": pl.Utf8,
         })
 
     df = pl.read_csv(
         result.stdout.encode(),
         separator="\t",
         has_header=False,
-        new_columns=["#CHROM", "POS", "REF", "ALT_specific", "FILTER"],
+        new_columns=["#CHROM", "POS", "FILTER"],
         infer_schema_length=0,
     )
-    # Deduplicate — same site can appear multiple times after norm
-    return df.unique(subset=["#CHROM", "POS", "REF", "ALT_specific"])
+    return df.unique(subset=["#CHROM", "POS"])
 
 
 def main():
@@ -90,8 +82,8 @@ def main():
         if merged["POS"].dtype != pl.Utf8:
             merged = merged.with_columns(pl.col("POS").cast(pl.Utf8))
 
-        # Left join FILTER
-        join_cols = ["#CHROM", "POS", "REF", "ALT_specific"]
+        # Left join FILTER on site position
+        join_cols = ["#CHROM", "POS"]
         result = merged.join(filter_df, on=join_cols, how="left")
 
         # Put FILTER after ALT_specific
