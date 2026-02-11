@@ -10,7 +10,7 @@ Two categories:
   - Genotype-level: per-sample, but if ANY family member fails, ALL rows for
     that variant x family get flagged.
 
-Also adds an `AB` (allele balance) column: AD_alt / (AD_ref + AD_alt).
+Also adds an `AB_derived` (allele balance) column: AD_alt / (AD_ref + AD_alt).
 """
 import polars as pl
 import argparse
@@ -26,7 +26,7 @@ def compute_ab(lf: pl.LazyFrame) -> pl.LazyFrame:
         pl.when(total > 0)
         .then(ad_alt / total)
         .otherwise(None)
-        .alias("AB")
+        .alias("AB_derived")
     )
 
 
@@ -147,9 +147,9 @@ def build_genotype_flags(
 
     # het AB outside [het_ab_min, het_ab_max]
     # het = GT matches 0/1 or 0|1 pattern (one allele is 0, other is non-0)
-    if "GT" in cols and "AB" in cols:
+    if "GT" in cols and "AB_derived" in cols:
         is_het = pl.col("GT").str.contains(r"^0[/|][1-9]$|^[1-9][/|]0$")
-        ab = pl.col("AB")
+        ab = pl.col("AB_derived")
         flags.append(
             pl.when(is_het & ((ab < het_ab_min) | (ab > het_ab_max)))
             .then(pl.lit("het_AB"))
