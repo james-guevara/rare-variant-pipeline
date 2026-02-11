@@ -21,9 +21,9 @@ from pathlib import Path
 
 
 def extract_filter_from_vcf(vcf_path: str) -> pl.DataFrame:
-    """Extract (CHROM, POS, FILTER) from VCF. FILTER is per-site."""
+    """Extract (CHROM, POS, ALT, FILTER) from VCF. FILTER is per-site."""
     result = subprocess.run(
-        ["bcftools", "query", "-f", "%CHROM\t%POS\t%FILTER\n", vcf_path],
+        ["bcftools", "query", "-f", "%CHROM\t%POS\t%ALT\t%FILTER\n", vcf_path],
         capture_output=True, text=True,
     )
     if result.returncode != 0:
@@ -33,17 +33,17 @@ def extract_filter_from_vcf(vcf_path: str) -> pl.DataFrame:
     lines = result.stdout.strip().split("\n")
     if not lines or lines == [""]:
         return pl.DataFrame(schema={
-            "#CHROM": pl.Utf8, "POS": pl.Utf8, "FILTER": pl.Utf8,
+            "#CHROM": pl.Utf8, "POS": pl.Utf8, "ALT": pl.Utf8, "FILTER": pl.Utf8,
         })
 
     df = pl.read_csv(
         result.stdout.encode(),
         separator="\t",
         has_header=False,
-        new_columns=["#CHROM", "POS", "FILTER"],
+        new_columns=["#CHROM", "POS", "ALT", "FILTER"],
         infer_schema_length=0,
     )
-    return df.unique(subset=["#CHROM", "POS"])
+    return df.unique(subset=["#CHROM", "POS", "ALT"])
 
 
 def main():
@@ -82,8 +82,8 @@ def main():
         if merged["POS"].dtype != pl.Utf8:
             merged = merged.with_columns(pl.col("POS").cast(pl.Utf8))
 
-        # Left join FILTER on site position
-        join_cols = ["#CHROM", "POS"]
+        # Left join FILTER on site (CHROM, POS, ALT)
+        join_cols = ["#CHROM", "POS", "ALT"]
         result = merged.join(filter_df, on=join_cols, how="left")
 
         # Put FILTER after ALT_specific
