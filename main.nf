@@ -48,27 +48,48 @@ params.reformat_script = "${projectDir}/reformat_variants.py"
 params.family_query_script = "${projectDir}/family_query.py"
 params.resolve_script = "${projectDir}/resolve_family_genotypes.py"
 params.merge_script = "${projectDir}/merge_genotypes_annotations.py"
+params.tsv_to_parquet_script = "${projectDir}/scripts/tsv_to_parquet.py"
+params.qc_filter_script = "${projectDir}/scripts/qc_filter.py"
 params.resources_dir = "${projectDir}/resources"
+
+// QC filter thresholds
+params.qc_min_gq = 20
+params.qc_min_dp = 10
+params.qc_max_af = 0.001
+params.qc_het_ab_min = 0.25
+params.qc_het_ab_max = 0.75
+params.qc_hom_ab_min = 0.9
+params.qc_no_mane_filter = false
 
 // ============================================================================
 // Helper function to build input channel
 // ============================================================================
+
+def findIndex(vcf_path) {
+    // Check for .tbi first, then .csi
+    def tbi = file("${vcf_path}.tbi")
+    if (tbi.exists()) return tbi
+    def csi = file("${vcf_path}.csi")
+    if (csi.exists()) return csi
+    // Return .tbi path as default (will fail at runtime with clear error)
+    return tbi
+}
 
 def buildInputChannel(chroms_str, vcf_dir, vcf_pattern) {
     if (params.single_vcf) {
         // Single VCF: all chroms point to the same file, extracted by region downstream
         Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
             def vcf_file = file(params.single_vcf)
-            def tbi_file = file("${params.single_vcf}.tbi")
-            return tuple(chrom, vcf_file, tbi_file)
+            def idx_file = findIndex(params.single_vcf)
+            return tuple(chrom, vcf_file, idx_file)
         }
     } else {
         // Per-chrom VCFs (current behavior)
         Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
             def vcf_path = vcf_pattern.replace('{chrom}', chrom)
             def vcf_file = file("${vcf_dir}/${vcf_path}")
-            def tbi_file = file("${vcf_dir}/${vcf_path}.tbi")
-            return tuple(chrom, vcf_file, tbi_file)
+            def idx_file = findIndex("${vcf_dir}/${vcf_path}")
+            return tuple(chrom, vcf_file, idx_file)
         }
     }
 }

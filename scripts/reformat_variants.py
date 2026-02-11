@@ -2,9 +2,10 @@
 Reformat multi-allelic VCF annotations and add genomic constraint/annotation layers.
 Fully lazy/streaming with polars where possible.
 
-Supports two modes:
+Supports three modes:
   --mode coding     (default) Filter to HIGH/MODERATE IMPACT variants
   --mode regulatory  Intersect with regulatory BED tracks (ABC, PsychENCODE, etc.)
+  --mode splicing    Deep intronic variants with SpliceAI delta score >= threshold
 """
 import polars as pl
 import polars_bio as pb
@@ -21,12 +22,14 @@ REGULATORY_TRACKS = {
     "chromhmm": "chromhmm_fetal_brain.bed",  # Roadmap ChromHMM fetal brain active states
     "phastcons": "phastConsElements.bed", # phastCons conserved elements
     "ccre": "encodeCcreCombined.bed",     # ENCODE cCREs
+    "cpg": "cpgIslandExt.bed",            # CpG island promoters
 }
 
 # Problematic region BED filenames (relative to resources_dir/repeats/)
 PROBLEMATIC_TRACKS = [
     "genomicSuperDups.bed",
     "simpleRepeat.bed",
+    "rmsk_Simple_repeat.bed",
     "encodeBlacklist.bed",
 ]
 
@@ -296,6 +299,31 @@ def filter_problematic_regions(
     return lf
 
 
+# SpliceAI delta score columns from VEP plugin
+SPLICEAI_COLS = [
+    "SpliceAI_pred_DS_AG",  # acceptor gain
+    "SpliceAI_pred_DS_AL",  # acceptor loss
+    "SpliceAI_pred_DS_DG",  # donor gain
+    "SpliceAI_pred_DS_DL",  # donor loss
+]
+
+
+def filter_splicing(
+    lf: pl.LazyFrame,
+    threshold: float = 0.2,
+) -> pl.LazyFrame:
+    """Keep variants with max SpliceAI delta score >= threshold,
+    excluding those already captured by coding mode (HIGH/MODERATE IMPACT)."""
+    # Compute max SpliceAI delta across the 4 scores
+    spliceai_max = pl.max_horizontal(
+        *[pl.col(c).cast(pl.Float64, strict=False) for c in SPLICEAI_COLS]
+    )
+    return lf.filter(
+        (spliceai_max >= threshold)
+        & ~pl.col("IMPACT").is_in(list(CONSEQUENTIAL_IMPACTS))
+    ).with_columns(spliceai_max.alias("SpliceAI_max_delta"))
+
+
 def clean_column_names(lf: pl.LazyFrame) -> pl.LazyFrame:
     """Clean up column names from bcftools +split-vep output.
 
@@ -372,8 +400,10 @@ if __name__ == "__main__":
     parser.add_argument("--consequential", required=True)
     parser.add_argument("--consequential-bed", required=True)
     parser.add_argument("--resources-dir", required=True)
-    parser.add_argument("--mode", choices=["coding", "regulatory"], default="coding")
+    parser.add_argument("--mode", choices=["coding", "regulatory", "splicing"], default="coding")
     parser.add_argument("--regulatory-beds", help="Directory containing regulatory BED files")
+    parser.add_argument("--spliceai-threshold", type=float, default=0.2,
+                        help="Min SpliceAI max delta score for splicing mode (default: 0.2)")
     parser.add_argument("--filter-repeats", action="store_true",
                         help="Exclude variants in problematic regions (segdups, repeats, blacklist)")
     args = parser.parse_args()
@@ -382,6 +412,8 @@ if __name__ == "__main__":
     constraint = res / "gnomAD/constraint/gnomad.v4.1.constraint_metrics.tsv"
     segdups = res / "repeats/genomicSuperDups.bed"
     simple_repeats = res / "repeats/simpleRepeat.bed"
+    rmsk_simple_repeat = res / "repeats/rmsk_Simple_repeat.bed"
+    rmsk_low_complexity = res / "repeats/rmsk_Low_complexity.bed"
     constraint_1kb = res / "gnomAD/Genomic_constraint/constraint_z_genome_1kb.qc.download.txt.gz"
     genebayes = res / "GeneBayes/output/Supplementary_Table_1.tsv"
 
@@ -390,6 +422,8 @@ if __name__ == "__main__":
         reformat_variants_lazy(args.input)
         .pipe(add_bed_overlap_flag, str(segdups), "segDups")
         .pipe(add_bed_overlap_flag, str(simple_repeats), "simpleRepeats")
+        .pipe(add_bed_overlap_flag, str(rmsk_simple_repeat), "rmsk_Simple_repeat")
+        .pipe(add_bed_overlap_flag, str(rmsk_low_complexity), "rmsk_Low_complexity")
         .pipe(add_1kb_constraint, str(constraint_1kb))
         .pipe(add_genebayes, str(genebayes))
         .pipe(add_gnomad_constraint_by_transcript, str(constraint), feature_col="Feature")
@@ -413,6 +447,14 @@ if __name__ == "__main__":
             print("ERROR: --regulatory-beds is required when --mode=regulatory", file=sys.stderr)
             sys.exit(1)
         lf_filtered = filter_regulatory(lf, args.regulatory_beds)
+    elif args.mode == "splicing":
+        # Verify SpliceAI columns exist
+        schema_names = lf.collect_schema().names()
+        missing = [c for c in SPLICEAI_COLS if c not in schema_names]
+        if missing:
+            print(f"ERROR: SpliceAI columns not found: {missing}", file=sys.stderr)
+            sys.exit(1)
+        lf_filtered = filter_splicing(lf, args.spliceai_threshold)
 
     if args.filter_repeats:
         lf_filtered = filter_problematic_regions(lf_filtered, args.resources_dir)
