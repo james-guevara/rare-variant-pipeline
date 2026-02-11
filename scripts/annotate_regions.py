@@ -84,9 +84,9 @@ def add_rmsk_overlap(
     start_col: str,
     end_col: str,
 ) -> pl.LazyFrame:
-    """Add RepeatMasker overlap count plus repClass and repFamily columns.
+    """Add RepeatMasker overlap count plus repClass column.
 
-    rmsk.bed expected format: chrom, start, end, swScore, strand, repName, repClass, repFamily
+    rmsk.bed expected format: chrom, start, end, repName, repClass, repFamily
     """
     coords = lf.select([chrom_col, start_col, end_col]).unique().collect()
 
@@ -94,8 +94,7 @@ def add_rmsk_overlap(
         pl.col("column_1").alias("chrom"),
         pl.col("column_2").cast(pl.Int64).alias("start"),
         pl.col("column_3").cast(pl.Int64).alias("end"),
-        pl.col("column_4").cast(pl.Int64).alias("swScore"),
-        pl.col("column_7").alias("repClass"),
+        pl.col("column_5").alias("repClass"),
     ])
 
     v_iv = coords.select([
@@ -113,12 +112,12 @@ def add_rmsk_overlap(
             pl.lit(None).cast(pl.Utf8).alias("rmsk_repClass"),
         )
 
-    # Per-variant: count overlaps, pick the best hit (highest swScore) for class
+    # Per-variant: count overlaps, pick the first repClass hit
     summary = (
         pairs.group_by(["chrom_1", "start_1", "end_1"])
         .agg([
             pl.len().alias("rmsk"),
-            pl.col("repClass_2").sort_by("swScore_2", descending=True).first().alias("rmsk_repClass"),
+            pl.col("repClass_2").first().alias("rmsk_repClass"),
         ])
         .rename({"chrom_1": chrom_col, "start_1": start_col, "end_1": end_col})
     )
