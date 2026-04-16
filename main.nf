@@ -4,6 +4,7 @@ nextflow.enable.dsl=2
 // Rare Variant Pipeline - Modular Version
 // Run full pipeline or individual subworkflows with -entry
 
+include { NORMALIZE } from './subworkflows/normalize'
 include { VCF_PROCESSING } from './subworkflows/vcf_processing'
 include { FAMILY_PROCESSING } from './subworkflows/family_processing'
 include { MERGE_INDEX } from './subworkflows/merge_index'
@@ -19,6 +20,7 @@ params.chroms = "chr22"
 params.vcf_dir = "/expanse/projects/sebat1/s3/data/sebat/SSC_JG/gatk"
 params.vcf_pattern = "{chrom}.masked.vcf.gz"
 params.single_vcf = null  // null = per-chrom mode (default); set to VCF path for single-VCF mode
+params.normed_vcf_dir = null  // if set, skip NORMALIZE and read per-chrom ${chrom}.norm.vcf.gz from this dir
 
 // Variant filtering
 params.mode = "coding"           // "coding", "regulatory", or "splicing"
@@ -77,6 +79,14 @@ def findIndex(vcf_path) {
     return tbi
 }
 
+def buildNormedChannel(chroms_str, normed_dir) {
+    Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
+        def vcf_file = file("${normed_dir}/${chrom}.norm.vcf.gz")
+        def tbi_file = findIndex("${normed_dir}/${chrom}.norm.vcf.gz")
+        return tuple(chrom, vcf_file, tbi_file)
+    }
+}
+
 def buildInputChannel(chroms_str, vcf_dir, vcf_pattern) {
     if (params.single_vcf) {
         // Single VCF: all chroms point to the same file, extracted by region downstream
@@ -101,11 +111,17 @@ def buildInputChannel(chroms_str, vcf_dir, vcf_pattern) {
 // ============================================================================
 
 workflow {
-    // Build input channel
-    input_vcfs = buildInputChannel(params.chroms, params.vcf_dir, params.vcf_pattern)
+    // Get normalized VCFs: either run NORMALIZE, or read from normed_vcf_dir if provided
+    if (params.normed_vcf_dir) {
+        normed = buildNormedChannel(params.chroms, params.normed_vcf_dir)
+    } else {
+        input_vcfs = buildInputChannel(params.chroms, params.vcf_dir, params.vcf_pattern)
+        NORMALIZE(input_vcfs)
+        normed = NORMALIZE.out.norm_vcfs
+    }
 
-    // VCF Processing: Drop genotypes → VEP → Split → Reformat
-    VCF_PROCESSING(input_vcfs)
+    // VCF Processing: Sites-only → VEP → Split → Prepare
+    VCF_PROCESSING(normed)
 
     // Family Processing: Scatter → Query → Gather → Resolve
     FAMILY_PROCESSING(VCF_PROCESSING.out.consequential_bed, VCF_PROCESSING.out.input_vcfs)
@@ -118,23 +134,28 @@ workflow {
 // Entry points for individual subworkflows
 // ============================================================================
 
-workflow RUN_VCF_PROCESSING {
+workflow RUN_NORMALIZE {
     input_vcfs = buildInputChannel(params.chroms, params.vcf_dir, params.vcf_pattern)
-    VCF_PROCESSING(input_vcfs)
+    NORMALIZE(input_vcfs)
+}
+
+workflow RUN_VCF_PROCESSING {
+    // Reads normed VCFs from params.normed_vcf_dir, or from ${params.outdir}/norm by default
+    def normed_dir = params.normed_vcf_dir ?: "${params.outdir}/norm"
+    normed = buildNormedChannel(params.chroms, normed_dir)
+    VCF_PROCESSING(normed)
 }
 
 workflow RUN_FAMILY_PROCESSING {
-    // Requires outputs from VCF_PROCESSING
+    // Requires outputs from NORMALIZE and VCF_PROCESSING
     chroms = Channel.fromList(params.chroms.tokenize(','))
 
     consequential_bed = chroms.map { chrom ->
         tuple(chrom, file("${params.outdir}/reformat/${chrom}.consequential.bed"))
     }
 
-    input_vcfs = chroms.map { chrom ->
-        def vcf_path = params.vcf_pattern.replace('{chrom}', chrom)
-        tuple(chrom, file("${params.vcf_dir}/${vcf_path}"), file("${params.vcf_dir}/${vcf_path}.tbi"))
-    }
+    def normed_dir = params.normed_vcf_dir ?: "${params.outdir}/norm"
+    input_vcfs = buildNormedChannel(params.chroms, normed_dir)
 
     FAMILY_PROCESSING(consequential_bed, input_vcfs)
 }
