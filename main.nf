@@ -20,10 +20,12 @@ params.vcf_dir = "/expanse/projects/sebat1/s3/data/sebat/SSC_JG/gatk"
 params.vcf_pattern = "{chrom}.masked.vcf.gz"
 params.single_vcf = null  // null = per-chrom mode (default); set to VCF path for single-VCF mode
 
-// Variant filtering mode
-params.mode = "coding"           // "coding" (HIGH/MODERATE IMPACT) or "regulatory" (BED intersection)
-params.filter_repeats = false    // Exclude problematic regions before family genotyping
+// Variant filtering
+params.mode = "coding"           // "coding", "regulatory", or "splicing"
+params.af_threshold = 0.01       // gnomAD AF threshold for rare filtering (in prepare_variants)
+params.cohort_af_threshold = 0.01  // Cohort AF threshold for pre-VEP filtering
 params.regulatory_beds = "${projectDir}/resources/regulatory"
+params.spliceai_threshold = 0.2
 
 // Family query settings
 params.regions_per_chunk = 1000
@@ -44,7 +46,7 @@ params.resources_base = "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scr
 params.reference = "/expanse/projects/sebat1/j3guevar/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa"
 
 // Python scripts and resources
-params.reformat_script = "${projectDir}/reformat_variants.py"
+params.prepare_script = "${projectDir}/scripts/prepare_variants.py"
 params.family_query_script = "${projectDir}/family_query.py"
 params.resolve_script = "${projectDir}/resolve_family_genotypes.py"
 params.merge_script = "${projectDir}/merge_genotypes_annotations.py"
