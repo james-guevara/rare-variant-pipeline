@@ -15,7 +15,7 @@ process BCFTOOLS_NORM {
 
     script:
     """
-    bcftools norm -m- -f ${params.reference} -r ${chrom} --threads ${task.cpus} -O z -o ${chrom}.norm.vcf.gz ${vcf}
+    bcftools norm -m- --force -f ${params.reference} -r ${chrom} --threads ${task.cpus} -O z -o ${chrom}.norm.vcf.gz ${vcf}
     bcftools index -t --threads ${task.cpus} ${chrom}.norm.vcf.gz
     """
 }
