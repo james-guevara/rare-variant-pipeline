@@ -3,7 +3,7 @@
 process BCFTOOLS_NORM {
     tag "${chrom}"
     cpus 4
-    memory '4 GB'
+    memory '16 GB'
     time '48h'
     container "${params.bcftools_container}"
 
