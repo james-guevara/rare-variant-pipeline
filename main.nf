@@ -8,6 +8,7 @@ include { NORMALIZE } from './subworkflows/normalize'
 include { VCF_PROCESSING } from './subworkflows/vcf_processing'
 include { FAMILY_PROCESSING } from './subworkflows/family_processing'
 include { MERGE_INDEX } from './subworkflows/merge_index'
+include { BCFTOOLS_SITES } from './modules/bcftools_sites'
 
 // ============================================================================
 // Parameters
@@ -144,6 +145,14 @@ workflow RUN_VCF_PROCESSING {
     def normed_dir = params.normed_vcf_dir ?: "${params.outdir}/norm"
     normed = buildNormedChannel(params.chroms, normed_dir)
     VCF_PROCESSING(normed)
+}
+
+workflow RUN_SITES_ONLY {
+    // Drop genotypes from normed VCFs to produce sites-only VCFs.
+    // Reads normed VCFs from params.normed_vcf_dir, or from ${params.outdir}/norm by default.
+    def normed_dir = params.normed_vcf_dir ?: "${params.outdir}/norm"
+    normed = buildNormedChannel(params.chroms, normed_dir)
+    BCFTOOLS_SITES(normed)
 }
 
 workflow RUN_FAMILY_PROCESSING {
