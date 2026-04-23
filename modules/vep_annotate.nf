@@ -21,7 +21,7 @@ process VEP_ANNOTATE {
         --output_file ${chrom}.vep.vcf.gz \
         --vcf \
         --compress_output bgzip \
-        --canonical --mane --symbol --protein --hgvs --biotype \
+        --canonical --mane --symbol --protein --hgvs --hgvsg --domains --biotype \
         --numbers --uploaded_allele \
         --assembly GRCh38 --cache --dir_cache ${params.vep_cache} --offline \
         --fasta ${params.reference} \
