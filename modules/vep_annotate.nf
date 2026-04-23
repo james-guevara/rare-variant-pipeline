@@ -22,7 +22,7 @@ process VEP_ANNOTATE {
         --vcf \
         --compress_output bgzip \
         --canonical --mane --symbol --protein --hgvs --hgvsg --domains --biotype \
-        --numbers --uploaded_allele \
+        --numbers --uploaded_allele --pick_allele \
         --assembly GRCh38 --cache --dir_cache ${params.vep_cache} --offline \
         --fasta ${params.reference} \
         --force_overwrite --fork ${task.cpus} --stats_text \
