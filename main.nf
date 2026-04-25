@@ -9,6 +9,7 @@ include { VCF_PROCESSING } from './subworkflows/vcf_processing'
 include { FAMILY_PROCESSING } from './subworkflows/family_processing'
 include { MERGE_INDEX } from './subworkflows/merge_index'
 include { BCFTOOLS_SITES } from './modules/bcftools_sites'
+include { VEP_ANNOTATE } from './modules/vep_annotate'
 
 // ============================================================================
 // Parameters
@@ -22,6 +23,7 @@ params.vcf_dir = "/expanse/projects/sebat1/s3/data/sebat/SSC_JG/gatk"
 params.vcf_pattern = "{chrom}.masked.vcf.gz"
 params.single_vcf = null  // null = per-chrom mode (default); set to VCF path for single-VCF mode
 params.normed_vcf_dir = null  // if set, skip NORMALIZE and read per-chrom ${chrom}.norm.vcf.gz from this dir
+params.sites_vcf_dir = null   // for RUN_VEP_ONLY: read per-chrom ${chrom}.sites.vcf.gz from this dir
 
 // Variant filtering
 params.mode = "coding"           // "coding", "regulatory", or "splicing"
@@ -85,6 +87,14 @@ def buildNormedChannel(chroms_str, normed_dir) {
         def vcf_file = file("${normed_dir}/${chrom}.norm.vcf.gz")
         def tbi_file = findIndex("${normed_dir}/${chrom}.norm.vcf.gz")
         return tuple(chrom, vcf_file, tbi_file)
+    }
+}
+
+def buildSitesChannel(chroms_str, sites_dir) {
+    Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
+        def vcf_file = file("${sites_dir}/${chrom}.sites.vcf.gz")
+        def idx_file = findIndex("${sites_dir}/${chrom}.sites.vcf.gz")
+        return tuple(chrom, vcf_file, idx_file)
     }
 }
 
@@ -153,6 +163,14 @@ workflow RUN_SITES_ONLY {
     def normed_dir = params.normed_vcf_dir ?: "${params.outdir}/norm"
     normed = buildNormedChannel(params.chroms, normed_dir)
     BCFTOOLS_SITES(normed)
+}
+
+workflow RUN_VEP_ONLY {
+    // Run VEP annotation on pre-built sites-only VCFs.
+    // Reads sites VCFs from params.sites_vcf_dir, or from ${params.outdir}/sites by default.
+    def sites_dir = params.sites_vcf_dir ?: "${params.outdir}/sites"
+    sites = buildSitesChannel(params.chroms, sites_dir)
+    VEP_ANNOTATE(sites)
 }
 
 workflow RUN_FAMILY_PROCESSING {
