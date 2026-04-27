@@ -10,6 +10,7 @@ include { FAMILY_PROCESSING } from './subworkflows/family_processing'
 include { MERGE_INDEX } from './subworkflows/merge_index'
 include { BCFTOOLS_SITES } from './modules/bcftools_sites'
 include { VEP_ANNOTATE } from './modules/vep_annotate'
+include { SPLIT_VEP } from './modules/split_vep'
 
 // ============================================================================
 // Parameters
@@ -24,6 +25,7 @@ params.vcf_pattern = "{chrom}.masked.vcf.gz"
 params.single_vcf = null  // null = per-chrom mode (default); set to VCF path for single-VCF mode
 params.normed_vcf_dir = null  // if set, skip NORMALIZE and read per-chrom ${chrom}.norm.vcf.gz from this dir
 params.sites_vcf_dir = null   // for RUN_VEP_ONLY: read per-chrom ${chrom}.sites.vcf.gz from this dir
+params.vep_vcf_dir = null     // for RUN_SPLIT_VEP_ONLY: read per-chrom ${chrom}.vep.vcf.gz from this dir
 
 // Variant filtering
 params.mode = "coding"           // "coding", "regulatory", or "splicing"
@@ -95,6 +97,14 @@ def buildSitesChannel(chroms_str, sites_dir) {
         def vcf_file = file("${sites_dir}/${chrom}.sites.vcf.gz")
         def idx_file = findIndex("${sites_dir}/${chrom}.sites.vcf.gz")
         return tuple(chrom, vcf_file, idx_file)
+    }
+}
+
+def buildVepChannel(chroms_str, vep_dir) {
+    Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
+        def vcf_file = file("${vep_dir}/${chrom}.vep.vcf.gz")
+        def tbi_file = file("${vep_dir}/${chrom}.vep.vcf.gz.tbi")
+        return tuple(chrom, vcf_file, tbi_file)
     }
 }
 
@@ -171,6 +181,14 @@ workflow RUN_VEP_ONLY {
     def sites_dir = params.sites_vcf_dir ?: "${params.outdir}/sites"
     sites = buildSitesChannel(params.chroms, sites_dir)
     VEP_ANNOTATE(sites)
+}
+
+workflow RUN_SPLIT_VEP_ONLY {
+    // Expand the CSQ INFO field of VEP-annotated VCFs into a TSV via bcftools +split-vep.
+    // Reads VEP VCFs from params.vep_vcf_dir, or from ${params.outdir}/vep by default.
+    def vep_dir = params.vep_vcf_dir ?: "${params.outdir}/vep"
+    vep = buildVepChannel(params.chroms, vep_dir)
+    SPLIT_VEP(vep)
 }
 
 workflow RUN_FAMILY_PROCESSING {
