@@ -25,6 +25,7 @@ process PREPARE_VARIANTS {
     } else {
         mode_args = "--mode coding"
     }
+    def af_arg = "--max-cohort-af ${params.max_cohort_af ?: 1.0}"
     """
     python ${params.prepare_script} \\
         ${tsv} \\
@@ -32,6 +33,7 @@ process PREPARE_VARIANTS {
         --bed ${chrom}.reformatted.bed \\
         --consequential ${chrom}.consequential.tsv \\
         --consequential-bed ${chrom}.consequential.bed \\
-        ${mode_args}
+        ${mode_args} \\
+        ${af_arg}
     """
 }

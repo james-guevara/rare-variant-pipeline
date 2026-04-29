@@ -176,6 +176,9 @@ if __name__ == "__main__":
     parser.add_argument("--regulatory-beds", help="Directory containing regulatory BED files (for regulatory mode)")
     parser.add_argument("--spliceai-threshold", type=float, default=0.2,
                         help="Min SpliceAI max delta score for splicing mode (default: 0.2)")
+    parser.add_argument("--max-cohort-af", type=float, default=1.0,
+                        help="Drop variants with cohort AF >= this value (default: 1.0 = no filter). "
+                             "Set to e.g. 0.01 to restrict to rare variants before family processing.")
     args = parser.parse_args()
 
     print("Preparing variants...", file=sys.stderr)
@@ -188,9 +191,15 @@ if __name__ == "__main__":
     # 2. Extract per-allele INFO fields (sites already biallelic from bcftools norm -m-)
     lf = extract_info_fields(lf)
 
-    # 3. Write all variants (already rare-filtered by cohort AF in BCFTOOLS_FILTER)
+    # 2a. Optional cohort-AF filter (rows with missing/non-numeric AF are dropped)
+    if args.max_cohort_af < 1.0:
+        lf = lf.filter(
+            pl.col("AF").cast(pl.Float64, strict=False) < args.max_cohort_af
+        )
+
+    # 3. Write all variants (cohort-AF-filtered if --max-cohort-af set)
     n_total = lf.select(pl.len()).collect().item()
-    print(f"  Total variants: {n_total:,}", file=sys.stderr)
+    print(f"  Total variants: {n_total:,}  (max-cohort-af={args.max_cohort_af})", file=sys.stderr)
     print(f"Writing {args.output}...", file=sys.stderr)
     lf.sink_csv(args.output, separator="\t")
 

@@ -31,6 +31,7 @@ params.vep_vcf_dir = null     // for RUN_SPLIT_VEP_ONLY: read per-chrom ${chrom}
 params.mode = "coding"           // "coding", "regulatory", or "splicing"
 params.af_threshold = 0.01       // gnomAD AF threshold for rare filtering (in prepare_variants)
 params.cohort_af_threshold = 0.01  // Cohort AF threshold for pre-VEP filtering
+params.max_cohort_af = 1.0       // Cohort AF cap in PREPARE_VARIANTS (1.0 = no filter; set to 0.01 for rare-only)
 params.regulatory_beds = "${projectDir}/resources/regulatory"
 params.spliceai_threshold = 0.2
 
