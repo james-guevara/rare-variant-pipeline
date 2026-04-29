@@ -14,11 +14,11 @@ process GATHER_GENOTYPES {
 
     script:
     """
-    # Header from first chunk
-    head -1 \$(ls *.resolved.tsv | sort -V | head -1) > ${chrom}.resolved_genotypes.tsv
+    # Header from first chunk (carriers.tsv from new FAMILY_QUERY)
+    head -1 \$(ls *.carriers.tsv | sort -V | head -1) > ${chrom}.resolved_genotypes.tsv
 
     # Data from all chunks (skip headers)
-    for f in \$(ls *.resolved.tsv | sort -V); do
+    for f in \$(ls *.carriers.tsv | sort -V); do
         tail -n +2 "\$f"
     done >> ${chrom}.resolved_genotypes.tsv
     """
