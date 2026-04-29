@@ -21,6 +21,11 @@ import argparse
 import sys
 from pathlib import Path
 
+# polars_bio >=0.28 dropped the use_zero_based kwarg in favor of metadata-based
+# coordinate system detection. Our intervals are always 0-based (POS0/END from
+# bcftools +split-vep), so disable the check rather than tagging every DataFrame.
+pb.set_option(pb.POLARS_BIO_COORDINATE_SYSTEM_CHECK, "false")
+
 CONSEQUENTIAL_IMPACTS = {"HIGH", "MODERATE"}
 
 # SpliceAI delta score columns from VEP plugin
@@ -121,7 +126,7 @@ def filter_regulatory(
             pl.col("column_2").cast(pl.Int64).alias("start"),
             pl.col("column_3").cast(pl.Int64).alias("end"),
         ])
-        counts = pb.count_overlaps(v_iv, bed, use_zero_based=True, output_type="polars.DataFrame")
+        counts = pb.count_overlaps(v_iv, bed, output_type="polars.DataFrame")
         flag_df = flag_df.with_columns(
             (counts.select(pl.col("count")) > 0).cast(pl.Int32).to_series().alias(col_name)
         )
@@ -157,7 +162,7 @@ def create_merged_bed(lf: pl.LazyFrame, output_path: str) -> None:
             pl.col("POS0").cast(pl.Int64).alias("start"),
             pl.col("END").cast(pl.Int64).alias("end"),
         ]),
-        use_zero_based=True, min_dist=1, output_type="polars.LazyFrame"
+        min_dist=1, output_type="polars.LazyFrame"
     ).rename({"chrom": "#CHROM", "start": "POS0", "end": "END"})
     merged.sink_csv(output_path, separator="\t")
 
