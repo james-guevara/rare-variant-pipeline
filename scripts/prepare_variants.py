@@ -185,7 +185,9 @@ if __name__ == "__main__":
     parser.add_argument("--mode", choices=["coding", "coding_and_utr", "regulatory", "splicing"], default="coding",
                         help="Consequential filtering mode (default: coding). "
                              "'coding' = HIGH+MODERATE IMPACT. "
-                             "'coding_and_utr' = HIGH+MODERATE+LOW IMPACT plus 5'/3' UTR variants.")
+                             "'coding_and_utr' = HIGH+MODERATE+LOW IMPACT plus 5'/3' UTR, "
+                             "non_coding_transcript_exon, mature_miRNA, regulatory_region, "
+                             "TFBS_ablation/amplification, TF_binding_site_variant.")
     parser.add_argument("--regulatory-beds", help="Directory containing regulatory BED files (for regulatory mode)")
     parser.add_argument("--spliceai-threshold", type=float, default=0.2,
                         help="Min SpliceAI max delta score for splicing mode (default: 0.2)")
@@ -230,10 +232,26 @@ if __name__ == "__main__":
         if "IMPACT" not in schema or "Consequence" not in schema:
             print("ERROR: IMPACT and/or Consequence column not found", file=sys.stderr)
             sys.exit(1)
+        # MODIFIER consequences to include in addition to HIGH+MOD+LOW IMPACT.
+        # Covers UTRs, non-coding-transcript exons, mature miRNAs, and curated
+        # regulatory features (TFBS, regulatory_region). Excludes intron,
+        # intergenic, upstream_gene, downstream_gene (the noisy bulk).
+        modifier_keep = [
+            "5_prime_UTR_variant",
+            "3_prime_UTR_variant",
+            "non_coding_transcript_exon_variant",
+            "mature_miRNA_variant",
+            "regulatory_region_variant",
+            "TF_binding_site_variant",
+            "TFBS_ablation",
+            "TFBS_amplification",
+        ]
+        modifier_filter = pl.col("Consequence").str.contains(modifier_keep[0])
+        for term in modifier_keep[1:]:
+            modifier_filter = modifier_filter | pl.col("Consequence").str.contains(term)
         lf_conseq = lf.filter(
             pl.col("IMPACT").is_in(list(CODING_PLUS_LOW_IMPACTS))
-            | pl.col("Consequence").str.contains("5_prime_UTR_variant")
-            | pl.col("Consequence").str.contains("3_prime_UTR_variant")
+            | modifier_filter
         )
     elif args.mode == "regulatory":
         if not args.regulatory_beds:
