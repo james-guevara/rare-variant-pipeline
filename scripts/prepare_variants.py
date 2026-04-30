@@ -27,6 +27,7 @@ from pathlib import Path
 pb.set_option(pb.POLARS_BIO_COORDINATE_SYSTEM_CHECK, "false")
 
 CONSEQUENTIAL_IMPACTS = {"HIGH", "MODERATE"}
+CODING_PLUS_LOW_IMPACTS = {"HIGH", "MODERATE", "LOW"}
 
 # SpliceAI delta score columns from VEP plugin
 SPLICEAI_COLS = [
@@ -155,16 +156,21 @@ def filter_splicing(lf: pl.LazyFrame, threshold: float = 0.2) -> pl.LazyFrame:
 
 
 def create_merged_bed(lf: pl.LazyFrame, output_path: str) -> None:
-    """Create a merged BED file from variant coordinates."""
-    merged = pb.merge(
-        lf.select([
-            pl.col("#CHROM").alias("chrom"),
-            pl.col("POS0").cast(pl.Int64).alias("start"),
-            pl.col("END").cast(pl.Int64).alias("end"),
-        ]),
-        min_dist=1, output_type="polars.LazyFrame"
-    ).rename({"chrom": "#CHROM", "start": "POS0", "end": "END"})
-    merged.sink_csv(output_path, separator="\t")
+    """Write a per-variant BED file (no merging).
+
+    Earlier versions of this function merged adjacent intervals via
+    polars-bio's `pb.merge`. With merged intervals, downstream bcftools -R
+    queries pick up *all* variants in the merged regions — including
+    variants we explicitly filtered out (e.g., common variants in the
+    gaps between rare consequential ones). Emitting one BED line per
+    variant gives bcftools exact targets and avoids that contamination.
+    Slightly more tabix seeks, but correctness > seek-count.
+    """
+    lf.select([
+        pl.col("#CHROM"),
+        pl.col("POS0").cast(pl.Int64),
+        pl.col("END").cast(pl.Int64),
+    ]).sort(["#CHROM", "POS0"]).sink_csv(output_path, separator="\t")
 
 
 if __name__ == "__main__":
@@ -176,8 +182,10 @@ if __name__ == "__main__":
     parser.add_argument("--bed", required=True, help="Output BED (all rare variants)")
     parser.add_argument("--consequential", required=True, help="Output TSV (HIGH/MODERATE impact only)")
     parser.add_argument("--consequential-bed", required=True, help="Output BED (consequential only)")
-    parser.add_argument("--mode", choices=["coding", "regulatory", "splicing"], default="coding",
-                        help="Consequential filtering mode (default: coding)")
+    parser.add_argument("--mode", choices=["coding", "coding_and_utr", "regulatory", "splicing"], default="coding",
+                        help="Consequential filtering mode (default: coding). "
+                             "'coding' = HIGH+MODERATE IMPACT. "
+                             "'coding_and_utr' = HIGH+MODERATE+LOW IMPACT plus 5'/3' UTR variants.")
     parser.add_argument("--regulatory-beds", help="Directory containing regulatory BED files (for regulatory mode)")
     parser.add_argument("--spliceai-threshold", type=float, default=0.2,
                         help="Min SpliceAI max delta score for splicing mode (default: 0.2)")
@@ -217,6 +225,16 @@ if __name__ == "__main__":
             print("ERROR: IMPACT column not found", file=sys.stderr)
             sys.exit(1)
         lf_conseq = lf.filter(pl.col("IMPACT").is_in(list(CONSEQUENTIAL_IMPACTS)))
+    elif args.mode == "coding_and_utr":
+        schema = lf.collect_schema().names()
+        if "IMPACT" not in schema or "Consequence" not in schema:
+            print("ERROR: IMPACT and/or Consequence column not found", file=sys.stderr)
+            sys.exit(1)
+        lf_conseq = lf.filter(
+            pl.col("IMPACT").is_in(list(CODING_PLUS_LOW_IMPACTS))
+            | pl.col("Consequence").str.contains("5_prime_UTR_variant")
+            | pl.col("Consequence").str.contains("3_prime_UTR_variant")
+        )
     elif args.mode == "regulatory":
         if not args.regulatory_beds:
             print("ERROR: --regulatory-beds is required for regulatory mode", file=sys.stderr)
