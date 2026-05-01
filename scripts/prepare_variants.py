@@ -170,7 +170,7 @@ def create_merged_bed(lf: pl.LazyFrame, output_path: str) -> None:
         pl.col("#CHROM"),
         pl.col("POS0").cast(pl.Int64),
         pl.col("END").cast(pl.Int64),
-    ]).sort(["#CHROM", "POS0"]).sink_csv(output_path, separator="\t")
+    ]).unique().sort(["#CHROM", "POS0", "END"]).sink_csv(output_path, separator="\t")
 
 
 if __name__ == "__main__":
