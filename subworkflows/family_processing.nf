@@ -1,10 +1,10 @@
 // Subworkflow: Family Processing
 // Scatter consequential BED into chunks, query carriers from the normed VCF,
-// gather per-chrom. RESOLVE_GENOTYPES is no longer needed because FAMILY_QUERY
+// gather per-chrom. RESOLVE_GENOTYPES is no longer needed because CARRIER_QUERY
 // now emits carriers-only rows with AD pre-split and FAMILY attached.
 
 include { SCATTER_BED } from '../modules/scatter_bed'
-include { FAMILY_QUERY } from '../modules/family_query'
+include { CARRIER_QUERY } from '../modules/carrier_query'
 include { GATHER_GENOTYPES } from '../modules/gather_genotypes'
 
 workflow FAMILY_PROCESSING {
@@ -27,10 +27,10 @@ workflow FAMILY_PROCESSING {
             }
         }
 
-    FAMILY_QUERY(chunks_with_vcf)
+    CARRIER_QUERY(chunks_with_vcf)
 
     // Gather chunks back into per-chrom files
-    carriers_with_count = FAMILY_QUERY.out.carriers
+    carriers_with_count = CARRIER_QUERY.out.carriers
         .combine(chunk_counts, by: 0)
 
     gathered = carriers_with_count
