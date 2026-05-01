@@ -22,11 +22,12 @@ process CARRIER_QUERY {
 
     script:
     def af_cap = (params.max_cohort_af as Double) < 1.0 ? "INFO/AF<${params.max_cohort_af} && " : ""
+    def filter_expr = "${af_cap}ALT!=\"*\" && GT=\"alt\""
     """
     bcftools query \\
         -HH \\
         -R ${chunk_bed} \\
-        -i '${af_cap}GT="alt"' \\
+        -i '${filter_expr}' \\
         -f '[%CHROM\\t%POS0\\t%END\\t%POS\\t%REF\\t%ALT\\t%SAMPLE\\t%GT\\t%GQ\\t%DP\\t%AD{0}\\t%AD{1}\\n]' \\
         ${vcf} \\
         | sed '1s/\\tAD\\tAD\$/\\tAD_ref\\tAD_alt/' \\
