@@ -8,11 +8,11 @@ include { CONVERT_PARQUET } from '../modules/convert_parquet'
 
 workflow MERGE_INDEX {
     take:
-    resolved        // tuple(chrom, resolved.tsv.gz)
+    carriers        // tuple(chrom, carriers.tsv)
     consequential   // tuple(chrom, consequential.tsv)
 
     main:
-    merge_input = resolved.join(consequential)
+    merge_input = carriers.join(consequential)
 
     MERGE_ANNOTATIONS(merge_input)
 

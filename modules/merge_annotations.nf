@@ -8,7 +8,7 @@ process MERGE_ANNOTATIONS {
     conda "${params.python_env}"
 
     input:
-    tuple val(chrom), path(resolved_genotypes), path(consequential_tsv)
+    tuple val(chrom), path(carriers_tsv), path(consequential_tsv)
 
     output:
     tuple val(chrom), path("${chrom}.merged.tsv"), emit: merged
@@ -16,7 +16,7 @@ process MERGE_ANNOTATIONS {
     script:
     """
     python ${params.merge_script} \\
-        --family ${resolved_genotypes} \\
+        --family ${carriers_tsv} \\
         --variants ${consequential_tsv} \\
         --out ${chrom}.merged.tsv
     """

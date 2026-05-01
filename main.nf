@@ -56,7 +56,6 @@ params.reference = "/expanse/projects/sebat1/j3guevar/GRCh38_reference_genome/GR
 // Python scripts and resources
 params.prepare_script = "${projectDir}/scripts/prepare_variants.py"
 params.family_query_script = "${projectDir}/family_query.py"
-params.resolve_script = "${projectDir}/resolve_family_genotypes.py"
 params.merge_script = "${projectDir}/merge_genotypes_annotations.py"
 params.tsv_to_parquet_script = "${projectDir}/scripts/tsv_to_parquet.py"
 params.qc_filter_script = "${projectDir}/scripts/qc_filter.py"
@@ -149,7 +148,7 @@ workflow {
     FAMILY_PROCESSING(VCF_PROCESSING.out.consequential_bed, VCF_PROCESSING.out.input_vcfs)
 
     // Merge and Index: Merge → Sort → Index
-    MERGE_INDEX(FAMILY_PROCESSING.out.resolved, VCF_PROCESSING.out.consequential)
+    MERGE_INDEX(FAMILY_PROCESSING.out.carriers, VCF_PROCESSING.out.consequential)
 }
 
 // ============================================================================
@@ -210,13 +209,13 @@ workflow RUN_MERGE_INDEX {
     // Requires outputs from both VCF_PROCESSING and FAMILY_PROCESSING
     chroms = Channel.fromList(params.chroms.tokenize(','))
 
-    resolved = chroms.map { chrom ->
-        tuple(chrom, file("${params.outdir}/resolve/${chrom}.resolved_genotypes.tsv"))
+    carriers = chroms.map { chrom ->
+        tuple(chrom, file("${params.outdir}/carriers/${chrom}.carriers.tsv"))
     }
 
     consequential = chroms.map { chrom ->
         tuple(chrom, file("${params.outdir}/reformat/${chrom}.consequential.tsv"))
     }
 
-    MERGE_INDEX(resolved, consequential)
+    MERGE_INDEX(carriers, consequential)
 }

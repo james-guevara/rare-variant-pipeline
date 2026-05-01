@@ -28,7 +28,7 @@ process CARRIER_QUERY {
         -HH \\
         -R ${chunk_bed} \\
         -i '${filter_expr}' \\
-        -f '[%CHROM\\t%POS0\\t%END\\t%POS\\t%REF\\t%ALT\\t%SAMPLE\\t%GT\\t%GQ\\t%DP\\t%AD{0}\\t%AD{1}\\n]' \\
+        -f '[%CHROM\\t%POS0\\t%END\\t%POS\\t%REF\\t%ALT\\t%SAMPLE\\t%GT\\t%GQ\\t%DP\\t%PL\\t%AD{0}\\t%AD{1}\\n]' \\
         ${vcf} \\
         | sed '1s/\\tAD\\tAD\$/\\tAD_ref\\tAD_alt/' \\
         > ${chunk_bed.baseName}.carriers.tsv
