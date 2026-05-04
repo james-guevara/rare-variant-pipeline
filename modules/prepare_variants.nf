@@ -17,13 +17,12 @@ process PREPARE_VARIANTS {
     tuple val(chrom), path("${chrom}.consequential.bed"), emit: consequential_bed
 
     script:
-    def mode_args = ""
-    if (params.mode == "regulatory" && params.regulatory_beds) {
-        mode_args = "--mode regulatory --regulatory-beds ${params.regulatory_beds}"
-    } else if (params.mode == "splicing") {
-        mode_args = "--mode splicing --spliceai-threshold ${params.spliceai_threshold ?: '0.2'}"
-    } else {
-        mode_args = "--mode coding"
+    def mode = params.mode ?: "coding"
+    def mode_args = "--mode ${mode}"
+    if (mode == "regulatory" && params.regulatory_beds) {
+        mode_args += " --regulatory-beds ${params.regulatory_beds}"
+    } else if (mode == "splicing") {
+        mode_args += " --spliceai-threshold ${params.spliceai_threshold ?: '0.2'}"
     }
     def af_arg = "--max-cohort-af ${params.max_cohort_af ?: 1.0}"
     """
