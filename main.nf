@@ -11,6 +11,7 @@ include { MERGE_INDEX } from './subworkflows/merge_index'
 include { BCFTOOLS_SITES } from './modules/bcftools_sites'
 include { VEP_ANNOTATE } from './modules/vep_annotate'
 include { SPLIT_VEP } from './modules/split_vep'
+include { PREPARE_VARIANTS } from './modules/prepare_variants'
 
 // ============================================================================
 // Parameters
@@ -26,6 +27,7 @@ params.single_vcf = null  // null = per-chrom mode (default); set to VCF path fo
 params.normed_vcf_dir = null  // if set, skip NORMALIZE and read per-chrom ${chrom}.norm.vcf.gz from this dir
 params.sites_vcf_dir = null   // for RUN_VEP_ONLY: read per-chrom ${chrom}.sites.vcf.gz from this dir
 params.vep_vcf_dir = null     // for RUN_SPLIT_VEP_ONLY: read per-chrom ${chrom}.vep.vcf.gz from this dir
+params.split_vep_dir = null   // for RUN_PREPARE_VARIANTS_ONLY: read per-chrom ${chrom}.variants.tsv from this dir
 
 // Variant filtering
 params.mode = "coding"           // "coding", "regulatory", or "splicing"
@@ -97,6 +99,12 @@ def buildSitesChannel(chroms_str, sites_dir) {
         def vcf_file = file("${sites_dir}/${chrom}.sites.vcf.gz")
         def idx_file = findIndex("${sites_dir}/${chrom}.sites.vcf.gz")
         return tuple(chrom, vcf_file, idx_file)
+    }
+}
+
+def buildSplitVepChannel(chroms_str, split_vep_dir) {
+    Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
+        return tuple(chrom, file("${split_vep_dir}/${chrom}.variants.tsv"))
     }
 }
 
@@ -189,6 +197,15 @@ workflow RUN_SPLIT_VEP_ONLY {
     def vep_dir = params.vep_vcf_dir ?: "${params.outdir}/vep"
     vep = buildVepChannel(params.chroms, vep_dir)
     SPLIT_VEP(vep)
+}
+
+workflow RUN_PREPARE_VARIANTS_ONLY {
+    // Run only the PREPARE_VARIANTS step on existing SPLIT_VEP outputs.
+    // Reads per-chrom ${chrom}.variants.tsv from params.split_vep_dir, or
+    // from ${params.outdir}/split_vep by default.
+    def sv_dir = params.split_vep_dir ?: "${params.outdir}/split_vep"
+    sv = buildSplitVepChannel(params.chroms, sv_dir)
+    PREPARE_VARIANTS(sv)
 }
 
 workflow RUN_FAMILY_PROCESSING {
