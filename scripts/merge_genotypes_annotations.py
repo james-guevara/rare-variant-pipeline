@@ -10,10 +10,10 @@ import sys
 
 def main(fam_path: str, var_path: str, out_path: str):
     print(f"Scanning {fam_path}...", file=sys.stderr)
-    fam = pl.scan_csv(fam_path, separator="\t", infer_schema_length=10000)
+    fam = pl.scan_csv(fam_path, separator="\t", infer_schema_length=10000, null_values=["."])
 
     print(f"Scanning {var_path}...", file=sys.stderr)
-    var = pl.scan_csv(var_path, separator="\t", infer_schema_length=10000)
+    var = pl.scan_csv(var_path, separator="\t", infer_schema_length=10000, null_values=["."])
 
     join_cols = ["#CHROM", "POS0", "END", "REF", "ALT"]
 
