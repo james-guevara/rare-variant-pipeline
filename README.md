@@ -103,6 +103,26 @@ duckdb 1.5.2 / polars 1.39.3 / polars-bio 0.28.0 / pyarrow 22.0.0 — **not** la
 because `prepare_variants.py` is written against the polars_bio 0.28 API. The build
 asserts that API surface exists, so a bad pin fails CI rather than a long run.
 
+#### Container provenance (known gap)
+
+Only one of the three is currently reproducible from this repo.
+
+| Container | Provenance |
+|---|---|
+| `bcftools:1.22--h3a4d415_1` | Stock biocontainer. Recoverable: `docker://quay.io/biocontainers/bcftools:1.22--h3a4d415_1` |
+| `ensembl-vep_115.2--pl5321h2a3209d_1.with_samtools` | **Custom, no build recipe.** Built 2025-11-25 from a local sandbox (`bootstrap: localimage`, `from: vep_sandbox`). Contains VEP 115.2 plus samtools 1.22.1, bgzip, tabix and perl in `/usr/local/bin`. If the `.sif` is lost there is currently no documented way to rebuild it. |
+| `rare-variant-pipeline-python` | Built from this repo's `Dockerfile` by CI. |
+
+Both older images live in shared project space, so anyone with `sebat1` access can run
+the pipeline today. Making the VEP image reproducible — a `Dockerfile` starting from
+the `ensembl-vep:115.2--pl5321h2a3209d_1` biocontainer and adding samtools 1.22.1,
+built by the same CI workflow — is outstanding work. Note a rebuild would be
+*equivalent*, not bit-identical, so it should be validated by re-running a
+chromosome and comparing VEP output before being swapped in.
+
+Separately, `VEP_CACHE` is ~48 GB of Ensembl data and is not containerized. It is
+downloaded from Ensembl, not shipped here.
+
 One-time setup on the cluster:
 
 ```bash
