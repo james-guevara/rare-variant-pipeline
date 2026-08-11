@@ -7,7 +7,7 @@ include { VEP_ANNOTATE } from '../modules/vep_annotate'
 include { SPLIT_VEP } from '../modules/split_vep'
 include { PREPARE_VARIANTS } from '../modules/prepare_variants'
 
-workflow VCF_PROCESSING {
+workflow ANNOTATE {
     take:
     input_vcfs       // tuple(chrom, vcf, tbi) — normalized genotyped VCFs
 

@@ -6,7 +6,7 @@ include { SCATTER_BED } from '../modules/scatter_bed'
 include { CARRIER_QUERY } from '../modules/carrier_query'
 include { GATHER_CARRIERS } from '../modules/gather_carriers'
 
-workflow FAMILY_PROCESSING {
+workflow CARRIER_EXTRACTION {
     take:
     consequential_bed   // tuple(chrom, bed) - regions to query
     input_vcfs          // tuple(chrom, vcf, tbi) - normed cohort VCF with genotypes

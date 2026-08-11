@@ -18,8 +18,10 @@ findable. Nothing here is referenced by `main.nf`, any subworkflow, any module, 
 | `reformat_variants.py` | Superseded by `prepare_variants.py`. |
 | `join_filter.py` | Wrote FILTER onto merged output after the fact. Unnecessary: `SPLIT_VEP` emits `%FILTER` and it survives to the parquet (verified — column 16 of 58). |
 | `qc_filter.py` | Driven only by the archived `APPLY_QC_FILTER`. |
+| `filter_pass_and_rescue.py` | Removed from the POSTPROCESS chain deliberately. It did two things, and both belong elsewhere: (1) a `FILTER==PASS` cut — FILTER is now carried as a column so the cut can be applied downstream where it is visible; (2) a de-novo rescue of non-PASS rows — that can only fire in cohorts with trios, so the same variant would be filtered differently between cohorts with and without them, biasing cross-cohort comparison. De novo status belongs in a later annotation step, not a filter. `dnm_paths` is left in `resources.json` as a pointer to the callsets that step will need. |
 | `family_query.py` | Never wired in; `CARRIER_QUERY` does carrier extraction in pure bcftools. |
-| `alphagenome_score.py`, `annotate_regions.py`, `annotate_variants.py`, `count_per_sample.py`, `filter_lof.py`, `filter_missense.py`, `reshape_trios.py`, `verify_and_gather.py` | Standalone analysis utilities, not pipeline stages. Kept in case they are still wanted; they were never invoked by the workflow. |
+| `annotate_variants.py`, `annotate_regions.py`, `filter_lof.py`, `filter_missense.py`, `count_per_sample.py` | **Superseded POSTPROCESSING, not dead code.** An earlier, partial generation of what now lives in `scripts/postprocess/` and runs as the `POSTPROCESS` subworkflow — e.g. `annotate_variants.py` joins REVEL/popEVE/pext where `join_scores.py` joins full dbNSFP. Kept for reference only. |
+| `alphagenome_score.py`, `reshape_trios.py`, `verify_and_gather.py` | Standalone utilities, never invoked by the workflow. |
 
 ## Restoring something
 

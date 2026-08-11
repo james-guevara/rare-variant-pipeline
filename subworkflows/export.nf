@@ -6,7 +6,7 @@ include { MERGE_ANNOTATIONS } from '../modules/merge_annotations'
 include { SORT_INDEX } from '../modules/sort_index'
 include { CONVERT_PARQUET } from '../modules/convert_parquet'
 
-workflow MERGE_INDEX {
+workflow EXPORT {
     take:
     carriers        // tuple(chrom, carriers.tsv)
     consequential   // tuple(chrom, consequential.tsv)
