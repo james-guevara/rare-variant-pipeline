@@ -133,6 +133,10 @@ done
 
 ### Expected chr22 numbers
 
+Measured before the genotype-QC change (family propagation removed, fail-closed on
+missing values), so D2 may differ by a fraction of a percent. D1 counts are exact.
+
+
 ```
 source records                      996,414
 normed (after splitting)          1,148,541
