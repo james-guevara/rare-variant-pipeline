@@ -8,66 +8,111 @@ This pipeline processes VCF files through variant annotation (VEP), filters for 
 
 ## Pipeline Structure
 
+Five subworkflows, each with its own entry point so stages can be run and re-run
+independently.
+
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         VCF_PROCESSING                              │
-│  BCFTOOLS_FILTER → VEP_ANNOTATE → SPLIT_VEP → REFORMAT_VARIANTS    │
-│                                                    ↓                │
-│                                         consequential.bed/.tsv      │
-└─────────────────────────────────────────────────────────────────────┘
-                                    ↓
-┌─────────────────────────────────────────────────────────────────────┐
-│                       FAMILY_PROCESSING                             │
-│  SCATTER_BED → FAMILY_QUERY → GATHER_GENOTYPES → RESOLVE_GENOTYPES │
-│       ↓                                                             │
-│  (parallel chunks)                                                  │
-└─────────────────────────────────────────────────────────────────────┘
-                                    ↓
-┌─────────────────────────────────────────────────────────────────────┐
-│                         MERGE_INDEX                                 │
-│              MERGE_ANNOTATIONS → SORT_INDEX                         │
-│                                      ↓                              │
-│                              final.tsv.gz + .tbi                    │
-└─────────────────────────────────────────────────────────────────────┘
+NORMALIZE            BCFTOOLS_NORM
+                     [decode local alleles] -> norm -m- -> fill-tags(AN,AC,AF,F_MISSING)
+                          |
+                          v  <chrom>.norm.vcf.gz
+ANNOTATE             BCFTOOLS_SITES -> VEP_ANNOTATE -> SPLIT_VEP -> PREPARE_VARIANTS
+                          |
+                          v  <chrom>.consequential.{tsv,bed}
+CARRIER_EXTRACTION   SCATTER_BED -> CARRIER_QUERY (per chunk) -> GATHER_CARRIERS
+                          |
+                          v  <chrom>.carriers.tsv
+EXPORT               MERGE_ANNOTATIONS -> SORT_INDEX -> CONVERT_PARQUET
+                          |
+                          v  D1: <chrom>.merged.parquet
+POSTPROCESS          PP_FILTER_REGIONS -> PP_QC_GENOTYPE -> PP_JOIN_POP_AF
+                     -> PP_JOIN_SCORES -> PP_JOIN_GENE_CONSTRAINT
+                     -> PP_TIER_VARIANTS (annotate)
+                          |                        \
+                          v                         v
+                     D2: filtered_annotated/   D3: PP_COUNT_CARRIERS -> counts/
 ```
+
+`CARRIER_EXTRACTION` reads no pedigree despite the historical name of its
+predecessor — it extracts carriers (`GT="alt"`), nothing more.
 
 ## Directory Structure
 
 ```
-├── main.nf              # Main workflow with entry points
-├── nextflow.config      # Configuration (profiles, resources, containers)
-├── modules/             # Individual process definitions
-│   ├── bcftools_filter.nf
+├── main.nf                    # entry points + parameter defaults
+├── nextflow.config            # profiles, resources, containers
+├── Dockerfile                 # Python-stages image (built by CI)
+├── .github/workflows/         # container build + publish to GHCR
+├── modules/                   # one process each
+│   ├── bcftools_norm.nf       #   decode/split/fill-tags
+│   ├── bcftools_sites.nf      #   drop genotypes
 │   ├── vep_annotate.nf
 │   ├── split_vep.nf
-│   ├── reformat_variants.nf
+│   ├── prepare_variants.nf
 │   ├── scatter_bed.nf
-│   ├── family_query.nf
-│   ├── gather_genotypes.nf
-│   ├── resolve_genotypes.nf
+│   ├── carrier_query.nf
+│   ├── gather_carriers.nf
 │   ├── merge_annotations.nf
-│   └── sort_index.nf
-├── subworkflows/        # Grouped process chains
-│   ├── vcf_processing.nf
-│   ├── family_processing.nf
-│   └── merge_index.nf
-└── scripts/             # Python scripts for data processing
-    ├── reformat_variants.py
-    ├── family_query.py
-    ├── resolve_family_genotypes.py
-    ├── merge_genotypes_annotations.py
-    └── verify_and_gather.py
+│   ├── sort_index.nf
+│   └── convert_parquet.nf
+├── subworkflows/
+│   ├── normalize.nf
+│   ├── annotate.nf
+│   ├── carrier_extraction.nf
+│   ├── export.nf
+│   └── postprocess.nf
+├── scripts/
+│   ├── prepare_variants.py
+│   ├── merge_genotypes_annotations.py
+│   ├── tsv_to_parquet.py
+│   ├── pull_python_container.sh      # one-time container setup (run via sbatch)
+│   ├── download_*.sh                 # fetch region/regulatory BED resources
+│   └── postprocess/                  # DuckDB stages + resources.json
+│       ├── filter_regions.py
+│       ├── qc_genotype.py
+│       ├── join_pop_af.py
+│       ├── join_scores.py
+│       ├── join_gene_constraint.py
+│       ├── tier_variants.py
+│       ├── count_carriers.py
+│       └── resources.json
+└── archive/                   # superseded code, kept findable (see archive/README.md)
 ```
 
 ## Requirements
 
 - Nextflow >= 25.10.0
-- Singularity (for containerized processes)
-- Python 3.12 with: polars, cyvcf2, numpy
+- Singularity / SingularityPRO
+
+Nothing else. **Every process runs in a container**, so there is no host Python,
+bcftools or tabix dependency. Earlier versions relied on a micromamba env at an
+absolute path inside one user's home directory, which meant nobody else could run
+the pipeline; that is gone.
 
 ### Containers
-- `bcftools:1.22` - for filtering and split-vep
-- `ensembl-vep:115.2` - for variant annotation
+
+| Image | Processes |
+|---|---|
+| `bcftools:1.22` | `BCFTOOLS_NORM`, `BCFTOOLS_SITES`, `CARRIER_QUERY`, `SPLIT_VEP`, `SCATTER_BED`, `GATHER_CARRIERS`, `SORT_INDEX` |
+| `ensembl-vep:115.2` (with samtools) | `VEP_ANNOTATE` |
+| `rare-variant-pipeline-python` | `PREPARE_VARIANTS`, `MERGE_ANNOTATIONS`, `CONVERT_PARQUET`, all `PP_*` |
+
+The Python image is built from the repo's `Dockerfile` by CI
+(`.github/workflows/container.yml`) and published to GHCR. Versions are pinned to
+duckdb 1.5.2 / polars 1.39.3 / polars-bio 0.28.0 / pyarrow 22.0.0 — **not** latest,
+because `prepare_variants.py` is written against the polars_bio 0.28 API. The build
+asserts that API surface exists, so a bad pin fails CI rather than a long run.
+
+One-time setup on the cluster:
+
+```bash
+sbatch scripts/pull_python_container.sh   # writes rvp_python.sif next to the others
+```
+
+Run it **as a job**. `singularity pull` shells out to `mksquashfs`, which dies with
+`Out of memory (frag_thrd)` under login-node limits but succeeds with 32 GB in a job.
+Building the image on the cluster is not possible: there is no `/etc/subuid` mapping
+for user accounts, so `singularity build --fakeroot` is refused — hence CI.
 
 ## Usage
 
@@ -77,16 +122,31 @@ nextflow run main.nf -profile <cohort> --chroms <chromosomes> -resume
 ```
 
 ### Individual Subworkflows
+
+Entry points, in dependency order:
+
 ```bash
-# VCF processing only (annotation)
-nextflow run main.nf -profile ssc -entry RUN_VCF_PROCESSING --chroms chr22
-
-# Family processing only (requires VCF_PROCESSING outputs)
-nextflow run main.nf -profile ssc -entry RUN_FAMILY_PROCESSING --chroms chr22
-
-# Merge and index only (requires both previous outputs)
-nextflow run main.nf -profile ssc -entry RUN_MERGE_INDEX --chroms chr22
+nextflow run main.nf -profile ssc -entry RUN_NORMALIZE              --chroms chr22
+nextflow run main.nf -profile ssc -entry RUN_ANNOTATE               --chroms chr22  # sites -> VEP -> split-vep -> prepare
+nextflow run main.nf -profile ssc -entry RUN_CARRIER_EXTRACTION     --chroms chr22  # scatter -> carrier query -> gather
+nextflow run main.nf -profile ssc -entry RUN_EXPORT                 --chroms chr22  # merge -> sort/index -> parquet
+nextflow run main.nf -profile ssc -entry RUN_POSTPROCESS            --chroms chr22  # filter/annotate -> tier -> counts
 ```
+
+`RUN_ANNOTATE` can also be run one step at a time, which is what the per-step
+launch scripts do so each stage gets its own outdir and trace:
+
+```bash
+-entry RUN_SITES_ONLY          # normed -> sites-only VCF
+-entry RUN_VEP_ONLY            # sites  -> VEP-annotated VCF
+-entry RUN_SPLIT_VEP_ONLY      # VEP    -> per-consequence TSV
+-entry RUN_PREPARE_VARIANTS_ONLY  # TSV -> reformatted + consequential TSV/BED
+```
+
+Renamed 2026-08-10 (old names are gone, not aliased): `RUN_VCF_PROCESSING` →
+`RUN_ANNOTATE`, `RUN_FAMILY_PROCESSING` → `RUN_CARRIER_EXTRACTION`,
+`RUN_MERGE_INDEX` → `RUN_EXPORT`. The old names were misleading: nothing in the
+pipeline reads a pedigree, so "family processing" only ever extracted carriers.
 
 ### Parameters
 
@@ -94,14 +154,118 @@ nextflow run main.nf -profile ssc -entry RUN_MERGE_INDEX --chroms chr22
 |-----------|-------------|---------|
 | `--chroms` | Comma-separated chromosomes | `chr22` |
 | `--outdir` | Output directory | `output` |
+| `--tmpdir` | `SORT_INDEX` scratch. Must be on a shared filesystem — **never `/tmp`**, which is node-local on Expanse | `${outdir}/tmp` |
 | `--regions_per_chunk` | Regions per scatter chunk | `1000` |
 | `--trace_prefix` | Prefix for report files | `""` |
+| `--single_vcf` | Path to one whole-genome VCF; per-chrom extraction happens in `BCFTOOLS_NORM`. Leave null for per-chrom inputs | `null` |
+| `--local_alleles` | Input stores local-allele FORMAT fields — see below | `false` |
+| `--pp_cohort` | Key into `scripts/postprocess/resources.json` `cohorts` | set per profile |
+| `--count_group_col` | Column `PP_COUNT_CARRIERS` stratifies by | `tier` |
+
+### Input dialects (DRAGEN msVCF)
+
+Callers differ in what they store per sample. Both flags below default to `false`,
+and with both off `BCFTOOLS_NORM` emits the original single-command form, so task
+hashes — and therefore `-resume` — are unchanged for existing cohorts.
+
+**`--local_alleles`** — DRAGEN's gVCF-genotyper msVCF (`--generate-msvcf`) stores
+per-sample depths and likelihoods as *local-allele* fields `LAD`/`LPL`/`LAA`
+instead of `AD`/`PL`. These are `Number=.`, so `bcftools norm -m-` has no rule for
+subsetting them and **copies them verbatim onto every split row, silently**. The
+`LAA` indices then no longer describe the row they sit on, and a non-carrier
+inherits the carrier's depth (`AD=0,32` on a `0/0` row → allele balance 1.0).
+
+So the decode **must** precede the split. This is a property of bcftools, verified
+identical on 1.20 and 1.24 — not a version bug to wait out. When the flag is set,
+`BCFTOOLS_NORM` runs `+tag2tag -- --LXX-to-XX -r` (only the family form works; the
+single-tag `--LAD-to-AD` is rejected in both versions despite its own `--help`),
+then strips the remaining allele-indexed fields `LAF`/`LF1R2`/`LF2R1`, and only
+then splits.
+
+`BCFTOOLS_NORM` always ends with `+fill-tags -t AN,AC,AF,F_MISSING`. Both parts are
+deliberate and unconditional:
+
+- **`AN,AC,AF` are recomputed from `GT`.** Downstream stages filter on `INFO/AF`, so
+  if it were the caller's own value the filter would mean something different per
+  cohort — callers compute it over different sample sets and with different ploidy
+  handling, and it can be stale (e.g. after samples are dropped post-joint-calling).
+  Recomputing makes it mean "frequency among the samples in this file", everywhere.
+- **`F_MISSING`** is the per-variant missing call rate, which the pipeline otherwise
+  has no measure of at all. `prepare_variants.py` extracts it as a column.
+
+Genotypes already stream through this step, so neither costs an extra pass.
 
 ### Profiles
 
-- `spark_wgs` - SPARK WGS data
-- `spark_iwes` - SPARK iWES v3 data  
-- `ssc` - SSC data
+- `spark_wgs` — SPARK WGS (DeepVariant, per-chrom)
+- `spark_iwes` — SPARK iWES v3 (DeepVariant, per-chrom)
+- `ssc` — SSC (GATK, per-chrom)
+- `cirm_dragen`, `cirm_gatk` — CIRM
+- `g2mh_wo_utrecht` — G2MH, in-house GATK/VQSR joint call (superseded)
+- `g2mh` — G2MH finalized DRAGEN msVCF from NDA; sets `single_vcf`,
+  `local_alleles`, and the postprocess cohort key
+
+Note `--max_cohort_af` does not transfer across cohort sizes: at N≈1,000 an
+AF of 0.001 means AC ≤ 2, i.e. singletons and doubletons only.
+
+## Deliverables
+
+The pipeline produces three things. Naming them explicitly matters because the
+middle one is the analysis-ready product and is easy to lose.
+
+**D1 — variant × carrier table.** `RUN_EXPORT` → `<outdir>/parquet/<chrom>.merged.parquet`.
+One row per (consequential rare variant × carrier sample) with VEP annotations,
+`GT/GQ/DP/AD/PL/FT`, `FILTER`, and recomputed `AC/AN/AF/F_MISSING`.
+
+**D2 — filtered, fully annotated variant × carrier table.**
+`RUN_POSTPROCESS` → `<outdir>/postprocess/filtered_annotated/<chrom>.filtered_annotated.parquet`.
+D1 after region filtering, genotype QC, the population-AF cap, dbNSFP scores and
+gene constraint, plus a `tier` column.
+
+**This is deliberately stratification-agnostic.** `tier_variants` *annotates* and
+does not filter, so untiered rows are retained. Tiering is only one way to slice the
+data — gene sets, consequence classes and s_het bins are others — and dropping
+untiered variants here would foreclose all of them. Consumers wanting only tiered
+rows add `WHERE tier IS NOT NULL`.
+
+**D3 — per-sample carrier counts.** `<outdir>/postprocess/counts/`:
+`per_sample_counts.tsv` (one row per sample, one column per group value, explicit
+zeros) and `group_totals.tsv`. Grouping is set by `--count_group_col`, default
+`tier`; any annotated column works.
+
+D3 carries **no covariates** — no PCs, ancestry, case status or family ID — and does
+no cross-cohort union. Those belong to analysis, and keeping them out means the
+pipeline has no dependency on an analysis manifest. It also means a sample appearing
+in two callsets cannot be double-counted here.
+
+### Tier convention
+
+`t1` is always the **most severe** tier, for both LoF and missense:
+
+| Tier | Definition |
+|---|---|
+| `lof_t1` | LoF = `HC` and s_het ≥ 0.18 |
+| `lof_t2` | LoF = `HC` and s_het ∈ [0.03, 0.18) |
+| `miss_t1`…`miss_t4` | missense with 4, 3, 2, 1 of {ClinPred, AlphaMissense, popEVE, MPC} rankscores over threshold |
+
+Counts inherit this by construction — `PP_COUNT_CARRIERS` groups on the `tier`
+column written by `tier_variants.py`, with no relabelling step that could invert
+severity.
+
+### What postprocessing deliberately does NOT do
+
+- **No DNM rescue.** It can only fire where trios exist, so the same variant would be
+  filtered differently between cohorts with and without them. De novo status belongs
+  in a separate annotation step.
+- **No `FILTER` cut.** `FILTER` is carried as a column so the cut can be applied
+  downstream where it is visible. (Note some callers emit a constant `PASS` at every
+  site and put their real per-sample filtering in `FORMAT/FT`, which is why `FT` is
+  carried too.)
+- **No family-level propagation in genotype QC.** Dropping a whole (variant × family)
+  group when one member fails makes effective stringency depend on how many family
+  members happen to carry that variant, which varies by cohort and by family. QC is
+  strictly per-row, and fails closed on missing `GQ`/`DP`/`AB`.
+- **No pedigree is read anywhere.**
 
 ## Output
 
@@ -331,6 +495,15 @@ Per-allele INFO fields (extracted by `reformat_variants.py`):
 
 ## Post-Pipeline Region Annotation
 
+> **Superseded.** This section describes an earlier, partial postprocessing layer.
+> The canonical postprocessing now lives outside this repo at
+> `/expanse/projects/sebat1/s3/data/sebat/rv_postprocessing_v3/` (DuckDB + SLURM):
+> `filter_regions → qc_genotype → join_pop_af → join_scores` (dbNSFP) `→
+> join_gene_constraint → filter_pass_and_rescue`, then `tier_variants.py` and the
+> `count_*.py` scripts. `annotate_regions.py` and friends were moved to
+> `archive/scripts/` — see `archive/README.md`. Kept here for reference only.
+
+
 After the pipeline produces per-chromosome parquet files, you can add region-based annotations (repeat overlaps, blacklist flags, regulatory elements, etc.) using `annotate_regions.py`.
 
 ### Setup
@@ -345,19 +518,19 @@ After the pipeline produces per-chromosome parquet files, you can add region-bas
 
 ```bash
 # Annotate with all downloaded tracks
-python scripts/annotate_regions.py output/indexed/chr22.parquet \
+python archive/scripts/annotate_regions.py output/indexed/chr22.parquet \
     -o output/annotated/chr22.parquet \
     --manifest resources/region_tracks.tsv \
     --regions-dir resources/regions/
 
 # Annotate with specific BEDs only
-python scripts/annotate_regions.py output/indexed/chr22.parquet \
+python archive/scripts/annotate_regions.py output/indexed/chr22.parquet \
     -o output/annotated/chr22.parquet \
     --regions-dir resources/regions/ \
     --beds rmsk.bed encodeBlacklist.bed windowmaskerSdust.bed
 
 # Re-run after adding new tracks (skips already-annotated columns)
-python scripts/annotate_regions.py output/annotated/chr22.parquet \
+python archive/scripts/annotate_regions.py output/annotated/chr22.parquet \
     -o output/annotated/chr22.parquet \
     --manifest resources/region_tracks.tsv \
     --regions-dir resources/regions/ \
