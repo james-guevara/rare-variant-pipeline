@@ -137,6 +137,12 @@ for user accounts, so `singularity build --fakeroot` is refused — hence CI.
 
 ## Usage
 
+**New to this pipeline?** [`docs/running-g2mh.md`](docs/running-g2mh.md) is a runbook you
+can follow top to bottom — one-time setup, a chrY smoke test with the numbers to check
+against, then the full run. The rest of this section is reference material.
+
+### Reference
+
 ### Full Pipeline
 ```bash
 nextflow run main.nf -profile <cohort> --chroms <chromosomes> -resume
