@@ -1,29 +1,24 @@
-# Nextflow
+# macOS
+.DS_Store
+
+# Nextflow runtime
+work/
 .nextflow/
 .nextflow.log*
-work/
-output/
 reports/
+output/
+test_output/
 
-# Temp files
-tmp/
-old/
-
-# Large data files
-*.vcf.gz
-*.vcf.gz.tbi
-*.ped
-
-# Symlinks to external resources
-VEP_CACHE
-
-# Downloaded region BED files (fetched via scripts/download_region_tracks.sh)
-resources/repeats/
+# Large downloaded resources — fetched by scripts/download_*.sh, not versioned
+resources/regulatory/
 resources/regions/
 
-# Python
+# Containers are built by CI and pulled onto the cluster, never committed
+*.sif
+
+# Python bytecode
 __pycache__/
 *.pyc
 
-# Lock file (environment specific)
-python_env.txt
+# Downloaded region tracks
+resources/repeats/

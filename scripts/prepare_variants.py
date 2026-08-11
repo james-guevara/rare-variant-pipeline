@@ -2,7 +2,7 @@
 Prepare variants from split-VEP TSV output.
 
 1. Clean column names (strip CSQ prefix, rename (null) -> INFO)
-2. Extract per-allele INFO fields (AC, AF, AQ, MLEAC, MLEAF)
+2. Extract per-allele INFO fields (AC, AF, AQ, MLEAC, MLEAF, F_MISSING)
    (Sites are already biallelic — multi-allelics split upstream by bcftools norm -m-)
 3. Filter to rare variants (gnomAD4.1_joint_AF < threshold, default 0.01)
 4. Output: all rare variants TSV + BED, consequential TSV + BED
@@ -16,15 +16,14 @@ Region overlaps, constraint scores, and other annotations are handled downstream
 in the post-processing pipeline.
 """
 import polars as pl
-import polars_bio as pb
 import argparse
 import sys
 from pathlib import Path
 
-# polars_bio >=0.28 dropped the use_zero_based kwarg in favor of metadata-based
-# coordinate system detection. Our intervals are always 0-based (POS0/END from
-# bcftools +split-vep), so disable the check rather than tagging every DataFrame.
-pb.set_option(pb.POLARS_BIO_COORDINATE_SYSTEM_CHECK, "false")
+# NOTE polars_bio is imported lazily inside filter_regulatory(), the only place it
+# is used (--mode regulatory). It is a PyPI-only package with no prebuilt container,
+# so importing it at module level would make every run — including the common
+# coding/coding_and_utr modes that never touch it — depend on a niche wheel.
 
 CONSEQUENTIAL_IMPACTS = {"HIGH", "MODERATE"}
 CODING_PLUS_LOW_IMPACTS = {"HIGH", "MODERATE", "LOW"}
@@ -73,11 +72,19 @@ def strip_csq_from_info(lf: pl.LazyFrame) -> pl.LazyFrame:
 
 
 def extract_info_fields(lf: pl.LazyFrame) -> pl.LazyFrame:
-    """Extract per-allele INFO fields. Sites are already biallelic (split upstream)."""
-    info_fields = ["AC", "AF", "AQ", "MLEAC", "MLEAF"]
+    """Extract per-allele INFO fields. Sites are already biallelic (split upstream).
+
+    The key anchor is `(?:^|;)`: an unanchored `AC=([^;]+)` also matches the `AC=`
+    inside a longer INFO key, so any caller emitting e.g. a prefixed variant of a
+    count field can have its value picked up instead. Whether that happens depends
+    on field ordering (the leftmost match wins), which is not a guarantee, and
+    reading the wrong field would silently corrupt every downstream frequency
+    filter.
+    """
+    info_fields = ["AC", "AF", "AQ", "MLEAC", "MLEAF", "F_MISSING"]
 
     lf = lf.with_columns(
-        *[pl.col("INFO").str.extract(f"{field}=([^;]+)", 1)
+        *[pl.col("INFO").str.extract(f"(?:^|;){field}=([^;]+)", 1)
           .fill_null("NA").alias(field)
           for field in info_fields],
     )
@@ -103,6 +110,13 @@ def filter_regulatory(
     end_col: str = "END",
 ) -> pl.LazyFrame:
     """Keep only variants overlapping regulatory BED regions."""
+    # Imported here, not at module scope: see the note at the top of this file.
+    # polars_bio >=0.28 dropped the use_zero_based kwarg in favour of metadata-based
+    # coordinate detection. Our intervals are always 0-based (POS0/END from
+    # bcftools +split-vep), so disable the check rather than tagging every DataFrame.
+    import polars_bio as pb
+    pb.set_option(pb.POLARS_BIO_COORDINATE_SYSTEM_CHECK, "false")
+
     beds_path = Path(beds_dir)
 
     coords = lf.select([chrom_col, start_col, end_col]).unique().collect()

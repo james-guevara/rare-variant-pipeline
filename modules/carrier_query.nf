@@ -23,12 +23,16 @@ process CARRIER_QUERY {
     script:
     def af_cap = (params.max_cohort_af as Double) < 1.0 ? "INFO/AF<${params.max_cohort_af} && " : ""
     def filter_expr = "${af_cap}ALT!=\"*\" && GT=\"alt\""
+    // FORMAT/FT is the per-sample filter. Some callers put their genotype-level
+    // filtering there and leave the site-level FILTER constant, in which case FT is
+    // the only quality filter that varies and dropping it loses that information.
+    // Safe where the field is absent: bcftools prints '.'.
     """
     bcftools query \\
         -HH \\
         -R ${chunk_bed} \\
         -i '${filter_expr}' \\
-        -f '[%CHROM\\t%POS0\\t%END\\t%POS\\t%REF\\t%ALT\\t%SAMPLE\\t%GT\\t%GQ\\t%DP\\t%PL\\t%AD\\n]' \\
+        -f '[%CHROM\\t%POS0\\t%END\\t%POS\\t%REF\\t%ALT\\t%SAMPLE\\t%GT\\t%GQ\\t%DP\\t%PL\\t%AD\\t%FT\\n]' \\
         ${vcf} \\
         > ${chunk_bed.baseName}.carriers.tsv
     """
