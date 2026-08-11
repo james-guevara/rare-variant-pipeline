@@ -80,7 +80,7 @@ J=$(sbatch --parsable --dependency=afterok:$J -J export_chrY launch/run_stage.sh
 | normed records | 291,157 → **330,862** (+13.6% from splitting multiallelics) |
 | `mismatch_removed` in the norm log | **0** — anything else means a reference mismatch |
 | sites-only records | 330,862, **0 samples** |
-| final parquet | ~4,100 rows, **59 columns** |
+| D1 parquet | **4,123 rows**, **60 columns** (incl. `FT` and `F_MISSING`) |
 
 Verify rather than assume:
 
@@ -135,7 +135,6 @@ done
 
 Measured before the genotype-QC change (family propagation removed, fail-closed on
 missing values), so D2 may differ by a fraction of a percent. D1 counts are exact.
-
 
 ```
 source records                      996,414
