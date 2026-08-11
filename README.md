@@ -110,13 +110,14 @@ Only one of the three is currently reproducible from this repo.
 | Container | Provenance |
 |---|---|
 | `bcftools:1.22--h3a4d415_1` | Stock biocontainer. Recoverable: `docker://quay.io/biocontainers/bcftools:1.22--h3a4d415_1` |
-| `ensembl-vep_115.2--pl5321h2a3209d_1.with_samtools` | **Custom, no build recipe.** Built 2025-11-25 from a local sandbox (`bootstrap: localimage`, `from: vep_sandbox`). Contains VEP 115.2 plus samtools 1.22.1, bgzip, tabix and perl in `/usr/local/bin`. If the `.sif` is lost there is currently no documented way to rebuild it. |
+| `ensembl-vep_115.2--pl5321h2a3209d_1.with_samtools` | **Custom, no build recipe.** Built 2025-11-25 from a local sandbox (`bootstrap: localimage`, `from: vep_sandbox`). Contains VEP 115.2 plus samtools 1.22.1, bgzip, tabix and perl in `/usr/local/bin`. samtools is there because **LOFTEE requires it** — the plugin shells out to samtools for ancestral-allele lookups, so the stock VEP image is not sufficient. If the `.sif` is lost there is currently no documented way to rebuild it. |
 | `rare-variant-pipeline-python` | Built from this repo's `Dockerfile` by CI. |
 
 Both older images live in shared project space, so anyone with `sebat1` access can run
 the pipeline today. Making the VEP image reproducible — a `Dockerfile` starting from
 the `ensembl-vep:115.2--pl5321h2a3209d_1` biocontainer and adding samtools 1.22.1,
-built by the same CI workflow — is outstanding work. Note a rebuild would be
+built by the same CI workflow — is outstanding work, and may be superseded if the
+LOFTEE step is reimplemented (LOFTEE is the only reason samtools is needed). Note a rebuild would be
 *equivalent*, not bit-identical, so it should be validated by re-running a
 chromosome and comparing VEP output before being swapped in.
 
