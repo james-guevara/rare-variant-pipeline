@@ -5,7 +5,8 @@ process MERGE_ANNOTATIONS {
     cpus 1
     memory '16 GB'
     time '1h'
-    conda "${params.python_env}"
+
+    container "${params.python_container}"
 
     input:
     tuple val(chrom), path(carriers_tsv), path(consequential_tsv)

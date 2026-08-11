@@ -5,7 +5,8 @@ process PREPARE_VARIANTS {
     cpus 4
     memory '32 GB'
     time '4h'
-    conda "${params.python_env}"
+
+    container "${params.python_container}"
 
     input:
     tuple val(chrom), path(tsv)

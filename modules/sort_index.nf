@@ -6,6 +6,8 @@ process SORT_INDEX {
     memory '32 GB'
     time '2h'
 
+    container "${params.bcftools_container}"
+
     input:
     tuple val(chrom), path(merged_tsv)
 

@@ -6,6 +6,8 @@ process SCATTER_BED {
     memory '4 GB'
     time '30m'
 
+    container "${params.bcftools_container}"
+
     input:
     tuple val(chrom), path(bed)
 
