@@ -19,6 +19,15 @@ FROM python:3.12-slim
 LABEL org.opencontainers.image.source="https://github.com/james-guevara/rare-variant-pipeline"
 LABEL org.opencontainers.image.description="Python stages of the rare-variant pipeline (duckdb, polars, polars-bio)"
 
+# procps is required by Nextflow, not by any of our code: the task wrapper shells
+# out to `ps` to collect per-task metrics, and aborts the task if it is missing.
+# python:*-slim omits it, which fails every process with only
+# "Command 'ps' required by nextflow to collect task metrics cannot be found"
+# in .command.err and an empty .command.out — the script never runs at all.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends procps \
+ && rm -rf /var/lib/apt/lists/*
+
 RUN pip install --no-cache-dir \
         duckdb==1.5.2 \
         polars==1.39.3 \
@@ -27,6 +36,8 @@ RUN pip install --no-cache-dir \
 
 # Fail the build, not a 2-hour pipeline run, if a pin resolves to something that
 # lacks the API these scripts actually call.
+RUN command -v ps >/dev/null || { echo "procps missing — Nextflow needs ps"; exit 1; }
+
 RUN python - <<'PY'
 import duckdb, polars, polars_bio, pyarrow
 print("duckdb", duckdb.__version__, "| polars", polars.__version__,
