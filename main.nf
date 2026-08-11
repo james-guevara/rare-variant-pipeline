@@ -4,9 +4,15 @@ nextflow.enable.dsl=2
 // Rare Variant Pipeline - Modular Version
 // Run full pipeline or individual subworkflows with -entry
 
-include { VCF_PROCESSING } from './subworkflows/vcf_processing'
-include { FAMILY_PROCESSING } from './subworkflows/family_processing'
-include { MERGE_INDEX } from './subworkflows/merge_index'
+include { NORMALIZE } from './subworkflows/normalize'
+include { ANNOTATE } from './subworkflows/annotate'
+include { CARRIER_EXTRACTION } from './subworkflows/carrier_extraction'
+include { EXPORT } from './subworkflows/export'
+include { POSTPROCESS } from './subworkflows/postprocess'
+include { BCFTOOLS_SITES } from './modules/bcftools_sites'
+include { VEP_ANNOTATE } from './modules/vep_annotate'
+include { SPLIT_VEP } from './modules/split_vep'
+include { PREPARE_VARIANTS } from './modules/prepare_variants'
 
 // ============================================================================
 // Parameters
@@ -20,10 +26,26 @@ params.vcf_dir = "/expanse/projects/sebat1/s3/data/sebat/SSC_JG/gatk"
 params.vcf_pattern = "{chrom}.masked.vcf.gz"
 params.single_vcf = null  // null = per-chrom mode (default); set to VCF path for single-VCF mode
 
-// Variant filtering mode
-params.mode = "coding"           // "coding" (HIGH/MODERATE IMPACT) or "regulatory" (BED intersection)
-params.filter_repeats = false    // Exclude problematic regions before family genotyping
+// Input dialect — what the source caller actually stores. Consumed by BCFTOOLS_NORM.
+params.local_alleles = false  // DRAGEN msVCF: decode LAD/LPL/LAA -> AD/PL BEFORE splitting
+
+// Postprocessing (POSTPROCESS subworkflow). Wraps the DuckDB stage scripts.
+params.pp_cohort = null       // key into resources.json "cohorts"; defaults to profile below
+params.pp_resources = "${projectDir}/scripts/postprocess/resources.json"
+params.count_group_col = "tier"  // column PP_COUNT_CARRIERS stratifies by
+params.normed_vcf_dir = null  // if set, skip NORMALIZE and read per-chrom ${chrom}.norm.vcf.gz from this dir
+params.sites_vcf_dir = null   // for RUN_VEP_ONLY: read per-chrom ${chrom}.sites.vcf.gz from this dir
+params.vep_vcf_dir = null     // for RUN_SPLIT_VEP_ONLY: read per-chrom ${chrom}.vep.vcf.gz from this dir
+params.parquet_dir = null    // for RUN_POSTPROCESS: read per-chrom ${chrom}.merged.parquet from this dir
+params.split_vep_dir = null   // for RUN_PREPARE_VARIANTS_ONLY: read per-chrom ${chrom}.variants.tsv from this dir
+
+// Variant filtering
+params.mode = "coding"           // "coding", "regulatory", or "splicing"
+params.af_threshold = 0.01       // gnomAD AF threshold for rare filtering (in prepare_variants)
+params.cohort_af_threshold = 0.01  // Cohort AF threshold for pre-VEP filtering
+params.max_cohort_af = 1.0       // Cohort AF cap in PREPARE_VARIANTS (1.0 = no filter; set to 0.01 for rare-only)
 params.regulatory_beds = "${projectDir}/resources/regulatory"
+params.spliceai_threshold = 0.2
 
 // Family query settings
 params.regions_per_chunk = 1000
@@ -31,6 +53,7 @@ params.ped_file = "${projectDir}/resources/SPARK_iWGS_v1.1.ped"
 
 // Output
 params.outdir = "${projectDir}/output"
+params.tmpdir = "${params.outdir}/tmp"  // SORT_INDEX scratch; shared fs, never /tmp
 
 // Containers
 params.bcftools_container = "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/bcftools:1.22--h3a4d415_1"
@@ -44,12 +67,9 @@ params.resources_base = "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scr
 params.reference = "/expanse/projects/sebat1/j3guevar/GRCh38_reference_genome/GRCh38_full_analysis_set_plus_decoy_hla.fa"
 
 // Python scripts and resources
-params.reformat_script = "${projectDir}/reformat_variants.py"
-params.family_query_script = "${projectDir}/family_query.py"
-params.resolve_script = "${projectDir}/resolve_family_genotypes.py"
-params.merge_script = "${projectDir}/merge_genotypes_annotations.py"
+params.prepare_script = "${projectDir}/scripts/prepare_variants.py"
+params.merge_script = "${projectDir}/scripts/merge_genotypes_annotations.py"
 params.tsv_to_parquet_script = "${projectDir}/scripts/tsv_to_parquet.py"
-params.qc_filter_script = "${projectDir}/scripts/qc_filter.py"
 params.resources_dir = "${projectDir}/resources"
 
 // QC filter thresholds
@@ -73,6 +93,36 @@ def findIndex(vcf_path) {
     if (csi.exists()) return csi
     // Return .tbi path as default (will fail at runtime with clear error)
     return tbi
+}
+
+def buildNormedChannel(chroms_str, normed_dir) {
+    Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
+        def vcf_file = file("${normed_dir}/${chrom}.norm.vcf.gz")
+        def tbi_file = findIndex("${normed_dir}/${chrom}.norm.vcf.gz")
+        return tuple(chrom, vcf_file, tbi_file)
+    }
+}
+
+def buildSitesChannel(chroms_str, sites_dir) {
+    Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
+        def vcf_file = file("${sites_dir}/${chrom}.sites.vcf.gz")
+        def idx_file = findIndex("${sites_dir}/${chrom}.sites.vcf.gz")
+        return tuple(chrom, vcf_file, idx_file)
+    }
+}
+
+def buildSplitVepChannel(chroms_str, split_vep_dir) {
+    Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
+        return tuple(chrom, file("${split_vep_dir}/${chrom}.variants.tsv"))
+    }
+}
+
+def buildVepChannel(chroms_str, vep_dir) {
+    Channel.fromList(chroms_str.tokenize(',')).map { chrom ->
+        def vcf_file = file("${vep_dir}/${chrom}.vep.vcf.gz")
+        def tbi_file = file("${vep_dir}/${chrom}.vep.vcf.gz.tbi")
+        return tuple(chrom, vcf_file, tbi_file)
+    }
 }
 
 def buildInputChannel(chroms_str, vcf_dir, vcf_pattern) {
@@ -99,55 +149,111 @@ def buildInputChannel(chroms_str, vcf_dir, vcf_pattern) {
 // ============================================================================
 
 workflow {
-    // Build input channel
-    input_vcfs = buildInputChannel(params.chroms, params.vcf_dir, params.vcf_pattern)
+    // Get normalized VCFs: either run NORMALIZE, or read from normed_vcf_dir if provided
+    if (params.normed_vcf_dir) {
+        normed = buildNormedChannel(params.chroms, params.normed_vcf_dir)
+    } else {
+        input_vcfs = buildInputChannel(params.chroms, params.vcf_dir, params.vcf_pattern)
+        NORMALIZE(input_vcfs)
+        normed = NORMALIZE.out.norm_vcfs
+    }
 
-    // VCF Processing: Drop genotypes → VEP → Split → Reformat
-    VCF_PROCESSING(input_vcfs)
+    // VCF Processing: Sites-only → VEP → Split → Prepare
+    ANNOTATE(normed)
 
     // Family Processing: Scatter → Query → Gather → Resolve
-    FAMILY_PROCESSING(VCF_PROCESSING.out.consequential_bed, VCF_PROCESSING.out.input_vcfs)
+    CARRIER_EXTRACTION(ANNOTATE.out.consequential_bed, ANNOTATE.out.input_vcfs)
 
     // Merge and Index: Merge → Sort → Index
-    MERGE_INDEX(FAMILY_PROCESSING.out.resolved, VCF_PROCESSING.out.consequential)
+    EXPORT(CARRIER_EXTRACTION.out.carriers, ANNOTATE.out.consequential)
 }
 
 // ============================================================================
 // Entry points for individual subworkflows
 // ============================================================================
 
-workflow RUN_VCF_PROCESSING {
+workflow RUN_NORMALIZE {
     input_vcfs = buildInputChannel(params.chroms, params.vcf_dir, params.vcf_pattern)
-    VCF_PROCESSING(input_vcfs)
+    NORMALIZE(input_vcfs)
 }
 
-workflow RUN_FAMILY_PROCESSING {
-    // Requires outputs from VCF_PROCESSING
+workflow RUN_ANNOTATE {
+    // Reads normed VCFs from params.normed_vcf_dir, or from ${params.outdir}/norm by default
+    def normed_dir = params.normed_vcf_dir ?: "${params.outdir}/norm"
+    normed = buildNormedChannel(params.chroms, normed_dir)
+    ANNOTATE(normed)
+}
+
+workflow RUN_SITES_ONLY {
+    // Drop genotypes from normed VCFs to produce sites-only VCFs.
+    // Reads normed VCFs from params.normed_vcf_dir, or from ${params.outdir}/norm by default.
+    def normed_dir = params.normed_vcf_dir ?: "${params.outdir}/norm"
+    normed = buildNormedChannel(params.chroms, normed_dir)
+    BCFTOOLS_SITES(normed)
+}
+
+workflow RUN_VEP_ONLY {
+    // Run VEP annotation on pre-built sites-only VCFs.
+    // Reads sites VCFs from params.sites_vcf_dir, or from ${params.outdir}/sites by default.
+    def sites_dir = params.sites_vcf_dir ?: "${params.outdir}/sites"
+    sites = buildSitesChannel(params.chroms, sites_dir)
+    VEP_ANNOTATE(sites)
+}
+
+workflow RUN_SPLIT_VEP_ONLY {
+    // Expand the CSQ INFO field of VEP-annotated VCFs into a TSV via bcftools +split-vep.
+    // Reads VEP VCFs from params.vep_vcf_dir, or from ${params.outdir}/vep by default.
+    def vep_dir = params.vep_vcf_dir ?: "${params.outdir}/vep"
+    vep = buildVepChannel(params.chroms, vep_dir)
+    SPLIT_VEP(vep)
+}
+
+workflow RUN_PREPARE_VARIANTS_ONLY {
+    // Run only the PREPARE_VARIANTS step on existing SPLIT_VEP outputs.
+    // Reads per-chrom ${chrom}.variants.tsv from params.split_vep_dir, or
+    // from ${params.outdir}/split_vep by default.
+    def sv_dir = params.split_vep_dir ?: "${params.outdir}/split_vep"
+    sv = buildSplitVepChannel(params.chroms, sv_dir)
+    PREPARE_VARIANTS(sv)
+}
+
+workflow RUN_CARRIER_EXTRACTION {
+    // Requires outputs from NORMALIZE and ANNOTATE
     chroms = Channel.fromList(params.chroms.tokenize(','))
 
     consequential_bed = chroms.map { chrom ->
         tuple(chrom, file("${params.outdir}/reformat/${chrom}.consequential.bed"))
     }
 
-    input_vcfs = chroms.map { chrom ->
-        def vcf_path = params.vcf_pattern.replace('{chrom}', chrom)
-        tuple(chrom, file("${params.vcf_dir}/${vcf_path}"), file("${params.vcf_dir}/${vcf_path}.tbi"))
-    }
+    def normed_dir = params.normed_vcf_dir ?: "${params.outdir}/norm"
+    input_vcfs = buildNormedChannel(params.chroms, normed_dir)
 
-    FAMILY_PROCESSING(consequential_bed, input_vcfs)
+    CARRIER_EXTRACTION(consequential_bed, input_vcfs)
 }
 
-workflow RUN_MERGE_INDEX {
-    // Requires outputs from both VCF_PROCESSING and FAMILY_PROCESSING
+workflow RUN_EXPORT {
+    // Requires outputs from both ANNOTATE and CARRIER_EXTRACTION
     chroms = Channel.fromList(params.chroms.tokenize(','))
 
-    resolved = chroms.map { chrom ->
-        tuple(chrom, file("${params.outdir}/resolve/${chrom}.resolved_genotypes.tsv"))
+    carriers = chroms.map { chrom ->
+        tuple(chrom, file("${params.outdir}/carriers/${chrom}.carriers.tsv"))
     }
 
     consequential = chroms.map { chrom ->
         tuple(chrom, file("${params.outdir}/reformat/${chrom}.consequential.tsv"))
     }
 
-    MERGE_INDEX(resolved, consequential)
+    EXPORT(carriers, consequential)
+}
+
+workflow RUN_POSTPROCESS {
+    // Postprocessing on the pipeline's parquet output: region + genotype QC, gnomAD
+    // AF, dbNSFP scores, gene constraint, tiering, then per-sample tier counts.
+    // Reads per-chrom ${chrom}.merged.parquet from params.parquet_dir, or from
+    // ${params.outdir}/parquet by default.
+    def pq_dir = params.parquet_dir ?: "${params.outdir}/parquet"
+    parquets = Channel.fromList(params.chroms.tokenize(',')).map { chrom ->
+        tuple(chrom, file("${pq_dir}/${chrom}.merged.parquet"))
+    }
+    POSTPROCESS(parquets)
 }

@@ -1,9 +1,9 @@
-// Module: Drop genotypes from VCF (sites-only)
+// Module: Drop genotypes → sites-only VCF (for VEP)
 
-process BCFTOOLS_FILTER {
+process BCFTOOLS_SITES {
     tag "${chrom}"
     cpus 4
-    memory '16 GB'
+    memory '4 GB'
     time '8h'
     container "${params.bcftools_container}"
 
@@ -12,7 +12,6 @@ process BCFTOOLS_FILTER {
 
     output:
     tuple val(chrom), path("${chrom}.sites.vcf.gz"), path("${chrom}.sites.vcf.gz.csi"), emit: sites
-    tuple val(chrom), path(vcf), path(tbi), emit: input_vcf  // Pass through for family query
 
     script:
     """

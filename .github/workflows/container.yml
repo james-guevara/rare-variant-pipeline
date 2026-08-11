@@ -1,0 +1,69 @@
+name: build-python-container
+
+# Builds the Python-stages image and publishes it to GHCR.
+#
+# This exists because the cluster the pipeline runs on cannot build images: there is
+# no /etc/subuid mapping for user accounts, so `singularity build --fakeroot` is
+# refused, and the packages involved (duckdb, polars, polars-bio) have no prebuilt
+# biocontainer to pull. Building here keeps the image versioned alongside the code
+# that depends on it, so changing a pin is a reviewable commit.
+#
+# To consume the result on the cluster, in a JOB (a login node runs out of memory
+# during mksquashfs):
+#   singularity pull rvp_python.sif docker://ghcr.io/<owner>/rare-variant-pipeline-python:<tag>
+# See scripts/pull_python_container.sh.
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "Dockerfile"
+      - ".github/workflows/container.yml"
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Derive image tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/rare-variant-pipeline-python
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=sha,format=short
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          # linux/amd64 only: the cluster is x86_64. Building arm64 as well would
+          # double CI time for an image nothing runs on.
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Report versions in the built image
+        run: |
+          docker run --rm --platform linux/amd64 \
+            $(echo "${{ steps.meta.outputs.tags }}" | head -1) \
+            python -c "import duckdb, polars, polars_bio, pyarrow; \
+              print('duckdb', duckdb.__version__, 'polars', polars.__version__, \
+                    'polars_bio', polars_bio.__version__, 'pyarrow', pyarrow.__version__)"

@@ -4,7 +4,8 @@ process CONVERT_PARQUET {
     tag "${chrom}"
     memory '8 GB'
     time '1h'
-    conda "${params.python_env}"
+
+    container "${params.python_container}"
 
     input:
     tuple val(chrom), path(merged_tsv_gz), path(tbi)
