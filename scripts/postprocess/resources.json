@@ -1,0 +1,51 @@
+{
+  "regions_dir": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/rare_variant_pipeline/resources/regions",
+  "filter_beds": ["genomicSuperDups.bed", "simpleRepeat.bed"],
+  "rmsk_bed": "rmsk.bed",
+  "rmsk_drop_classes": ["Simple_repeat", "Low_complexity"],
+  "cohorts": {
+    "ssc": {
+      "input_dir": "/expanse/projects/sebat1/s3/data/sebat/fastvep/compare/e2e_all_chroms_ssc/output/parquet",
+      "ped": "/expanse/projects/sebat1/s3/data/sebat/nf_synthdnm_ssc/resources/SSC.psam"
+    },
+    "spark_wgs": {
+      "input_dir": "/expanse/projects/sebat1/s3/data/sebat/fastvep/compare/e2e_all_chroms_spark_wgs/output/parquet",
+      "ped": "/expanse/projects/sebat1/s3/data/sebat/nf_synthdnm_spark_wgs/resources/SPARK_WGS.psam"
+    },
+    "spark_wes": {
+      "input_dir": "/expanse/projects/sebat1/s3/data/sebat/fastvep/compare/e2e_all_chroms_spark_wes/output/parquet",
+      "ped": "/expanse/projects/sebat1/s3/data/sebat/nf_synthdnm_spark_wes/resources/SPARK_WES.psam"
+    },
+    "g2mh_wo_utrecht": {
+      "input_dir": "/expanse/projects/sebat1/s3/data/sebat/prepare_variants/g2mh_wo_utrecht/parquet",
+      "ped": "/expanse/projects/sebat1/s3/data/sebat/rare_variant_pipeline_g2mh_wo_utrecht/resources/g2mh_wo_utrecht.psam",
+      "pop_af_max": 0.01
+    },
+    "g2mh": {
+      "input_dir": "/expanse/projects/sebat1/s3/data/sebat/prepare_variants/g2mh/parquet",
+      "ped": "/expanse/projects/sebat1/s3/data/sebat/rare_variant_pipeline_g2mh/resources/g2mh.psam",
+      "pop_af_max": 0.01
+    }
+  },
+  "output_base": "/expanse/projects/sebat1/s3/data/sebat/rv_postprocessing_v3/outputs",
+  "dbnsfp_af_dir": "/expanse/projects/sebat1/s3/data/sebat/resources/dbNSFP/5.3.1a/parquet_scores_af",
+  "dbnsfp_scores_dir": "/expanse/projects/sebat1/s3/data/sebat/resources/dbNSFP/5.3.1a/parquet_expanded_mane_select",
+  "dnm_paths": {
+    "ssc": "/expanse/projects/sebat1/s3/data/sebat/nf_synthdnm_ssc/output/classification/universal_filtered.parquet",
+    "spark_wgs": "/expanse/projects/sebat1/s3/data/sebat/nf_synthdnm_spark_wgs/output/classification/universal_filtered_final.parquet",
+    "spark_wes": "/expanse/projects/sebat1/s3/data/sebat/nf_synthdnm_spark_wes/output/classification/universal_filtered_final.parquet"
+  },
+  "gnomad_constraint_tsv": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/gnomAD/constraint/gnomad.v4.1.constraint_metrics.tsv",
+  "genebayes_tsv": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/GeneBayes/output/Supplementary_Table_1.tsv",
+  "pop_af_filter": {
+    "column": "gnomAD4.1_joint_AF",
+    "max": 0.001
+  },
+  "qc": {
+    "min_gq": 20,
+    "min_dp": 10,
+    "het_ab_min": 0.25,
+    "het_ab_max": 0.75,
+    "hom_ab_min": 0.9
+  }
+}
