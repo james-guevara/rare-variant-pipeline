@@ -199,7 +199,7 @@ site (verified: 300,000/300,000 on raw chr22). The real per-sample quality signa
 `FORMAT/FT`, which the pipeline carries into the parquet — about 5% of carrier rows are
 flagged `DRAGENHardQUAL` or `LowDepth`.
 
-**Sample IDs are site-prefixed NDA GUIDs** (`886-NDARNY775ZM1`). To join phenotypes,
+**Sample IDs are site-prefixed NDA GUIDs** (form: `<site>-NDARXXXXXXXX`). To join phenotypes,
 strip the prefix and match `subjectkey` in
 `wgs/jointcall_dragen/genomics_sample03.txt`, which also carries `src_subject_id` (the
 original G2MH ID), `sex`, and `library_prep_batch`. That file duplicates its header
