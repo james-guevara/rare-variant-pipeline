@@ -185,11 +185,45 @@ pipeline reads a pedigree, so "family processing" only ever extracted carriers.
 | `--regions_per_chunk` | Regions per scatter chunk | `1000` |
 | `--trace_prefix` | Prefix for report files | `""` |
 | `--single_vcf` | Path to one whole-genome VCF; per-chrom extraction happens in `BCFTOOLS_NORM`. Leave null for per-chrom inputs | `null` |
+| `--target_bed` | Optional BED on the shared site filesystem. `BCFTOOLS_NORM` uses the source VCF index to extract these intervals before decoding, normalization, VEP, and carrier extraction. On AWS, place it on the same FSx mount visible to the controller and Batch workers. | `null` |
 | `--local_alleles` | Input stores local-allele FORMAT fields — see below | `false` |
 | `--pp_cohort` | Key into `scripts/postprocess/resources.json` `cohorts` | set per profile |
 | `--count_group_col` | Column `PP_COUNT_CARRIERS` stratifies by | `tier` |
 
 ### Input dialects (DRAGEN msVCF)
+
+### Targeted early extraction
+
+Set `--target_bed` to restrict processing at the first VCF operation. The source
+VCF must be bgzip-compressed and indexed. This is materially different from
+filtering after VEP: only records overlapping the BED are decoded, normalized,
+annotated, queried for carriers, and postprocessed.
+
+The BED is an optimization boundary, not a tier definition. Generate it from a
+versioned transcript annotation with enough exon/splice padding to preserve every
+variant that could receive the intended consequence, and validate a targeted run
+against an existing full run before treating it as equivalent. A BED can represent
+GeneBayes-eligible genes, a curated gene set, or their union.
+
+```bash
+python scripts/build_target_bed.py \
+  --genebayes GeneBayes.Supplementary_Table_1.tsv \
+  --gtf Homo_sapiens.GRCh38.115.gtf.gz \
+  --output targeted-lof-shet-ge-0.03.bed \
+  --min-post-mean 0.03 \
+  --padding 8 \
+  --add-chr-prefix
+
+nextflow run main.nf -profile <cohort> \
+  --chroms chr22 \
+  --target_bed /shared/resources/targeted-lof.v1.bed \
+  -resume
+```
+
+Use `--add-chr-prefix` only when the source VCF contigs are named `chr1`,
+`chr2`, and so on while the GTF uses `1`, `2`, and so on. A contig-name
+mismatch yields an empty extraction, so the smoke test must assert a nonzero
+record count.
 
 Callers differ in what they store per sample. Both flags below default to `false`,
 and with both off `BCFTOOLS_NORM` emits the original single-command form, so task

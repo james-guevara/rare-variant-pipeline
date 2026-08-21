@@ -29,7 +29,14 @@ process BCFTOOLS_NORM {
     //   rejected despite appearing in tag2tag's own --help.
     //
     def stages = []
-    stages << "bcftools view -r ${chrom} --threads ${task.cpus} -O u ${vcf}"
+    // With a target BED, use the source index to seek directly to target intervals.
+    // Putting `view -R` after a chromosome-wide streaming view would still decode
+    // the entire pVCF and defeat the optimization. The BED may contain all
+    // chromosomes; bcftools naturally returns only records present in this input.
+    def source_view = params.target_bed \
+        ? "bcftools view -R ${params.target_bed} --threads ${task.cpus} -O u ${vcf}" \
+        : "bcftools view -r ${chrom} --threads ${task.cpus} -O u ${vcf}"
+    stages << source_view
     if (params.local_alleles) {
         stages << "bcftools +tag2tag -O u -- --LXX-to-XX -r"
         // tag2tag -r removes LAD/LPL/LAA, but NOT the other local-allele-indexed

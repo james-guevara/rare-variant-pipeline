@@ -25,6 +25,11 @@ params.chroms = "chr22"
 params.vcf_dir = "/expanse/projects/sebat1/s3/data/sebat/SSC_JG/gatk"
 params.vcf_pattern = "{chrom}.masked.vcf.gz"
 params.single_vcf = null  // null = per-chrom mode (default); set to VCF path for single-VCF mode
+// Optional BED used for indexed early extraction before normalization. This is
+// deliberately a direct shared-filesystem path rather than a process input: very
+// large cohort VCFs and the BED live on the shared site filesystem (Expanse or
+// FSx) and must not be copied into each task work directory.
+params.target_bed = null
 
 // Input dialect — what the source caller actually stores. Consumed by BCFTOOLS_NORM.
 params.local_alleles = false  // DRAGEN msVCF: decode LAD/LPL/LAA -> AD/PL BEFORE splitting
