@@ -1,0 +1,20 @@
+{
+  "regions_dir": "/fsx/loftee-parity/resources/postprocess/g2mh-chr22/regions",
+  "filter_beds": ["genomicSuperDups.chr22.bed", "simpleRepeat.chr22.bed"],
+  "rmsk_bed": "rmsk.chr22.bed",
+  "rmsk_drop_classes": ["Simple_repeat", "Low_complexity"],
+  "cohorts": {
+    "g2mh": {
+      "input_dir": "."
+    }
+  },
+  "output_base": ".",
+  "dbnsfp_af_dir": "/fsx/loftee-parity/resources/postprocess/g2mh-chr22/dbnsfp-af",
+  "qc": {
+    "min_gq": 20,
+    "min_dp": 10,
+    "het_ab_min": 0.25,
+    "het_ab_max": 0.75,
+    "hom_ab_min": 0.9
+  }
+}

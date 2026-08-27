@@ -202,6 +202,9 @@ resource "aws_batch_job_definition" "targeted_chr22" {
       { name = "LOFTEE_ROOT", value = "/fsx/loftee-parity/resources" },
       { name = "GENEBAYES", value = "/fsx/loftee-parity/resources/targeted-annotation/GeneBayes.Supplementary_Table_1.tsv" },
       { name = "MISSENSE_CANDIDATES", value = "/fsx/loftee-parity/resources/targeted-annotation/inputs/g2mh.chr22.observed-missense-candidates.parquet" },
+      { name = "POSTPROCESS_CONFIG", value = "/fsx/loftee-parity/resources/postprocess/g2mh-chr22/config.json" },
+      { name = "POPULATION_AF_MAX", value = "0.01" },
+      { name = "COHORT_AF_MAX", value = "0.01" },
       { name = "RUN_ROOT", value = "/fsx/loftee-parity/workflows/g2mh/chr22-lof-full-fastvep-3bdb862" },
     ]
     resourceRequirements = [

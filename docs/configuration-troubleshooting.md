@@ -95,6 +95,20 @@ record transient scientific-result differences here.
 - **Prevention:** use task-specific variable names such as `job_state` and specify
   bash explicitly for bash-oriented operational snippets.
 
+### Saved AF configuration disagreed with validated output (2026-08-27)
+
+- **Symptom:** applying the JSON's `0.001` population-AF setting retained 945 rows,
+  while the saved prototype contained 1,151.
+- **Cause:** the exploratory JSON was stale. The prototype output proves the executed
+  rule was `gnomAD4.1_joint_AF < 0.01`, with nonnumeric `"."` values treated as
+  missing. A first implementation also recognized SQL null but not `"."`.
+- **Impact:** local/FSx comparison time only; no incorrect output was published and no
+  Batch job ran.
+- **Avoidable:** yes.
+- **Prevention:** scientific thresholds are explicit runtime variables and regression
+  metadata now pins expected counts. Missingness is tested via `TRY_CAST(...) IS NULL`.
+  Prefer validated output evidence over an unexecuted exploratory config file.
+
 ## Entry template
 
 For future incidents record: date, symptom, root cause, impact/cost, whether it was

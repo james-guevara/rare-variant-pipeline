@@ -15,6 +15,13 @@
     "miss_t3": 203,
     "miss_t4": 1100,
     "carrier_rows": 20425,
-    "carrier_samples": 1065
+    "carrier_samples": 1065,
+    "region_filtered_rows": 5448,
+    "genotype_qc_rows": 5287,
+    "population_af_eligible_rows": 1151,
+    "population_af_eligible_alleles": 843,
+    "burden_eligible_rows": 1107,
+    "burden_eligible_alleles": 841,
+    "burden_eligible_samples": 697
   }
 }

@@ -45,6 +45,13 @@ versioned exact regression gate, and the three missense outputs had zero row or 
 differences from the saved prototype. The run wrote `_SUCCESS` only after both
 branches completed.
 
+When `POSTPROCESS_CONFIG` is set, the missense branch continues through problematic
+regions, per-genotype QC, population-AF annotation, population eligibility, cohort-AF
+annotation, final burden eligibility, and per-sample tier counts. The annotation
+tables remain intact. Population eligibility defaults to
+`gnomAD4.1_joint_AF < 0.01` (missing passes), while final G2MH cohort eligibility
+defaults to `cohort_af < 0.01`; both thresholds are explicit runtime parameters.
+
 The script accepts environment-variable overrides for every deployment path. Its
 defaults describe the validated persistent-EC2/FSx test environment and are not a
 portable installation contract.

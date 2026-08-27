@@ -14,6 +14,9 @@ annotation_root=${ANNOTATION_ROOT:-$fastvep_root/ensembl-115}
 loftee_root=${LOFTEE_ROOT:-/fsx/loftee-parity/resources}
 genebayes=${GENEBAYES:-/home/ubuntu/work/standalone-loftee-test/port/GeneBayes.Supplementary_Table_1.tsv}
 missense_candidates=${MISSENSE_CANDIDATES:-}
+postprocess_config=${POSTPROCESS_CONFIG:-}
+population_af_max=${POPULATION_AF_MAX:-0.01}
+cohort_af_max=${COHORT_AF_MAX:-0.01}
 
 reference=$annotation_root/Homo_sapiens.GRCh38.dna.chromosome.22.fa
 ancestor=$loftee_root/loftee-grch38/human_ancestor.fa.gz
@@ -86,6 +89,14 @@ summary=$run_root/07.plof-tiered.genotype-summary.parquet
 missense_tiered=$run_root/06.missense-tiered.parquet
 missense_carriers=$run_root/07.missense-tiered.carriers.parquet
 missense_summary=$run_root/07.missense-tiered.genotype-summary.parquet
+missense_regions=$run_root/08.missense-region-filtered.parquet
+missense_qc=$run_root/09.missense-genotype-qc.parquet
+missense_pop_annotated=$run_root/10.missense-population-af-annotated.parquet
+missense_pop_eligible=$run_root/10.missense-population-af-eligible.parquet
+missense_cohort_annotated=$run_root/11.missense-cohort-af-annotated.parquet
+missense_burden_eligible=$run_root/11.missense-burden-eligible.parquet
+missense_counts=$run_root/12.missense-per-sample-counts.tsv
+missense_totals=$run_root/12.missense-tier-totals.tsv
 
 run_stage "$alleles" "$python" scripts/extract_zarr_target_alleles.py \
   --zarr "$zarr_store" --bed "$target_bed" --chrom chr22 --output "$alleles"
@@ -144,6 +155,42 @@ if test -n "$missense_candidates"; then
   fi
   test -s "$missense_carriers"
   test -s "$missense_summary"
+
+  if test -n "$postprocess_config"; then
+    test -r "$postprocess_config" || {
+      echo "ERROR: missing postprocess config: $postprocess_config" >&2
+      exit 1
+    }
+    run_stage "$missense_regions" "$python" scripts/postprocess/filter_regions.py \
+      --cohort g2mh --chrom chr22 --resources "$postprocess_config" \
+      --input "$missense_carriers" --output "$missense_regions"
+    run_stage "$missense_qc" "$python" scripts/postprocess/qc_genotype.py \
+      --cohort g2mh --chrom chr22 --resources "$postprocess_config" \
+      --input "$missense_regions" --output "$missense_qc"
+    run_stage "$missense_pop_annotated" "$python" scripts/postprocess/join_pop_af.py \
+      --cohort g2mh --chrom chr22 --resources "$postprocess_config" \
+      --input "$missense_qc" --output "$missense_pop_annotated"
+    run_stage "$missense_pop_eligible" "$python" scripts/apply_population_af_filter.py \
+      --input "$missense_pop_annotated" --output "$missense_pop_eligible" \
+      --column gnomAD4.1_joint_AF --max-af "$population_af_max"
+    if ! test -s "$missense_cohort_annotated" || ! test -s "$missense_burden_eligible"; then
+      "$python" scripts/apply_cohort_af_filter.py \
+        --input "$missense_pop_eligible" --allele-summary "$missense_summary" \
+        --max-af "$cohort_af_max" \
+        --annotated-output "$missense_cohort_annotated" \
+        --eligible-output "$missense_burden_eligible"
+    fi
+    test -s "$missense_cohort_annotated"
+    test -s "$missense_burden_eligible"
+    if ! test -s "$missense_counts" || ! test -s "$missense_totals"; then
+      "$python" scripts/postprocess/count_carriers.py \
+        --input "$missense_burden_eligible" --sample-col sample_id \
+        --group-col miss_tier --out-counts "$missense_counts" \
+        --out-totals "$missense_totals"
+    fi
+    test -s "$missense_counts"
+    test -s "$missense_totals"
+  fi
 fi
 
 touch "$run_root/_SUCCESS"
