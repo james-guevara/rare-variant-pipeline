@@ -81,6 +81,22 @@ the clean pre-patch upstream binary omitted three indel `HGVS_OFFSET` values, lo
 qualifying LoF indel, and returned two fewer carriers in this pilot. The forked source,
 not an untracked local binary, is therefore the reproducible annotation dependency.
 
+The full chr22 output can be checked with one command. It requires the new and
+validated run roots to be mounted in the same environment:
+
+```bash
+python scripts/validate_targeted_workflow_regression.py \
+  --new /path/to/new-run \
+  --reference /path/to/validated-run \
+  --expectations resources/g2mh-chr22-lof-regression.json
+```
+
+The check requires exact schemas and row multisets for the tiered-variant TSV,
+carrier Parquet, and genotype-summary Parquet. It also enforces the recorded allele,
+tier, carrier-row, and distinct-carrier counts. Any difference exits nonzero, making
+the command suitable for Batch validation or CI after the mounted reference fixture
+has been provisioned.
+
 ## Population and cohort AF contract
 
 - Keep `gnomAD4.1_joint_AF`, `gnomAD4.1_joint_POPMAX_AF`, and the other population
