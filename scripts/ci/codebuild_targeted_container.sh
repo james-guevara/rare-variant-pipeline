@@ -53,7 +53,7 @@ docker build \
   --label "org.opencontainers.image.revision=$GITHUB_SHA" \
   .
 
-docker run --rm --entrypoint /bin/bash "$IMAGE_URI" -lc '
+docker run --rm --entrypoint /bin/bash "$IMAGE_URI" -c '
   set -euo pipefail
   fastvep --version
   bcftools --version | head -n1
