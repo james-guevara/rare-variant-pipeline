@@ -1,5 +1,8 @@
 # Targeted AWS workflow
 
+Operational failures and their durable fixes are tracked in
+[`configuration-troubleshooting.md`](configuration-troubleshooting.md).
+
 This is the pre-release workflow for querying the lossless G2MH VCZ stores before
 annotation. It deliberately keeps scientific annotation separate from cohort-specific
 eligibility filtering.
