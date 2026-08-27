@@ -67,6 +67,20 @@ Expanse production run exactly for coordinates, samples, genotypes, genes, LOFTE
 GeneBayes scores and tiers. One consequence label gained the newer
 `splice_polypyrimidine_tract_variant` subcategory; it changed no tier or carrier.
 
+### Containerized Batch regression
+
+The 10-gene chr22 pilot (`259` intervals) was rerun through AWS Batch using image
+digest `sha256:1cdd3ec46e0e79739f210cc456b733bb366ec90853fa3ab822ac33b6fca491dc`.
+It selected `2,551` alleles and produced `13` qualifying LoF variants (`7` `lof_t1`,
+`6` `lof_t2`) and `1,262` carrier rows. All annotation fields for those variants and
+all carrier/genotype fields were exact matches to the corresponding subset of the
+validated full chr22 run.
+
+This regression also established that the forked FastVEP parity commit is required:
+the clean pre-patch upstream binary omitted three indel `HGVS_OFFSET` values, lost one
+qualifying LoF indel, and returned two fewer carriers in this pilot. The forked source,
+not an untracked local binary, is therefore the reproducible annotation dependency.
+
 ## Population and cohort AF contract
 
 - Keep `gnomAD4.1_joint_AF`, `gnomAD4.1_joint_POPMAX_AF`, and the other population
