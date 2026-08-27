@@ -26,8 +26,9 @@ portable installation contract.
 
 ## Container contract
 
-The targeted image contains FastVEP at the validated upstream commit, bcftools, the
-picker, standalone LOFTEE, Zarr/Arrow/DuckDB, and every pipeline script. Biological
+The targeted image contains FastVEP at the pinned `james-guevara/fastVEP` parity
+commit `3bdb862b3153a90ef8cca0b07f02f357a15a3eb0`, bcftools, the picker, standalone
+LOFTEE, Zarr/Arrow/DuckDB, and every pipeline script. Biological
 references remain mounted inputs so they can be versioned and cached independently.
 
 The default container paths are:

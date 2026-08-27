@@ -1,10 +1,11 @@
 FROM public.ecr.aws/docker/library/rust:1.89-bookworm AS fastvep-builder
 
-ARG FASTVEP_COMMIT=e593b77afbc190edf062330332ca0fb618eaf1a1
+ARG FASTVEP_REPOSITORY=https://github.com/james-guevara/fastVEP.git
+ARG FASTVEP_COMMIT=3bdb862b3153a90ef8cca0b07f02f357a15a3eb0
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates git \
     && rm -rf /var/lib/apt/lists/* \
-    && git clone https://github.com/Huang-lab/fastVEP.git /src/fastvep \
+    && git clone "${FASTVEP_REPOSITORY}" /src/fastvep \
     && git -C /src/fastvep checkout --detach "${FASTVEP_COMMIT}" \
     && cargo build --locked --release --manifest-path /src/fastvep/Cargo.toml \
     && /src/fastvep/target/release/fastvep --version
