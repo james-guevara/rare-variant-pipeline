@@ -280,8 +280,9 @@ One row per (consequential rare variant × carrier sample) with VEP annotations,
 
 **D2 — filtered, fully annotated variant × carrier table.**
 `RUN_POSTPROCESS` → `<outdir>/postprocess/filtered_annotated/<chrom>.filtered_annotated.parquet`.
-D1 after region filtering, genotype QC, the population-AF cap, dbNSFP scores and
-gene constraint, plus a `tier` column.
+D1 after region filtering, genotype QC, population-AF annotation, dbNSFP scores
+and gene constraint, plus a `tier` column. Population AF never removes rows in
+this stage; cohort-specific eligibility is a separate, explicit final output.
 
 **This is deliberately stratification-agnostic.** `tier_variants` *annotates* and
 does not filter, so untiered rows are retained. Tiering is only one way to slice the
