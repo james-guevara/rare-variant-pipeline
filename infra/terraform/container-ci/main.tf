@@ -89,6 +89,7 @@ resource "aws_codebuild_project" "targeted" {
       version = 0.2
       env = {
         "exported-variables" = ["IMAGE_URI", "IMAGE_DIGEST"]
+        shell                = "bash"
       }
       phases = {
         build = {
