@@ -109,6 +109,49 @@ record transient scientific-result differences here.
   metadata now pins expected counts. Missingness is tested via `TRY_CAST(...) IS NULL`.
   Prefer validated output evidence over an unexecuted exploratory config file.
 
+### Portable Nextflow config inherited legacy site defaults (2026-08-27)
+
+- **Symptom:** `nextflow config` for the local profile still showed Expanse Slurm,
+  Singularity, and module settings from the repository's legacy configuration.
+- **Cause:** lowercase `-c targeted.config` adds a config but still loads the default
+  `nextflow.config`.
+- **Impact:** configuration inspection only; no task was submitted.
+- **Avoidable:** yes.
+- **Prevention:** launch the portable controller with uppercase
+  `nextflow -C targeted.config`, which replaces the default config set. Documentation
+  and validation commands use only `-C`.
+
+### Nextflow manifest channel had the wrong input shape (2026-08-27)
+
+- **Symptom:** Nextflow 26.04.6 preview reported that `TARGETED_CHROMOSOME` expected two
+  inputs but received one.
+- **Cause:** a channel emitted a two-element tuple while the process declared two
+  independent input channels.
+- **Impact:** parser/preview time only; no executor or container started.
+- **Avoidable:** yes.
+- **Prevention:** declare a single `tuple path(...), path(...)` process input and run
+  `nextflow ... -preview` as a controller compilation check.
+
+### Generic worker lost its executable mode during rename (2026-08-27)
+
+- **Symptom:** the manifest preflight passed, then `execvpe` returned permission denied
+  for the generic worker.
+- **Cause:** the file move preserved its content but not the executable Git mode.
+- **Impact:** no-op runtime smoke only; `_SUCCESS` prevented scientific processing.
+- **Avoidable:** yes.
+- **Prevention:** preserve mode `100755`, smoke-test the packaged entry point, and let
+  CodeBuild test the command from the produced image.
+
+### Local Docker daemon was unavailable for controller validation (2026-08-27)
+
+- **Symptom:** `docker run nextflow/nextflow:26.04.6` could not connect to the local
+  daemon.
+- **Cause:** Docker Desktop/daemon was not running.
+- **Impact:** none; the host already had exact Nextflow 26.04.6 installed.
+- **Avoidable:** not relevant to scientific execution.
+- **Prevention:** validate controller syntax with the exact local Nextflow binary; do
+  not create another environment or start remote compute solely for a parser check.
+
 ## Entry template
 
 For future incidents record: date, symptom, root cause, impact/cost, whether it was

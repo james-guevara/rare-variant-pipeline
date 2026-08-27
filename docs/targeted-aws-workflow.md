@@ -2,6 +2,8 @@
 
 Operational failures and their durable fixes are tracked in
 [`configuration-troubleshooting.md`](configuration-troubleshooting.md).
+The environment-neutral manifest, binding, and executor contract is documented in
+[`portable-targeted-execution.md`](portable-targeted-execution.md).
 
 This is the pre-release workflow for querying the lossless G2MH VCZ stores before
 annotation. It deliberately keeps scientific annotation separate from cohort-specific
@@ -9,7 +11,8 @@ eligibility filtering.
 
 ## chr22 validated path
 
-`scripts/run_targeted_chr22_aws.sh` runs these checkpointed stages:
+`scripts/run_targeted_chromosome.sh` runs these checkpointed stages. The old
+`run_targeted_chr22_aws.sh` name remains only as a compatibility wrapper.
 
 1. Select exact ALT alleles from the sharded Zarr v3 store using target intervals.
 2. Emit a sites-only VCF while retaining `variant_index` and `alt_index` pointers.

@@ -62,6 +62,7 @@ docker run --rm --entrypoint /bin/bash "$IMAGE_URI" -c '
   python scripts/pick_fastvep_consequences.py --help >/dev/null
   python scripts/select_missense_candidates.py --help >/dev/null
   python scripts/apply_population_af_filter.py --help >/dev/null
+  python scripts/run_targeted_manifest.py --help >/dev/null
 '
 
 docker push "$IMAGE_URI"

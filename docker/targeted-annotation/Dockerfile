@@ -50,4 +50,4 @@ ENV PATH="/opt/rvp/.venv/bin:/opt/fastvep:${PATH}" \
     RUN_ROOT="/output"
 
 ENTRYPOINT []
-CMD ["/opt/rvp/scripts/run_targeted_chr22_aws.sh"]
+CMD ["/opt/rvp/scripts/run_targeted_chromosome.sh"]
