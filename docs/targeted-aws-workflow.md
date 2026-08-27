@@ -37,6 +37,14 @@ across all 1,065 samples. The versioned branch reproduced the prototype exactly 
 all selected-variant, carrier, and genotype-summary columns. Its pinned counts and
 candidate-input checksum are in `resources/g2mh-chr22-missense-regression.json`.
 
+The combined branch was subsequently run from a fresh directory through AWS Batch
+job definition revision 2 using container digest
+`sha256:d752c78fba93cf104d4ce8a3b49a65702b88c0a7262dbb6f020b5dfd5511a8c0`.
+Scientific processing completed in about 31 seconds. The LoF outputs passed the
+versioned exact regression gate, and the three missense outputs had zero row or schema
+differences from the saved prototype. The run wrote `_SUCCESS` only after both
+branches completed.
+
 The script accepts environment-variable overrides for every deployment path. Its
 defaults describe the validated persistent-EC2/FSx test environment and are not a
 portable installation contract.

@@ -85,6 +85,16 @@ record transient scientific-result differences here.
 - **Prevention:** verify the recorded host/process and confirm no active Terraform run
   before force-unlocking. Never force-unlock solely because a lock is inconvenient.
 
+### Polling variable collided with a zsh reserved parameter (2026-08-27)
+
+- **Symptom:** a local status loop stopped with `read-only variable: status`.
+- **Cause:** `status` is a reserved parameter in zsh, although the same variable name
+  is ordinary in bash.
+- **Impact:** the polling command alone stopped; the Batch job continued unaffected.
+- **Avoidable:** yes.
+- **Prevention:** use task-specific variable names such as `job_state` and specify
+  bash explicitly for bash-oriented operational snippets.
+
 ## Entry template
 
 For future incidents record: date, symptom, root cause, impact/cost, whether it was
