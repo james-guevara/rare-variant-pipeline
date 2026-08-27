@@ -1,0 +1,31 @@
+{
+  "description": "Validated G2MH chr21 portable targeted workflow regression",
+  "reference_build": "GRCh38",
+  "annotation_release": "Ensembl 115",
+  "container_digest": "sha256:b50b57dd2ce83ff98963dc2b1451472284da79dcb6509fedd5d75886e1fd9cb6",
+  "target_bed_sha256": "36739f6aefaa1e95b93ea43d12f1928e6740d72bdb45d15e309fa544a00ce159",
+  "missense_candidates_sha256": "0b04a64845a688767b7d88a2176aab52a2c25d9183ef8f09cc423c675dc8336a",
+  "expected_counts": {
+    "target_intervals": 2639,
+    "targeted_alleles": 13790,
+    "plof_rows": 163,
+    "lof_t1": 5,
+    "lof_t2": 25,
+    "qualifying_lof": 30,
+    "lof_carrier_rows": 2188,
+    "lof_carrier_samples": 1065,
+    "observed_missense_candidates": 539,
+    "selected_missense": 510,
+    "missense_carrier_rows": 2835,
+    "region_filtered_rows": 1098,
+    "genotype_qc_rows": 953,
+    "population_af_eligible_rows": 423,
+    "burden_eligible_rows": 417,
+    "burden_eligible_alleles": 341,
+    "burden_eligible_samples": 338,
+    "final_miss_t1_rows": 0,
+    "final_miss_t2_rows": 3,
+    "final_miss_t3_rows": 22,
+    "final_miss_t4_rows": 392
+  }
+}
