@@ -1,0 +1,61 @@
+# Targeted AWS workflow
+
+This is the pre-release workflow for querying the lossless G2MH VCZ stores before
+annotation. It deliberately keeps scientific annotation separate from cohort-specific
+eligibility filtering.
+
+## chr22 validated path
+
+`scripts/run_targeted_chr22_aws.sh` runs these checkpointed stages:
+
+1. Select exact ALT alleles from the sharded Zarr v3 store using target intervals.
+2. Emit a sites-only VCF while retaining `variant_index` and `alt_index` pointers.
+3. Normalize against the Ensembl 115 chromosome FASTA.
+4. Stream FastVEP output directly into the VEP-compatible transcript picker.
+5. Run the independently tested standalone LOFTEE implementation.
+6. Join GeneBayes and assign `lof_t1` (`post_mean >= 0.18`) or `lof_t2`
+   (`0.03 <= post_mean < 0.18`). There is no LoF tier 3.
+7. Recover genotypes and carriers from the unchanged Zarr arrays.
+8. Apply problematic-region and genotype QC.
+9. Annotate population and cohort AF. Filtering, if requested, is a separately named
+   final eligibility output.
+
+The script accepts environment-variable overrides for every deployment path. Its
+defaults describe the validated persistent-EC2/FSx test environment and are not a
+portable installation contract.
+
+## Validation completed
+
+On G2MH chr22, the integrated FastVEP/picker/standalone-LOFTEE branch processed
+28,966 targeted alleles. It produced 53 qualifying LoF alleles before region/QC/cohort
+eligibility. The qualifying TSV was byte-identical to the earlier AWS canonical result.
+
+Using the historical G2MH final eligibility rule (`cohort AF < 0.01`) solely as a
+regression test produced 38 carrier rows across 19 variants, matching the August 2026
+Expanse production run exactly for coordinates, samples, genotypes, genes, LOFTEE,
+GeneBayes scores and tiers. One consequence label gained the newer
+`splice_polypyrimidine_tract_variant` subcategory; it changed no tier or carrier.
+
+## Population and cohort AF contract
+
+- Keep `gnomAD4.1_joint_AF`, `gnomAD4.1_joint_POPMAX_AF`, and the other population
+  fields as annotations.
+- Do not use MANE Select as an inclusion filter. It is only part of transcript picking.
+- Calculate cohort AC/AN/AF and retain the annotation-complete table.
+- If an analysis chooses a cohort threshold, emit a second explicitly eligible table.
+
+## chrX and chrY are not finalized
+
+The VCF-to-Zarr conversion is lossless for chrX and chrY, but autosomal carrier QC must
+not be reused blindly. Before enabling them in production, define and test:
+
+- sample sex/karyotype source and handling of unknown or discordant sex;
+- PAR versus non-PAR intervals for the exact GRCh38 reference;
+- haploid, diploid and potential aneuploid genotype interpretation;
+- sex-aware AC/AN/AF denominators and missingness;
+- allele-balance rules for haploid calls;
+- chrY inclusion for samples expected to carry Y sequence;
+- whether burden models analyze PAR, non-PAR X and Y separately.
+
+Until those decisions are encoded and regression-tested, chrX/chrY stores are valid
+query inputs but their variants must not enter the autosomal QC/counting workflow.

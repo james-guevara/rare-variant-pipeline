@@ -58,6 +58,29 @@ class BuildTargetBedTest(unittest.TestCase):
             )
             self.assertEqual(output.read_text(), "chr22\t100\t110\n")
 
+    def test_optional_gene_allowlist_limits_selected_genes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            genebayes = tmp / "genebayes.tsv"
+            genebayes.write_text(
+                "ensg\tpost_mean\nENSG000001\t0.20\nENSG000002\t0.10\n"
+            )
+            allowlist = tmp / "genes.txt"
+            allowlist.write_text("ENSG000002\n")
+            gtf = tmp / "genes.gtf"
+            gtf.write_text(
+                'chr22\ttest\texon\t101\t110\t.\t+\t.\tgene_id "ENSG000001";\n'
+                'chr22\ttest\texon\t201\t210\t.\t+\t.\tgene_id "ENSG000002";\n'
+            )
+            output = tmp / "target.bed"
+            subprocess.run(
+                [sys.executable, str(SCRIPT), "--genebayes", str(genebayes),
+                 "--gtf", str(gtf), "--output", str(output), "--padding", "0",
+                 "--gene-ids", str(allowlist)],
+                check=True, capture_output=True, text=True,
+            )
+            self.assertEqual(output.read_text(), "chr22\t200\t210\n")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -114,6 +114,11 @@ def main() -> int:
     parser.add_argument("--gtf", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--min-post-mean", type=float, default=0.03)
+    parser.add_argument(
+        "--gene-ids",
+        type=Path,
+        help="optional newline-delimited Ensembl gene allowlist",
+    )
     parser.add_argument("--features", default="exon",
                         help="comma-separated GTF features (default: exon)")
     parser.add_argument("--padding", type=int, default=8,
@@ -135,6 +140,13 @@ def main() -> int:
     chromosomes = {c.strip() for c in args.chroms.split(",") if c.strip()} or None
 
     genes = selected_genes(args.genebayes, args.min_post_mean)
+    if args.gene_ids:
+        allowed = {
+            unversioned(line.strip())
+            for line in args.gene_ids.read_text().splitlines()
+            if line.strip() and not line.startswith("#")
+        }
+        genes.intersection_update(allowed)
     if not genes:
         raise SystemExit("No genes met the GeneBayes threshold")
     intervals, observed = gtf_intervals(
