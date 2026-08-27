@@ -37,12 +37,15 @@ required=(
 for path in "${required[@]}"; do
   test -r "$path" || { echo "ERROR: missing input: $path" >&2; exit 1; }
 done
-command -v uv >/dev/null
 command -v bcftools >/dev/null
 
 cd "$repo"
-uv sync --frozen
-python=$repo/.venv/bin/python
+python=${RVP_PYTHON:-$repo/.venv/bin/python}
+if ! test -x "$python"; then
+  command -v uv >/dev/null
+  uv sync --frozen
+fi
+test -x "$python"
 
 run_stage() {
   local output=$1

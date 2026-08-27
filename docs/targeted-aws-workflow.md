@@ -24,6 +24,36 @@ The script accepts environment-variable overrides for every deployment path. Its
 defaults describe the validated persistent-EC2/FSx test environment and are not a
 portable installation contract.
 
+## Container contract
+
+The targeted image contains FastVEP at the validated upstream commit, bcftools, the
+picker, standalone LOFTEE, Zarr/Arrow/DuckDB, and every pipeline script. Biological
+references remain mounted inputs so they can be versioned and cached independently.
+
+The default container paths are:
+
+- `/inputs/chr22.sharded-v3.zarr`
+- `/inputs/targets.chr22.bed`
+- `/resources/ensembl-115/` (GFF3, transcript cache, FASTA, picker tables)
+- `/resources/loftee/` (ancestor FASTA, GERP BigWig, conservation and transcript DBs)
+- `/resources/GeneBayes.Supplementary_Table_1.tsv`
+- `/output/`
+
+Example Docker invocation:
+
+```bash
+docker run --rm \
+  -v /path/to/inputs:/inputs:ro \
+  -v /path/to/resources:/resources:ro \
+  -v /path/to/output:/output \
+  ghcr.io/james-guevara/rare-variant-pipeline-targeted:<immutable-tag>
+```
+
+Singularity/Apptainer uses the same contract with bind mounts. Remote schedulers need
+only an OCI/SIF runtime, sufficient CPU/memory, these mounted resources, and writable
+output storage; they do not need Python, Rust, FastVEP, bcftools or `uv` installed on
+the host.
+
 ## Validation completed
 
 On G2MH chr22, the integrated FastVEP/picker/standalone-LOFTEE branch processed
