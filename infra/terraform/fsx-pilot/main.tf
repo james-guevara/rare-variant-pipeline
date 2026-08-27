@@ -187,4 +187,36 @@ resource "aws_batch_job_definition" "vcz_conversion_32" {
   }
 }
 
+resource "aws_batch_job_definition" "targeted_chr22" {
+  name                  = "rare-variant-targeted-chr22"
+  type                  = "container"
+  platform_capabilities = ["EC2"]
+
+  container_properties = jsonencode({
+    image      = var.targeted_annotation_image
+    jobRoleArn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/ecsInstanceRole"
+    environment = [
+      { name = "ZARR_STORE", value = "/fsx/rare-variant-pilot/g2mh-vcz-v3/v1/chr22.sharded-v3.zarr" },
+      { name = "TARGET_BED", value = "/fsx/loftee-parity/resources/targeted-annotation/inputs/lof-plus-missense-candidates.chr22.bed" },
+      { name = "ANNOTATION_ROOT", value = "/fsx/loftee-parity/resources/targeted-annotation/ensembl-115" },
+      { name = "LOFTEE_ROOT", value = "/fsx/loftee-parity/resources" },
+      { name = "GENEBAYES", value = "/fsx/loftee-parity/resources/targeted-annotation/GeneBayes.Supplementary_Table_1.tsv" },
+      { name = "RUN_ROOT", value = "/fsx/loftee-parity/workflows/g2mh/chr22-lof-full-fastvep-3bdb862" },
+    ]
+    resourceRequirements = [
+      { type = "VCPU", value = "4" },
+      { type = "MEMORY", value = "16384" },
+    ]
+    volumes = [{
+      name = "fsx"
+      host = { sourcePath = "/fsx" }
+    }]
+    mountPoints = [{
+      sourceVolume  = "fsx"
+      containerPath = "/fsx"
+      readOnly      = false
+    }]
+  })
+}
+
 data "aws_caller_identity" "current" {}

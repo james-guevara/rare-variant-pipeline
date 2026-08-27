@@ -72,6 +72,11 @@ variable "vcz_batch_image" {
   type        = string
 }
 
+variable "targeted_annotation_image" {
+  description = "Immutable ECR image digest used by the targeted FastVEP/LOFTEE workflow."
+  type        = string
+}
+
 variable "batch_instance_types" {
   description = "EC2 instance types allowed for 16-, 32-, and 64-vCPU VCZ conversion jobs."
   type        = list(string)

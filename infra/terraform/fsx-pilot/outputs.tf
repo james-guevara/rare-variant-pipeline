@@ -47,3 +47,8 @@ output "vcz_batch_conversion_32_job_definition" {
   description = "Thirty-two-worker VCZ conversion job definition ARN."
   value       = aws_batch_job_definition.vcz_conversion_32.arn
 }
+
+output "targeted_chr22_job_definition" {
+  description = "Fork-pinned FastVEP/LOFTEE chr22 job definition ARN."
+  value       = aws_batch_job_definition.targeted_chr22.arn
+}
