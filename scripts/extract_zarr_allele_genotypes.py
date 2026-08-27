@@ -109,6 +109,8 @@ def main():
             for sample_index in carrier_indexes.tolist():
                 genotype = gt[sample_index]
                 genotype_called = called[sample_index]
+                called_ploidy = int(genotype_called.sum())
+                sample_alt_dosage = int(dosage[sample_index])
                 separator = "|" if (
                     phased_chunk is not None and phased_chunk[local_index, sample_index]
                 ) else "/"
@@ -167,7 +169,21 @@ def main():
                     "GT": gt_text,
                     "AD": ad_text,
                     "genotype": gt_text,
-                    "alt_dosage": int(dosage[sample_index]),
+                    # QC must use these mask-derived values, never the spelling
+                    # of GT. Fixed-width stores may render a haploid call as
+                    # `1/.`, while another source may render the same call as
+                    # `1` or `./1`.
+                    "called_ploidy": called_ploidy,
+                    "alt_dosage": sample_alt_dosage,
+                    "is_heterozygous": (
+                        called_ploidy == 2 and sample_alt_dosage == 1
+                    ),
+                    "is_homozygous_alt": (
+                        called_ploidy == 2 and sample_alt_dosage == 2
+                    ),
+                    "is_hemizygous_alt": (
+                        called_ploidy == 1 and sample_alt_dosage == 1
+                    ),
                     "GQ": int(gq_chunk[local_index, sample_index]) if gq_chunk is not None else None,
                     "DP": int(dp_chunk[local_index, sample_index]) if dp_chunk is not None else None,
                 })
