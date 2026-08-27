@@ -1,4 +1,4 @@
-FROM rust:1.89-bookworm AS fastvep-builder
+FROM public.ecr.aws/docker/library/rust:1.89-bookworm AS fastvep-builder
 
 ARG FASTVEP_COMMIT=e593b77afbc190edf062330332ca0fb618eaf1a1
 RUN apt-get update \
@@ -11,7 +11,7 @@ RUN apt-get update \
 
 FROM ghcr.io/astral-sh/uv:0.12.5 AS uv
 
-FROM python:3.12-slim-bookworm
+FROM public.ecr.aws/docker/library/python:3.12-slim-bookworm
 
 LABEL org.opencontainers.image.source="https://github.com/james-guevara/rare-variant-pipeline"
 LABEL org.opencontainers.image.description="Targeted Zarr, FastVEP, picker, standalone LOFTEE, and carrier workflow"
