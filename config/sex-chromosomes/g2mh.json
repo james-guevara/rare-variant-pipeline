@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "cohort": "g2mh",
+  "reference_build": "GRCh38",
+  "calibration_status": "validated-on-g2mh-vcz-v3",
+  "regions": {
+    "x_nonpar": {
+      "start": 50000000,
+      "end": 100000000
+    },
+    "y_discriminating": {
+      "start": 3000000,
+      "end": 5000000
+    },
+    "autosome_baseline": {
+      "chromosome": "chr22",
+      "start": 20000000,
+      "end": 40000000
+    }
+  },
+  "thresholds": {
+    "x_haploid_rate_min": 0.8,
+    "x_diploid_rate_min": 0.8,
+    "y_present_call_rate_min": 0.5,
+    "y_absent_call_rate_max": 0.2,
+    "xx_x_autosome_dp_ratio_min": 0.75,
+    "xx_x_autosome_dp_ratio_max": 1.25,
+    "xy_x_autosome_dp_ratio_min": 0.3,
+    "xy_x_autosome_dp_ratio_max": 0.7
+  },
+  "notes": [
+    "The chrY 11-13 Mb block is non-discriminating in G2MH and must not be used.",
+    "Raw chrY depth is diagnostic only until a uniquely mappable chrY mask is validated."
+  ]
+}

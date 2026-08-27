@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "reference_build": "GRCh38",
+  "coordinate_system": "1-based-inclusive",
+  "pseudoautosomal_regions": {
+    "chrX": [
+      {
+        "name": "PAR1",
+        "start": 10001,
+        "end": 2781479
+      },
+      {
+        "name": "PAR2",
+        "start": 155701383,
+        "end": 156030895
+      }
+    ],
+    "chrY": [
+      {
+        "name": "PAR1",
+        "start": 10001,
+        "end": 2781479
+      },
+      {
+        "name": "PAR2",
+        "start": 56887903,
+        "end": 57217415
+      }
+    ]
+  },
+  "par_canonical_representation": "chrX"
+}

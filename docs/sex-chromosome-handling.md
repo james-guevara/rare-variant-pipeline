@@ -29,6 +29,7 @@ Run:
 
 ```bash
 python scripts/audit_sex_chromosome_ploidy.py \
+  --config config/sex-chromosomes/g2mh.json \
   --x-zarr /path/to/chrX.sharded-v3.zarr \
   --y-zarr /path/to/chrY.sharded-v3.zarr \
   --autosome-zarr /path/to/chr22.sharded-v3.zarr \
@@ -79,3 +80,8 @@ separates Y-supported and Y-absent G2MH samples.
 The current G2MH chrY primary-contig store contains no PAR1 or PAR2 variants, so
 there is no duplicate PAR burden in the existing data. This is an observed
 dataset property, not a portable assumption.
+
+Reference-build PAR coordinates are stored separately in
+`resources/grch38-sex-chromosome-regions.json`. Inference windows and thresholds
+are cohort calibration in `config/sex-chromosomes/g2mh.json`; they are not global
+defaults and must be recalibrated or validated for each additional cohort.
