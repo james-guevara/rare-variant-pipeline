@@ -152,6 +152,50 @@ record transient scientific-result differences here.
 - **Prevention:** validate controller syntax with the exact local Nextflow binary; do
   not create another environment or start remote compute solely for a parser check.
 
+### Expanse curl lacked a newer retry option (2026-08-27)
+
+- **Symptom:** the `ind-shared` resource-staging job failed before its first upload
+  because `curl` did not recognize `--retry-all-errors`.
+- **Cause:** that option was added after the curl release installed on Expanse.
+- **Impact:** no object was uploaded and no scientific processing ran; the job failed
+  immediately after its region-subset preparation.
+- **Avoidable:** yes.
+- **Prevention:** staging uses the older portable `--retry 5` interface. Preflight
+  future transfer scripts with the destination site's actual command versions.
+
+### FSx import task used an abbreviated operation name (2026-08-27)
+
+- **Symptom:** AWS rejected a metadata import request with `Request failed validation`.
+- **Cause:** the FSx API enum is `IMPORT_METADATA_FROM_REPOSITORY`, not the informal
+  abbreviation `IMPORT_METADATA`.
+- **Impact:** none; validation failed before a task was created.
+- **Avoidable:** yes.
+- **Prevention:** copy operation enums from `aws fsx create-data-repository-task help`
+  or a prior successful task instead of abbreviating them in operational commands.
+
+### Expanse required explicit Slurm task and node counts (2026-08-27)
+
+- **Symptom:** the Expanse bank-limit plugin rejected a small `ind-shared` job first
+  for a missing task count and then for a missing node count.
+- **Cause:** Expanse requires both `--nodes` and `--ntasks` even when CPU and memory
+  requests otherwise imply a single-node, single-task job.
+- **Impact:** none; both submissions were rejected before scheduling.
+- **Avoidable:** yes.
+- **Prevention:** all Expanse submission templates explicitly specify `--nodes=1`
+  and `--ntasks=1`, in addition to CPUs and memory.
+
+### Bare Perl bypassed the VEP image's module directory (2026-08-27)
+
+- **Symptom:** the transcript-priority exporter could not load
+  `Bio::EnsEMBL::Attribute` inside the VEP 115 image.
+- **Cause:** the image exposes `/usr/local/bin/perl`, but helper scripts do not inherit
+  `/usr/local/share/ensembl-vep-115.2-1` in `PERL5LIB` automatically.
+- **Impact:** a short metadata job failed before producing output; no chromosome
+  workflow ran.
+- **Avoidable:** yes.
+- **Prevention:** the exporter declares the packaged VEP module directory explicitly,
+  with `VEP_PERL5LIB` available for images using a different installation path.
+
 ## Entry template
 
 For future incidents record: date, symptom, root cause, impact/cost, whether it was

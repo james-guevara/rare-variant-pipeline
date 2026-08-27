@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "cohort": "g2mh",
+  "chromosome": "chr1",
+  "contig": "1",
+  "contig_length": 248956422,
+  "reference_build": "GRCh38",
+  "annotation_release": "Ensembl 115",
+  "thresholds": {
+    "population_af_max": 0.01,
+    "cohort_af_max": 0.01
+  },
+  "qc": {
+    "min_gq": 20,
+    "min_dp": 10,
+    "het_ab_min": 0.25,
+    "het_ab_max": 0.75,
+    "hom_ab_min": 0.9
+  },
+  "resources": {
+    "zarr_store": {
+      "kind": "directory",
+      "sentinel": "zarr.json"
+    },
+    "target_bed": {
+      "kind": "file",
+      "sha256": "f5cc727bd14a4ee0e07484ac3686113216917aafa68818b5c5ca498bc4fe32ee"
+    },
+    "annotation_root": {
+      "kind": "directory",
+      "sentinel": "Homo_sapiens.GRCh38.115.chr1.gff3.fastvep.cache"
+    },
+    "loftee_root": {
+      "kind": "directory",
+      "sentinel": "ensembl-115/chr1.transcripts.sqlite"
+    },
+    "genebayes": {
+      "kind": "file"
+    },
+    "missense_candidates": {
+      "kind": "file",
+      "sha256": "ce929e45bb7aa9372ac0755683ce7cde01b329dc278ae1030c6106a70e49219e"
+    },
+    "postprocess_config": {
+      "kind": "file",
+      "sha256": "0c13d15f38462c9a060624b4db8e1d8fd6eb4a327daaebc01fb16f0378197243"
+    }
+  }
+}
