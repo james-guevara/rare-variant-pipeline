@@ -60,6 +60,7 @@ docker run --rm --entrypoint /bin/bash "$IMAGE_URI" -c '
   python -c "import duckdb, pyarrow, pyBigWig, pysam, zarr"
   python scripts/run_standalone_loftee.py --help >/dev/null
   python scripts/pick_fastvep_consequences.py --help >/dev/null
+  python scripts/select_missense_candidates.py --help >/dev/null
 '
 
 docker push "$IMAGE_URI"

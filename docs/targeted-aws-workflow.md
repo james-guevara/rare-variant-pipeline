@@ -20,9 +20,29 @@ eligibility filtering.
 9. Annotate population and cohort AF. Filtering, if requested, is a separately named
    final eligibility output.
 
+If `MISSENSE_CANDIDATES` points to the cohort-observed candidate Parquet generated
+from dbNSFP, the same run also joins those candidates to the VEP-picked rows, retains
+only candidates whose selected transcript is a `missense_variant` in the candidate
+gene, assigns `miss_t1` through `miss_t4`, and recovers their carriers. Candidate
+scores use the maximum available dbNSFP rank score rather than MANE-only coverage;
+MANE remains a transcript-picking priority, not an inclusion filter.
+
+The G2MH chr22 prototype started with 1,443 observed dbNSFP candidates and retained
+1,330 (92.2%) after selected-transcript validation: 6 `miss_t1`, 21 `miss_t2`,
+203 `miss_t3`, and 1,100 `miss_t4`. Genotype recovery produced 20,425 carrier rows
+across all 1,065 samples. The versioned branch reproduced the prototype exactly over
+all selected-variant, carrier, and genotype-summary columns. Its pinned counts and
+candidate-input checksum are in `resources/g2mh-chr22-missense-regression.json`.
+
 The script accepts environment-variable overrides for every deployment path. Its
 defaults describe the validated persistent-EC2/FSx test environment and are not a
 portable installation contract.
+
+Each submission must use a fresh `RUN_ROOT`. The runner performs a write/delete
+preflight before scientific work, preserves nonempty stage checkpoints for retries,
+and writes `_SUCCESS` only after every enabled branch completes. Resubmitting an
+already successful run root is an idempotent no-op; completed directories are never
+extended with additional branches.
 
 ## Container contract
 

@@ -13,6 +13,7 @@ fastvep_root=${FASTVEP_ROOT:-/home/ubuntu/work/fastvep-runtime}
 annotation_root=${ANNOTATION_ROOT:-$fastvep_root/ensembl-115}
 loftee_root=${LOFTEE_ROOT:-/fsx/loftee-parity/resources}
 genebayes=${GENEBAYES:-/home/ubuntu/work/standalone-loftee-test/port/GeneBayes.Supplementary_Table_1.tsv}
+missense_candidates=${MISSENSE_CANDIDATES:-}
 
 reference=$annotation_root/Homo_sapiens.GRCh38.dna.chromosome.22.fa
 ancestor=$loftee_root/loftee-grch38/human_ancestor.fa.gz
@@ -26,6 +27,19 @@ consequence_ranks=$annotation_root/vep115.consequence-ranks.tsv
 fastvep=$fastvep_root/fastvep
 
 mkdir -p "$run_root"
+if ! test -w "$run_root"; then
+  echo "ERROR: run root is not writable: $run_root" >&2
+  exit 1
+fi
+write_probe="$run_root/.write-test.$$"
+if ! touch "$write_probe" || ! rm -f "$write_probe"; then
+  echo "ERROR: run root failed write/delete preflight: $run_root" >&2
+  exit 1
+fi
+if test -f "$run_root/_SUCCESS"; then
+  printf 'workflow\tALREADY_SUCCEEDED\trun_root=%s\n' "$run_root"
+  exit 0
+fi
 exec > >(tee -a "$run_root/workflow.log") 2>&1
 
 required=(
@@ -69,6 +83,9 @@ plof_all=$run_root/06.plof-genebayes.tsv
 plof_tiered=$run_root/06.plof-tiered.tsv
 carriers=$run_root/07.plof-tiered.carriers.parquet
 summary=$run_root/07.plof-tiered.genotype-summary.parquet
+missense_tiered=$run_root/06.missense-tiered.parquet
+missense_carriers=$run_root/07.missense-tiered.carriers.parquet
+missense_summary=$run_root/07.missense-tiered.genotype-summary.parquet
 
 run_stage "$alleles" "$python" scripts/extract_zarr_target_alleles.py \
   --zarr "$zarr_store" --bed "$target_bed" --chrom chr22 --output "$alleles"
@@ -112,4 +129,22 @@ fi
 test -s "$carriers"
 test -s "$summary"
 
+if test -n "$missense_candidates"; then
+  test -r "$missense_candidates" || {
+    echo "ERROR: missing missense candidates: $missense_candidates" >&2
+    exit 1
+  }
+  run_stage "$missense_tiered" "$python" scripts/select_missense_candidates.py \
+    --picked "$picked" --candidates "$missense_candidates" \
+    --output "$missense_tiered"
+  if ! test -s "$missense_carriers" || ! test -s "$missense_summary"; then
+    "$python" scripts/extract_zarr_allele_genotypes.py --zarr "$zarr_store" \
+      --alleles "$missense_tiered" --carriers-output "$missense_carriers" \
+      --summary-output "$missense_summary"
+  fi
+  test -s "$missense_carriers"
+  test -s "$missense_summary"
+fi
+
+touch "$run_root/_SUCCESS"
 printf 'workflow\tSUCCEEDED\trun_root=%s\n' "$run_root"

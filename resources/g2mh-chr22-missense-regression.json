@@ -1,0 +1,19 @@
+{
+  "description": "Validated G2MH chr22 selected-transcript missense regression",
+  "reference_build": "GRCh38",
+  "annotation_release": "Ensembl 115",
+  "dbnsfp_release": "5.3.1a",
+  "fastvep_commit": "3bdb862b3153a90ef8cca0b07f02f357a15a3eb0",
+  "candidate_input_sha256": "49d644571d1f9f2ea31b275984e609280c7129be962f9edd7140ef4379f00ea5",
+  "expected_counts": {
+    "observed_candidates": 1443,
+    "selected_missense": 1330,
+    "rejected_selected_consequence": 113,
+    "miss_t1": 6,
+    "miss_t2": 21,
+    "miss_t3": 203,
+    "miss_t4": 1100,
+    "carrier_rows": 20425,
+    "carrier_samples": 1065
+  }
+}
