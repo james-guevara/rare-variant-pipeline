@@ -52,6 +52,18 @@ tables remain intact. Population eligibility defaults to
 `gnomAD4.1_joint_AF < 0.01` (missing passes), while final G2MH cohort eligibility
 defaults to `cohort_af < 0.01`; both thresholds are explicit runtime parameters.
 
+AWS Batch revision 3 validated this complete path with container digest
+`sha256:01da69fcf6a3aca8518d35ecaeab89a0495f274a1a1495681eadddb710c70637`.
+All five downstream Parquet outputs had exact schemas and row multisets relative to
+the prototype, and both count TSVs were byte-identical. The final product contains
+1,107 carrier rows across 841 alleles and 697 samples. `_SUCCESS` was written after
+all upstream and downstream checks completed.
+
+This targeted Batch runner currently invokes no Nextflow runtime. When it is promoted
+to chromosome-wide Nextflow orchestration, use the existing environment's exact
+controller pin `nextflow/nextflow:26.04.6`; do not rely on the broader repository's
+open-ended `>=25.10.0` constraint.
+
 The script accepts environment-variable overrides for every deployment path. Its
 defaults describe the validated persistent-EC2/FSx test environment and are not a
 portable installation contract.

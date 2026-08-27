@@ -5,6 +5,7 @@
   "dbnsfp_release": "5.3.1a",
   "fastvep_commit": "3bdb862b3153a90ef8cca0b07f02f357a15a3eb0",
   "container_digest": "sha256:d752c78fba93cf104d4ce8a3b49a65702b88c0a7262dbb6f020b5dfd5511a8c0",
+  "downstream_container_digest": "sha256:01da69fcf6a3aca8518d35ecaeab89a0495f274a1a1495681eadddb710c70637",
   "candidate_input_sha256": "49d644571d1f9f2ea31b275984e609280c7129be962f9edd7140ef4379f00ea5",
   "expected_counts": {
     "observed_candidates": 1443,
