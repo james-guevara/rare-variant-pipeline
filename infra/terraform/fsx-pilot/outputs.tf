@@ -52,3 +52,8 @@ output "targeted_chr22_job_definition" {
   description = "Fork-pinned FastVEP/LOFTEE chr22 job definition ARN."
   value       = aws_batch_job_definition.targeted_chr22.arn
 }
+
+output "targeted_portable_job_definition" {
+  description = "Generic manifest-driven targeted workflow job definition ARN."
+  value       = aws_batch_job_definition.targeted_portable.arn
+}

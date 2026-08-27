@@ -1,0 +1,55 @@
+{
+  "jobDefinitionName": "rare-variant-targeted-portable",
+  "type": "container",
+  "parameters": {
+    "manifest": "/fsx/loftee-parity/resources/manifests/g2mh-chr22.json",
+    "bindings": "/fsx/loftee-parity/resources/manifests/aws-g2mh-chr22.json",
+    "run_root": "/fsx/loftee-parity/workflows/g2mh/portable-default"
+  },
+  "containerProperties": {
+    "image": "640838474376.dkr.ecr.us-east-1.amazonaws.com/rare-variant-pipeline-targeted@sha256:b50b57dd2ce83ff98963dc2b1451472284da79dcb6509fedd5d75886e1fd9cb6",
+    "command": [
+      "python",
+      "/opt/rvp/scripts/run_targeted_manifest.py",
+      "--manifest",
+      "Ref::manifest",
+      "--bindings",
+      "Ref::bindings",
+      "--run-root",
+      "Ref::run_root"
+    ],
+    "jobRoleArn": "arn:aws:iam::640838474376:role/ecsInstanceRole",
+    "resourceRequirements": [
+      {
+        "type": "VCPU",
+        "value": "4"
+      },
+      {
+        "type": "MEMORY",
+        "value": "16384"
+      }
+    ],
+    "volumes": [
+      {
+        "name": "fsx",
+        "host": {
+          "sourcePath": "/fsx"
+        }
+      }
+    ],
+    "mountPoints": [
+      {
+        "sourceVolume": "fsx",
+        "containerPath": "/fsx",
+        "readOnly": false
+      }
+    ]
+  },
+  "platformCapabilities": [
+    "EC2"
+  ],
+  "tags": {
+    "Project": "rare-variant-pipeline",
+    "ManagedBy": "Terraform-compatible"
+  }
+}

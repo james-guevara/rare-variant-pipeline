@@ -223,4 +223,40 @@ resource "aws_batch_job_definition" "targeted_chr22" {
   })
 }
 
+resource "aws_batch_job_definition" "targeted_portable" {
+  name                  = "rare-variant-targeted-portable"
+  type                  = "container"
+  platform_capabilities = ["EC2"]
+
+  parameters = {
+    manifest = "/fsx/loftee-parity/resources/manifests/g2mh-chr22.json"
+    bindings = "/fsx/loftee-parity/resources/manifests/aws-g2mh-chr22.json"
+    run_root = "/fsx/loftee-parity/workflows/g2mh/portable-default"
+  }
+
+  container_properties = jsonencode({
+    image      = var.targeted_annotation_image
+    jobRoleArn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/ecsInstanceRole"
+    command = [
+      "python", "/opt/rvp/scripts/run_targeted_manifest.py",
+      "--manifest", "Ref::manifest",
+      "--bindings", "Ref::bindings",
+      "--run-root", "Ref::run_root",
+    ]
+    resourceRequirements = [
+      { type = "VCPU", value = "4" },
+      { type = "MEMORY", value = "16384" },
+    ]
+    volumes = [{
+      name = "fsx"
+      host = { sourcePath = "/fsx" }
+    }]
+    mountPoints = [{
+      sourceVolume  = "fsx"
+      containerPath = "/fsx"
+      readOnly      = false
+    }]
+  })
+}
+
 data "aws_caller_identity" "current" {}

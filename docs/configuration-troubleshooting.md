@@ -196,6 +196,30 @@ record transient scientific-result differences here.
 - **Prevention:** the exporter declares the packaged VEP module directory explicitly,
   with `VEP_PERL5LIB` available for images using a different installation path.
 
+### Targeted Terraform refresh did not converge promptly (2026-08-27)
+
+- **Symptom:** a one-resource targeted plan remained in provider refresh for several
+  minutes without producing a plan.
+- **Cause:** the AWS provider process was active, but the existing pilot state has
+  enough drift and remote dependencies that even a target-scoped refresh was slow.
+- **Impact:** local waiting only; the plan was read-only and was cancelled before any
+  infrastructure mutation.
+- **Avoidable:** partly.
+- **Prevention:** keep the generic job definition in Terraform, but retain an exact
+  checked-in AWS registration document for time-sensitive validation. Reconcile the
+  API-created revision into Terraform state separately from scientific execution.
+
+### AWS Batch rejected manual scale-down (2026-08-27)
+
+- **Symptom:** setting an idle managed compute environment's `desiredvCpus` from 16
+  back to zero returned `Manually scaling down compute environment is not supported`.
+- **Cause:** AWS Batch permits a desired-capacity increase but owns downward scaling.
+- **Impact:** none beyond the normal idle scale-down interval; `minvCpus` remained zero.
+- **Avoidable:** yes.
+- **Prevention:** use a temporary desired-capacity increase only to accelerate cold
+  starts, then allow Batch to return to `minvCpus=0` automatically. Do not disconnect
+  a healthy queue merely to force immediate scale-down.
+
 ## Entry template
 
 For future incidents record: date, symptom, root cause, impact/cost, whether it was
