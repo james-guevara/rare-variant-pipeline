@@ -28,6 +28,15 @@
     "xy_x_autosome_dp_ratio_min": 0.3,
     "xy_x_autosome_dp_ratio_max": 0.7
   },
+  "aneuploidy_triage_thresholds": {
+    "one_x_dp_ratio_min": 0.3,
+    "one_x_dp_ratio_max": 0.7,
+    "two_x_dp_ratio_min": 0.75,
+    "two_x_dp_ratio_max": 1.25,
+    "y_present_call_rate_min": 0.5,
+    "y_absent_call_rate_max": 0.2,
+    "excess_y_dp_ratio_min": 0.75
+  },
   "notes": [
     "The chrY 11-13 Mb block is non-discriminating in G2MH and must not be used.",
     "Raw chrY depth is diagnostic only until a uniquely mappable chrY mask is validated."

@@ -54,6 +54,20 @@ It should be compared with authoritative cohort metadata when that becomes
 available. Ambiguous and depth-discordant samples must remain visible rather
 than being silently forced into a binary category.
 
+For non-diagnostic triage of ambiguous or discordant samples, run:
+
+```bash
+python scripts/interpret_sex_chromosome_qc.py \
+  --audit g2mh.inferred-karyotype.tsv \
+  --config config/sex-chromosomes/g2mh.json \
+  --output g2mh.sex-chromosome-qc.tsv
+```
+
+The added copy-number evidence patterns are screening flags, not clinical
+karyotypes. Ambiguous samples receive `sex_chromosome_analysis_eligible=0` by
+default. In particular, excess raw chrY depth is only a prompt for orthogonal
+review until a uniquely mappable chrY mask has been validated.
+
 The chrX/autosome median-DP ratio is a strong independent signal in G2MH:
 approximately 1.0 for XX-like samples and 0.5 for XY-like samples. Raw chrY depth
 is inflated by repetitive/multicopy mapping and is diagnostic only; it is not a
