@@ -85,3 +85,19 @@ def test_manifest_preflight_rejects_site_qc_drift(tmp_path: Path):
     )
     assert result.returncode != 0
     assert "postprocess QC differs" in result.stderr
+
+
+def test_sex_chromosome_manifest_requires_qc_and_par_resources(tmp_path: Path):
+    manifest, bindings = _fixture(tmp_path)
+    science = json.loads(manifest.read_text())
+    science["chromosome"] = "chrX"
+    science["contig"] = "X"
+    science["contig_length"] = 156040895
+    manifest.write_text(json.dumps(science))
+    result = subprocess.run(
+        [sys.executable, str(SCRIPT), "--manifest", str(manifest),
+         "--bindings", str(bindings), "--preflight-only", "--skip-runtime-checks"],
+        capture_output=True, text=True,
+    )
+    assert result.returncode != 0
+    assert "sex-chromosome manifest requires resources" in result.stderr

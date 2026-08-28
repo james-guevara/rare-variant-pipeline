@@ -20,6 +20,8 @@ ENVIRONMENT_KEYS = {
     "genebayes": "GENEBAYES",
     "missense_candidates": "MISSENSE_CANDIDATES",
     "postprocess_config": "POSTPROCESS_CONFIG",
+    "sample_sex_qc": "SAMPLE_SEX_QC",
+    "sex_chromosome_regions": "SEX_CHROMOSOME_REGIONS",
 }
 REQUIRED_RESOURCES = {
     "zarr_store", "target_bed", "annotation_root", "loftee_root", "genebayes"
@@ -129,6 +131,14 @@ def resolve(manifest: dict, bindings: dict) -> tuple[dict[str, str], list[str]]:
             raise ValueError(
                 "postprocess QC differs from the scientific manifest: "
                 f"expected={expected_qc} observed={postprocess.get('qc')}"
+            )
+    if chromosome in {"chrX", "chrY"}:
+        required_sex = {"SAMPLE_SEX_QC", "SEX_CHROMOSOME_REGIONS"}
+        missing_sex = sorted(required_sex - environment.keys())
+        if missing_sex:
+            raise ValueError(
+                "sex-chromosome manifest requires resources: "
+                + ",".join(missing_sex)
             )
     return environment, observations
 

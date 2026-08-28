@@ -68,6 +68,23 @@ karyotypes. Ambiguous samples receive `sex_chromosome_analysis_eligible=0` by
 default. In particular, excess raw chrY depth is only a prompt for orthogonal
 review until a uniquely mappable chrY mask has been validated.
 
+Carrier rows are retained and annotated before burden collapse:
+
+```bash
+python scripts/annotate_sex_chromosome_carriers.py \
+  --input chrX.carriers.parquet \
+  --sample-qc g2mh.sex-chromosome-qc.tsv \
+  --regions resources/grch38-sex-chromosome-regions.json \
+  --output chrX.carriers.sex-qc.parquet
+```
+
+`burden_count_available` preserves ambiguous non-PAR counts for QC and
+sensitivity analysis. `primary_analysis_eligible` and
+`frequency_denominator_eligible` remain false for those rows. This separation
+prevents uncertainty about karyotype from destroying observed burden data or
+silently entering the primary test. Noncanonical chrY PAR records are retained
+for provenance but have `burden_count_available=false` to prevent double counts.
+
 The chrX/autosome median-DP ratio is a strong independent signal in G2MH:
 approximately 1.0 for XX-like samples and 0.5 for XY-like samples. Raw chrY depth
 is inflated by repetitive/multicopy mapping and is diagnostic only; it is not a

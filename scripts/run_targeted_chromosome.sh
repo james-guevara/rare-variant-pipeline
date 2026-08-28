@@ -21,6 +21,8 @@ loftee_root=$LOFTEE_ROOT
 genebayes=$GENEBAYES
 missense_candidates=${MISSENSE_CANDIDATES:-}
 postprocess_config=${POSTPROCESS_CONFIG:-}
+sample_sex_qc=${SAMPLE_SEX_QC:-}
+sex_chromosome_regions=${SEX_CHROMOSOME_REGIONS:-}
 population_af_max=${POPULATION_AF_MAX:-0.01}
 cohort_af_max=${COHORT_AF_MAX:-0.01}
 cohort=${COHORT:-g2mh}
@@ -38,6 +40,18 @@ transcript_cache=$gff3.fastvep.cache
 transcript_priority=$annotation_root/vep115.$chromosome.transcript-priority.tsv
 consequence_ranks=$annotation_root/vep115.consequence-ranks.tsv
 fastvep=$fastvep_root/fastvep
+sex_chromosome=0
+if test "$chromosome" = chrX || test "$chromosome" = chrY; then
+  sex_chromosome=1
+  test -r "$sample_sex_qc" || {
+    echo "ERROR: sex chromosome requires SAMPLE_SEX_QC" >&2
+    exit 1
+  }
+  test -r "$sex_chromosome_regions" || {
+    echo "ERROR: sex chromosome requires SEX_CHROMOSOME_REGIONS" >&2
+    exit 1
+  }
+fi
 
 mkdir -p "$run_root"
 if ! test -w "$run_root"; then
@@ -95,9 +109,11 @@ loftee=$run_root/05.loftee.tsv
 plof_all=$run_root/06.plof-genebayes.tsv
 plof_tiered=$run_root/06.plof-tiered.tsv
 carriers=$run_root/07.plof-tiered.carriers.parquet
+carriers_raw=$run_root/07.plof-tiered.carriers.raw.parquet
 summary=$run_root/07.plof-tiered.genotype-summary.parquet
 missense_tiered=$run_root/06.missense-tiered.parquet
 missense_carriers=$run_root/07.missense-tiered.carriers.parquet
+missense_carriers_raw=$run_root/07.missense-tiered.carriers.raw.parquet
 missense_summary=$run_root/07.missense-tiered.genotype-summary.parquet
 missense_regions=$run_root/08.missense-region-filtered.parquet
 missense_qc=$run_root/09.missense-genotype-qc.parquet
@@ -143,10 +159,17 @@ fi
 test -s "$plof_all"
 test -s "$plof_tiered"
 
-if ! test -s "$carriers" || ! test -s "$summary"; then
+extract_carriers=$carriers
+if test "$sex_chromosome" = 1; then extract_carriers=$carriers_raw; fi
+if ! test -s "$extract_carriers" || ! test -s "$summary"; then
   "$python" scripts/extract_zarr_allele_genotypes.py --zarr "$zarr_store" \
-    --alleles "$plof_tiered" --carriers-output "$carriers" \
+    --alleles "$plof_tiered" --carriers-output "$extract_carriers" \
     --summary-output "$summary"
+fi
+if test "$sex_chromosome" = 1; then
+  run_stage "$carriers" "$python" scripts/annotate_sex_chromosome_carriers.py \
+    --input "$carriers_raw" --sample-qc "$sample_sex_qc" \
+    --regions "$sex_chromosome_regions" --output "$carriers"
 fi
 test -s "$carriers"
 test -s "$summary"
@@ -159,10 +182,19 @@ if test -n "$missense_candidates"; then
   run_stage "$missense_tiered" "$python" scripts/select_missense_candidates.py \
     --picked "$picked" --candidates "$missense_candidates" \
     --output "$missense_tiered"
-  if ! test -s "$missense_carriers" || ! test -s "$missense_summary"; then
+  extract_missense_carriers=$missense_carriers
+  if test "$sex_chromosome" = 1; then
+    extract_missense_carriers=$missense_carriers_raw
+  fi
+  if ! test -s "$extract_missense_carriers" || ! test -s "$missense_summary"; then
     "$python" scripts/extract_zarr_allele_genotypes.py --zarr "$zarr_store" \
-      --alleles "$missense_tiered" --carriers-output "$missense_carriers" \
+      --alleles "$missense_tiered" --carriers-output "$extract_missense_carriers" \
       --summary-output "$missense_summary"
+  fi
+  if test "$sex_chromosome" = 1; then
+    run_stage "$missense_carriers" "$python" scripts/annotate_sex_chromosome_carriers.py \
+      --input "$missense_carriers_raw" --sample-qc "$sample_sex_qc" \
+      --regions "$sex_chromosome_regions" --output "$missense_carriers"
   fi
   test -s "$missense_carriers"
   test -s "$missense_summary"
@@ -194,10 +226,14 @@ if test -n "$missense_candidates"; then
     test -s "$missense_cohort_annotated"
     test -s "$missense_burden_eligible"
     if ! test -s "$missense_counts" || ! test -s "$missense_totals"; then
+      count_eligibility=()
+      if test "$sex_chromosome" = 1; then
+        count_eligibility=(--eligibility-col primary_analysis_eligible)
+      fi
       "$python" scripts/postprocess/count_carriers.py \
         --input "$missense_burden_eligible" --sample-col sample_id \
         --group-col miss_tier --out-counts "$missense_counts" \
-        --out-totals "$missense_totals"
+        --out-totals "$missense_totals" "${count_eligibility[@]}"
     fi
     test -s "$missense_counts"
     test -s "$missense_totals"
