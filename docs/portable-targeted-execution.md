@@ -77,6 +77,25 @@ bindings and regressions, and both portable runner CLIs under SingularityPRO 4.1
 Set `SINGULARITYENV_OPENBLAS_NUM_THREADS=1` and
 `SINGULARITYENV_OMP_NUM_THREADS=1` for scientific runs.
 
+### Shared Expanse resources
+
+Canonical pipeline paths live under:
+
+```text
+/expanse/projects/sebat1/resources/rare-variant-pipeline/
+```
+
+The hierarchy separates reference builds, Ensembl releases, LOFTEE, GeneBayes,
+dbNSFP, problematic regions, cohort Zarr/candidates/QC, containers, and manifests.
+Directories are owned by `jsebat-group` with setgid mode `2775`. Stable paths may be
+symlinks to validated existing data initially; consumers use only the canonical path,
+so backing files can later be consolidated without editing scientific manifests.
+
+G2MH chr22 was validated through this hierarchy on both AWS and Expanse. The current
+container produced identical final LoF and missense rows across systems, passing 35
+count assertions and 10 canonical hashes. Its combined contract is
+`resources/g2mh-chr22-targeted-regression.json`.
+
 ## Adding another environment
 
 1. Make the immutable scientific container accessible to the site's runtime.

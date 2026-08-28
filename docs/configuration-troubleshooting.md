@@ -109,6 +109,18 @@ record transient scientific-result differences here.
   metadata now pins expected counts. Missingness is tested via `TRY_CAST(...) IS NULL`.
   Prefer validated output evidence over an unexecuted exploratory config file.
 
+### Historical chr22 fixture disagreed with the current container (2026-08-28)
+
+- **Symptom:** the current AWS and Expanse runs both retained 5,291 missense rows
+  after genotype QC and 1,111 after cohort eligibility, while the old split fixture
+  expected 5,287 and 1,107.
+- **Cause:** the split chr22 missense fixture described an earlier downstream
+  container. It was not an AWS-versus-Expanse difference.
+- **Evidence:** fresh current-container runs matched at every stage and across five
+  LoF plus five missense canonical hashes.
+- **Prevention:** use the combined `g2mh-chr22-targeted-regression.json`; the older
+  split fixture is explicitly marked superseded.
+
 ### Portable Nextflow config inherited legacy site defaults (2026-08-27)
 
 - **Symptom:** `nextflow config` for the local profile still showed Expanse Slurm,
