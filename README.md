@@ -137,6 +137,26 @@ for user accounts, so `singularity build --fakeroot` is refused — hence CI.
 
 ## Usage
 
+### Reusable targeted workflow
+
+`targeted.nf` remains the standalone entrypoint, but is now a thin wrapper around
+the named DSL2 workflow in `workflows/targeted_manifest.nf`:
+
+```nextflow
+include { TARGETED_MANIFEST_WORKFLOW } from './workflows/targeted_manifest'
+
+workflow {
+    TARGETED_MANIFEST_WORKFLOW()
+}
+```
+
+The named workflow uses the same manifest, environment bindings, container,
+preflight, and run-root parameters as the standalone command and emits
+`execution_receipt`. A future cohort-level parent workflow can therefore invoke
+the rare-variant and PGS branches independently and join their participant-level
+tables only after both branches complete. Scheduler and container-runtime settings
+remain site-specific configuration rather than part of the scientific workflow.
+
 **New to this pipeline?** [`docs/running-g2mh.md`](docs/running-g2mh.md) is a runbook you
 can follow top to bottom — one-time setup, a chrY smoke test with the numbers to check
 against, then the full run. The rest of this section is reference material.
