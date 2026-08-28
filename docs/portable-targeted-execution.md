@@ -16,7 +16,11 @@ portability contract.
 `scripts/run_targeted_manifest.py` validates both JSON documents, checks resource
 sentinels and pinned checksums, performs a run-root write/delete probe, and maps the
 resolved contract into the generic `scripts/run_targeted_chromosome.sh` worker. A
-completed run root is immutable after `_SUCCESS`.
+completed run root is immutable after `_SUCCESS`. A binding may also name a packaged
+`regression` document. When present, the runner checks every pinned count and the
+canonical LoF and missense hashes after scientific execution and fails the job on
+any drift. Successful validated runs contain both `_SUCCESS` and
+`_REGRESSION_SUCCESS`; the latter records how many count and hash assertions passed.
 
 Some helper resources, such as the postprocessing JSON, necessarily contain local
 paths and therefore belong to the binding layer. The resolver verifies that its QC
@@ -75,6 +79,12 @@ provides SingularityPRO 4.1.2 and 3.11 modules; it does not expose an Apptainer 
    profile with command-line parameters.
 4. Run preflight in the container.
 5. Run a validated small-chromosome manifest and compare its regression outputs.
+
+The production image embeds the versioned manifests, bindings, and regression JSONs
+under `/opt/rvp`; only large biological and cohort resources need site-specific
+mounts. For a local Docker preflight, bind those resources at the paths in a local
+binding and run the same `run_targeted_manifest.py --preflight-only` command. This
+tests the same resolver and container runtime used by Batch without requiring AWS.
 
 Do not add site paths to the worker, duplicate the Python environment on the host, or
 change scientific thresholds in an executor profile. PBS, LSF, Kubernetes, Google

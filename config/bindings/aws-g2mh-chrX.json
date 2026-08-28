@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "regression": "/opt/rvp/resources/g2mh-chrX-targeted-regression.json",
   "run_root": "/fsx/loftee-parity/workflows/g2mh/chrX-targeted-validation-v1",
   "resources": {
     "zarr_store": "/fsx/rare-variant-pilot/g2mh-vcz-v3/v1/chrX.sharded-v3.zarr",

@@ -81,7 +81,8 @@ extended with additional branches.
 
 The targeted image contains FastVEP at the pinned `james-guevara/fastVEP` parity
 commit `3bdb862b3153a90ef8cca0b07f02f357a15a3eb0`, bcftools, the picker, standalone
-LOFTEE, Zarr/Arrow/DuckDB, and every pipeline script. Biological
+LOFTEE, Zarr/Arrow/DuckDB, every pipeline script, and the versioned manifests,
+bindings, and regression expectations. Biological
 references remain mounted inputs so they can be versioned and cached independently.
 
 The default container paths are:
@@ -158,18 +159,23 @@ has been provisioned.
 - Calculate cohort AC/AN/AF and retain the annotation-complete table.
 - If an analysis chooses a cohort threshold, emit a second explicitly eligible table.
 
-## chrX and chrY are not finalized
+## chrX and chrY validated policy
 
-The VCF-to-Zarr conversion is lossless for chrX and chrY, but autosomal carrier QC must
-not be reused blindly. Before enabling them in production, define and test:
+chrX and chrY use explicit GRCh38 PAR/non-PAR regions, cohort sample-sex QC, ploidy-
+aware genotype interpretation, haploid allele-balance rules, and sex-aware AC/AN/AF
+denominators. Calls from samples with ambiguous or discordant sex-chromosome evidence
+are retained when burden counting is possible, but are flagged as sensitivity-only;
+they never enter primary burden counts silently. This accommodates possible aneuploid
+or mosaic samples without discarding their calls or pretending their karyotype is
+resolved.
 
-- sample sex/karyotype source and handling of unknown or discordant sex;
-- PAR versus non-PAR intervals for the exact GRCh38 reference;
-- haploid, diploid and potential aneuploid genotype interpretation;
-- sex-aware AC/AN/AF denominators and missingness;
-- allele-balance rules for haploid calls;
-- chrY inclusion for samples expected to carry Y sequence;
-- whether burden models analyze PAR, non-PAR X and Y separately.
+The packaged G2MH regression contracts cover both LoF and missense branches. With
+image digest `sha256:edc522a8b6b9dbbdcf25a6fd138a4c5170fca0e47685db95771d9a1a11e908e6`,
+AWS Batch revision 3 reproduced every pinned count and all ten canonical hashes:
 
-Until those decisions are encoded and regression-tested, chrX/chrY stores are valid
-query inputs but their variants must not enter the autosomal QC/counting workflow.
+- chrX: 43 final LoF carrier rows and 847 final missense carrier rows;
+- chrY: 1 final LoF carrier row and 14 final missense carrier rows.
+
+The policy is cohort-neutral; a new cohort supplies its own sample-sex QC binding and
+must establish a regression fixture before production use. Unknown or unusual
+karyotypes remain reportable sensitivity strata rather than hard-coded exclusions.

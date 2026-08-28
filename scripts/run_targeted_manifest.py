@@ -164,10 +164,17 @@ def main() -> None:
     )
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--skip-runtime-checks", action="store_true")
+    parser.add_argument(
+        "--regression", type=Path,
+        help="validate completed outputs against this pinned regression document",
+    )
     args = parser.parse_args()
 
     manifest = read_json(args.manifest)
     bindings = read_json(args.bindings)
+    regression = args.regression
+    if regression is None and bindings.get("regression"):
+        regression = Path(require_string(bindings, "regression", "bindings"))
     if args.run_root:
         bindings["run_root"] = str(args.run_root)
     environment, observations = resolve(manifest, bindings)
@@ -187,7 +194,22 @@ def main() -> None:
     worker = args.worker.resolve()
     if not worker.is_file():
         raise ValueError(f"worker is absent: {worker}")
-    os.execvpe(str(worker), [str(worker)], os.environ | environment)
+    if regression is None:
+        os.execvpe(str(worker), [str(worker)], os.environ | environment)
+    if not regression.is_file():
+        raise ValueError(f"regression document is absent: {regression}")
+    subprocess.run([str(worker)], env=os.environ | environment, check=True)
+    validator = default_root / "scripts/validate_targeted_regression.py"
+    subprocess.run(
+        [
+            sys.executable,
+            str(validator),
+            "--regression", str(regression),
+            "--bindings", str(args.bindings),
+            "--run-root", environment["RUN_ROOT"],
+        ],
+        check=True,
+    )
 
 
 if __name__ == "__main__":

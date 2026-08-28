@@ -7,6 +7,9 @@ on:
       - "docker/targeted-annotation/**"
       - "scripts/**"
       - "src/**"
+      - "manifests/**"
+      - "config/bindings/**"
+      - "resources/**"
       - "pyproject.toml"
       - "uv.lock"
       - ".github/workflows/targeted-container.yml"
@@ -63,4 +66,8 @@ jobs:
             python -c "import duckdb, pyarrow, pyBigWig, pysam, zarr"
             python scripts/run_standalone_loftee.py --help >/dev/null
             python scripts/pick_fastvep_consequences.py --help >/dev/null
+            python scripts/run_targeted_manifest.py --help >/dev/null
+            python scripts/validate_targeted_regression.py --help >/dev/null
+            test -r manifests/g2mh-chrX.json
+            test -r resources/g2mh-chrX-targeted-regression.json
           '

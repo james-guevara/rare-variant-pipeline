@@ -67,10 +67,13 @@ docker run --rm --entrypoint /bin/bash "$IMAGE_URI" -c '
   python scripts/collapse_lof_carriers.py --help >/dev/null
   python scripts/postprocess/count_carriers.py --help >/dev/null
   python scripts/run_targeted_manifest.py --help >/dev/null
+  python scripts/validate_targeted_regression.py --help >/dev/null
   test -r manifests/g2mh-chrX.json
   test -r manifests/g2mh-chrY.json
   test -r config/bindings/aws-g2mh-chrX.json
   test -r config/bindings/aws-g2mh-chrY.json
+  test -r resources/g2mh-chrX-targeted-regression.json
+  test -r resources/g2mh-chrY-targeted-regression.json
 '
 
 docker push "$IMAGE_URI"
