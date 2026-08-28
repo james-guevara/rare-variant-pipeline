@@ -137,6 +137,29 @@ The validated chr1 result is
 Its final controller receipt and reports are under
 `/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-nextflow/g2mh-chr1-final-16e505b`.
 
+Commit and container `41de024` subsequently validated the selected-row extraction
+optimization from a fresh chr1 run root. It passed the same 21 count and 10 canonical
+hash assertions. The scientific task completed in 6 minutes 59 seconds with 5.4 GB
+peak RSS; targeted extraction took 158 seconds, compared with 474 seconds in the
+pre-optimization Expanse run. The result and Nextflow controller records are under:
+
+```text
+/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-runs/g2mh/chr1-nextflow-41de024
+/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-nextflow/g2mh-chr1-41de024
+```
+
+The matching Expanse SIF has SHA-256
+`c224347845303561fa535c348939573b26c38f8880a3708c8cef63a8e148effd`.
+Use `scripts/pull_targeted_container_expanse.sh` to stage future immutable targeted
+images on `ind-shared`; it skips an existing SIF and repeats the complete smoke test.
+
+The same commit was published to ECR as digest
+`sha256:fc501151b89a7623649a76a886b5bb5548ff3ffd91f764bf182e90687d2400c3`
+and validated against chrX through Batch job definition revision 6. Job
+`8ac1c425-9cec-4365-ac76-4bdc15b13347` passed all 35 counts and 10 hashes in 72
+seconds of container runtime, including the sex-chromosome karyotype/PAR policy. Its
+fresh FSx result is `/fsx/loftee-parity/workflows/g2mh/container-41de024-chrX`.
+
 ## Adding another environment
 
 1. Make the immutable scientific container accessible to the site's runtime.

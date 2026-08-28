@@ -194,6 +194,13 @@ AWS Batch revision 3 reproduced every pinned count and all ten canonical hashes:
 - chrX: 43 final LoF carrier rows and 847 final missense carrier rows;
 - chrY: 1 final LoF carrier row and 14 final missense carrier rows.
 
+After the selected-row Zarr extraction optimization, commit `41de024` was rebuilt as
+ECR digest
+`sha256:fc501151b89a7623649a76a886b5bb5548ff3ffd91f764bf182e90687d2400c3`.
+AWS Batch revision 6 reran chrX from a fresh FSx root and reproduced all 35 counts and
+10 hashes exactly. Target extraction selected 39,983 records/44,371 ALT alleles in 25
+seconds, and the complete container ran for 72 seconds.
+
 The policy is cohort-neutral; a new cohort supplies its own sample-sex QC binding and
 must establish a regression fixture before production use. Unknown or unusual
 karyotypes remain reportable sensitivity strata rather than hard-coded exclusions.
