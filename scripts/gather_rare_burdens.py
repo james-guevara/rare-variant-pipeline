@@ -106,7 +106,12 @@ def main():
             primary[tier] = sum(partition_counts[p][iid][tier] for p in active) if complete else ""
         primary_rows.append(primary)
         for partition in partitions:
-            row = dict(base, burden_partition=partition, included_in_primary_total="true", chromosomes_complete="true")
+            row = dict(
+                base,
+                burden_partition=partition,
+                included_in_primary_total="true",
+                chromosomes_complete=str(bool(partitions[partition])).lower(),
+            )
             for tier in TIERS:
                 row[tier] = partition_counts[partition][iid][tier] if partition_complete[partition][tier] else ""
             strata_rows.append(row)
