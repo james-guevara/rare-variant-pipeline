@@ -37,6 +37,8 @@ RUN uv sync --frozen --no-dev \
     && bcftools --version | head -n 1
 
 COPY scripts ./scripts
+COPY manifests ./manifests
+COPY config/bindings ./config/bindings
 
 ENV PATH="/opt/rvp/.venv/bin:/opt/fastvep:${PATH}" \
     RVP_REPO="/opt/rvp" \

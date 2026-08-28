@@ -2,12 +2,12 @@
   "jobDefinitionName": "rare-variant-targeted-portable",
   "type": "container",
   "parameters": {
-    "manifest": "/fsx/loftee-parity/resources/manifests/g2mh-chr22.json",
-    "bindings": "/fsx/loftee-parity/resources/manifests/aws-g2mh-chr22.json",
+    "manifest": "/opt/rvp/manifests/g2mh-chr22.json",
+    "bindings": "/opt/rvp/config/bindings/aws-g2mh-chr22.json",
     "run_root": "/fsx/loftee-parity/workflows/g2mh/portable-default"
   },
   "containerProperties": {
-    "image": "640838474376.dkr.ecr.us-east-1.amazonaws.com/rare-variant-pipeline-targeted@sha256:b50b57dd2ce83ff98963dc2b1451472284da79dcb6509fedd5d75886e1fd9cb6",
+    "image": "640838474376.dkr.ecr.us-east-1.amazonaws.com/rare-variant-pipeline-targeted@sha256:3fdda6036a3b28920644d0eab0afb1ac90c39a4c0f43f554e24d20e02e0c4ec4",
     "command": [
       "python",
       "/opt/rvp/scripts/run_targeted_manifest.py",
