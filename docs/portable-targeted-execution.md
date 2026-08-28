@@ -123,6 +123,20 @@ under
 the corresponding Nextflow trace, report, and timeline are under
 `/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-nextflow/g2mh-chr22-clean-89470da-v2`.
 
+G2MH chr1 was subsequently validated with revision `16e505b`, passing 21 count and
+10 canonical hash assertions exactly on both AWS FSx and Expanse. The Expanse
+scientific task used 4 CPUs and 16 GB, peaked at about 7.8 GB RSS, and completed in
+12 minutes 6 seconds. Its main stage timings were 474 seconds for targeted Zarr
+extraction, 1 second for normalization, 31 seconds for FastVEP, and 138 seconds for
+standalone LOFTEE. The equivalent current-container AWS run took 367, 1, 23, and
+32 seconds for those stages. Extra CPUs alone will not materially improve extraction
+until that currently single-threaded stage is parallelized.
+
+The validated chr1 result is
+`/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-runs/g2mh/chr1-nextflow-clean-d6bd22e`.
+Its final controller receipt and reports are under
+`/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-nextflow/g2mh-chr1-final-16e505b`.
+
 ## Adding another environment
 
 1. Make the immutable scientific container accessible to the site's runtime.
