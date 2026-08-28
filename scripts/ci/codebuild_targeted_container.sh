@@ -62,6 +62,10 @@ docker run --rm --entrypoint /bin/bash "$IMAGE_URI" -c '
   python scripts/pick_fastvep_consequences.py --help >/dev/null
   python scripts/select_missense_candidates.py --help >/dev/null
   python scripts/apply_population_af_filter.py --help >/dev/null
+  python scripts/apply_cohort_af_filter.py --help >/dev/null
+  python scripts/annotate_sex_chromosome_carriers.py --help >/dev/null
+  python scripts/collapse_lof_carriers.py --help >/dev/null
+  python scripts/postprocess/count_carriers.py --help >/dev/null
   python scripts/run_targeted_manifest.py --help >/dev/null
 '
 
