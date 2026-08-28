@@ -73,7 +73,10 @@ def main():
         "sex_chromosome_primary": sorted(expected & {"chrX", "chrY"}),
     }
     partition_counts = {name: defaultdict(lambda: defaultdict(int)) for name in partitions}
-    partition_complete = {name: {tier: True for tier in TIERS} for name in partitions}
+    partition_complete = {
+        name: {tier: bool(chroms) for tier in TIERS}
+        for name, chroms in partitions.items()
+    }
     sensitivity = defaultdict(lambda: defaultdict(int))
     sensitivity_complete = bool(expected & {"chrX", "chrY"})
 
@@ -98,8 +101,9 @@ def main():
         base = {"FID": sample.get("FID", ""), "IID": iid, "SEX": sample.get("SEX", "")}
         primary = dict(base)
         for tier in TIERS:
-            complete = all(partition_complete[p][tier] for p in partitions)
-            primary[tier] = sum(partition_counts[p][iid][tier] for p in partitions) if complete else ""
+            active = [p for p, chroms in partitions.items() if chroms]
+            complete = bool(active) and all(partition_complete[p][tier] for p in active)
+            primary[tier] = sum(partition_counts[p][iid][tier] for p in active) if complete else ""
         primary_rows.append(primary)
         for partition in partitions:
             row = dict(base, burden_partition=partition, included_in_primary_total="true", chromosomes_complete="true")
