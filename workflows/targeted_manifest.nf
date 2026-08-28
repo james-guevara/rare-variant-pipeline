@@ -11,6 +11,7 @@ process TARGETED_CHROMOSOME {
 
     output:
     path 'execution.receipt.json'
+    path 'targeted-output'
 
     script:
     def preflight = params.preflight_only ? '--preflight-only' : ''
@@ -21,6 +22,12 @@ process TARGETED_CHROMOSOME {
       --manifest ${science_manifest} \
       --bindings ${environment_bindings} \
       ${runRoot} \
+      ${preflight}
+    python /opt/rvp/scripts/package_targeted_outputs.py \
+      --science-manifest ${science_manifest} \
+      --bindings ${environment_bindings} \
+      ${runRoot} \
+      --output-dir targeted-output \
       ${preflight}
     python - <<'PY' > execution.receipt.json
     import json
@@ -43,5 +50,6 @@ workflow TARGETED_MANIFEST_WORKFLOW {
     TARGETED_CHROMOSOME(manifests)
 
     emit:
-    execution_receipt = TARGETED_CHROMOSOME.out
+    execution_receipt = TARGETED_CHROMOSOME.out[0]
+    chromosome_outputs = TARGETED_CHROMOSOME.out[1]
 }

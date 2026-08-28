@@ -151,8 +151,11 @@ workflow {
 ```
 
 The named workflow uses the same manifest, environment bindings, container,
-preflight, and run-root parameters as the standalone command and emits
-`execution_receipt`. A future cohort-level parent workflow can therefore invoke
+preflight, and run-root parameters as the standalone command and emits both
+`execution_receipt` and a portable `chromosome_outputs` directory. The latter
+contains the available validated chromosome-level LoF, missense, primary LoF, and
+sensitivity LoF burden TSVs plus a checksummed `targeted-output-manifest.json`.
+A future cohort-level parent workflow can therefore invoke
 the rare-variant and PGS branches independently and join their participant-level
 tables only after both branches complete. Scheduler and container-runtime settings
 remain site-specific configuration rather than part of the scientific workflow.
