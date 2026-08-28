@@ -1,0 +1,11 @@
+{
+  "dbnsfp_version": "5.3.1a",
+  "source_root": "/expanse/projects/sebat1/s3/data/sebat/resources/dbNSFP/5.3.1a",
+  "aws_root": "/fsx/loftee-parity/resources/dbNSFP/5.3.1a",
+  "files": {
+    "parquet_expanded_mane_select/chrX.parquet": "878aff0ffddd51a623efb6c3928378a0254047d8605a90a085d84806cad2519b",
+    "parquet_expanded_mane_select/chrY.parquet": "aa461f6e62276c0490291bdcc21ac6805f62bc60ac996bb7ed8823d67a78a72c",
+    "parquet_scores_af/chrX.parquet": "fd1a14da8b4c88133101d4fa654396d7c2c4cee78f47e9e9e38de41b57ad0b23",
+    "parquet_scores_af/chrY.parquet": "c45aa4ea0709ff73bac46383c82ab82fe4987349b6ad77acf07b0513c964a990"
+  }
+}

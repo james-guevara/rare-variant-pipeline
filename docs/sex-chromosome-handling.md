@@ -143,3 +143,19 @@ retained for QC provenance only. Region filtering retained eight rows; genotype
 QC retained one high-quality, haploid `KDM5D` LoF carrier in an XY-like sample.
 No ambiguous chrY burden row survived genotype QC. Exact chrY counts and hashes
 are pinned in `resources/g2mh-chrY-lof-regression.json`.
+
+## First combined LoF and missense validation
+
+Canonical dbNSFP v5.3.1a expanded and AF-side Parquets were checksum-staged for
+chrX and chrY. Exact allele intersection reduced the missense annotation scope
+to 1,104 observed chrX candidates and 68 observed chrY candidates. FastVEP
+selected 1,045 chrX missense consequences and all 68 chrY consequences. Every
+selected allele passed the MPC transcript-context compatibility audit; the 59
+chrX rejections were non-missense picked consequences, with no gene mismatch.
+
+After region, genotype, population-AF, and cohort-AF processing, chrX retained
+847 carrier rows across 625 alleles and 552 samples: 843 primary rows and four
+ambiguous-sample sensitivity rows. ChrY retained 14 primary XY-like carrier rows
+across 11 alleles; no ambiguous chrY carrier survived QC. Exact metrics and
+canonical hashes are pinned in `resources/g2mh-chrX-targeted-regression.json`
+and `resources/g2mh-chrY-targeted-regression.json`.
