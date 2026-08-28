@@ -70,6 +70,25 @@ Validated/example adapters are:
 The Expanse profile is an example, not a privileged workflow target. Expanse currently
 provides SingularityPRO 4.1.2 and 3.11 modules; it does not expose an Apptainer module.
 
+Expanse's default `java` is Java 8, which is too old for Nextflow 26.04.6. The
+validated controller invocation uses the Java supplied by the existing `nf_latest`
+Micromamba environment while pinning the Nextflow launcher itself:
+
+```bash
+micromamba run -n nf_latest env NXF_VER=26.04.6 "$HOME/nextflow" \
+  -C targeted.config run targeted.nf -profile expanse \
+  -work-dir "$launch_root/work" \
+  --manifest manifests/g2mh-chr22.json \
+  --bindings config/bindings/expanse-g2mh-chr22.json \
+  --run_root "$run_root" \
+  --targeted_container \
+    /expanse/projects/sebat1/resources/rare-variant-pipeline/containers/rare-variant-targeted-sha-89470da.sif
+```
+
+Run this from a persistent shell (`tmux`, `screen`, or `nohup`) because Nextflow is
+the long-lived scheduler controller. The scientific process itself is submitted to
+`ind-shared`; it does not execute on the login node.
+
 The GHCR image for commit `199d55e` was pulled as a scheduled `ind-shared` job and
 converted to a 189 MB SIF in shared project space. A second `ind-shared` job validated
 FastVEP, bcftools, `procps`, DuckDB/Arrow/Zarr/Pysam/PyBigWig, the embedded manifests,
@@ -95,6 +114,14 @@ G2MH chr22 was validated through this hierarchy on both AWS and Expanse. The cur
 container produced identical final LoF and missense rows across systems, passing 35
 count assertions and 10 canonical hashes. Its combined contract is
 `resources/g2mh-chr22-targeted-regression.json`.
+
+A clean Nextflow-controlled run from commit and container `89470da` passed the same
+35 count and 10 hash assertions on 2026-08-28. Its Slurm scientific task used 4 CPUs,
+peaked at about 250 MB RSS, and ran for 1 minute 25 seconds. The validated result is
+under
+`/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-runs/g2mh/chr22-nextflow-clean-89470da-v2`;
+the corresponding Nextflow trace, report, and timeline are under
+`/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-nextflow/g2mh-chr22-clean-89470da-v2`.
 
 ## Adding another environment
 

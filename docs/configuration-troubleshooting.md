@@ -121,6 +121,31 @@ record transient scientific-result differences here.
 - **Prevention:** use the combined `g2mh-chr22-targeted-regression.json`; the older
   split fixture is explicitly marked superseded.
 
+### Nextflow was pinned but inherited Java 8 on Expanse (2026-08-28)
+
+- **Symptom:** Nextflow reported that Java 17 or later was required although the
+  pinned 26.04.6 framework JAR was already installed.
+- **Cause:** `NXF_VER` selects Nextflow, but the login shell still resolved Expanse's
+  `/usr/bin/java` (Java 8).
+- **Impact:** controller preflight only; no Slurm task was submitted.
+- **Avoidable:** yes.
+- **Prevention:** invoke the pinned launcher with a supported JVM and verify its
+  version before submission:
+  `micromamba run -n nf_latest env NXF_VER=26.04.6 "$HOME/nextflow" -version`.
+
+### Binding and SIF came from different revisions (2026-08-28)
+
+- **Symptom:** resource preflight passed, then execution stopped because
+  `/opt/rvp/resources/g2mh-chr22-targeted-regression.json` was absent.
+- **Cause:** the binding came from commit `89470da`, while the selected SIF came from
+  the older `199d55e` commit. Small versioned contracts are embedded in the image.
+- **Impact:** two one-second `ind-shared` tasks failed before scientific processing;
+  Nextflow's configured retry accounted for the second task.
+- **Avoidable:** yes.
+- **Prevention:** pin the manifest, binding, and immutable image to the same source
+  revision. Do not bypass regression or substitute an older fixture. The clean chr22
+  validation used revision `89470da` for all three.
+
 ### Portable Nextflow config inherited legacy site defaults (2026-08-27)
 
 - **Symptom:** `nextflow config` for the local profile still showed Expanse Slurm,
