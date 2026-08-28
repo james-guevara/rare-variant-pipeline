@@ -2,10 +2,12 @@
 
 ## Current status
 
-The G2MH chrX and chrY sharded VCZ stores are complete, but the production
-targeted workflow does not yet run them. Chromosome-specific FastVEP, LOFTEE,
-dbNSFP, target BED, problematic-region, and manifest resources still need to be
-staged and validated.
+The G2MH chrX and chrY sharded VCZ stores are complete. Ensembl 115 FastVEP,
+LOFTEE, and transcript-priority resources are staged for both chromosomes, and
+the chrX LoF-only branch has completed its first end-to-end validation. The
+missense dbNSFP tables and combined target inputs still need to be prepared;
+chrY analysis policy and postprocessing also require validation before a
+production sex-chromosome run.
 
 The VCZ genotype arrays have fixed ploidy width two. Effective ploidy is encoded
 by `call_genotype_mask`, not by array shape or the rendered GT string. In G2MH,
@@ -122,3 +124,14 @@ Reference-build PAR coordinates are stored separately in
 `resources/grch38-sex-chromosome-regions.json`. Inference windows and thresholds
 are cohort calibration in `config/sex-chromosomes/g2mh.json`; they are not global
 defaults and must be recalibrated or validated for each additional cohort.
+
+## First chrX LoF validation
+
+The checksum-pinned G2MH chrX LoF-only run completed on AWS on 2026-08-28.
+Targeted extraction covered 6,180 intervals and 40,340 observed alleles;
+FastVEP took 9 seconds and standalone LOFTEE took 8 seconds. Of 94 tiered LoF
+alleles, problematic-region filtering reduced 536 raw carrier rows to 109 and
+genotype QC retained 67 rows across 38 alleles and 65 samples. Sixty-six rows
+are primary eligible and one ambiguous-sample `ABCB7` carrier is retained for
+sensitivity analysis only. Exact counts and canonical hashes are pinned in
+`resources/g2mh-chrX-lof-regression.json`.

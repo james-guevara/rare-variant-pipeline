@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "run_root": "/fsx/loftee-parity/workflows/g2mh/chrX-lof-validation-v1",
+  "resources": {
+    "zarr_store": "/fsx/rare-variant-pilot/g2mh-vcz-v3/v1/chrX.sharded-v3.zarr",
+    "target_bed": "/fsx/loftee-parity/resources/targeted-annotation/inputs/lof-genebayes-ge-0.03.chrX.bed",
+    "annotation_root": "/fsx/loftee-parity/resources/targeted-annotation/ensembl-115",
+    "loftee_root": "/fsx/loftee-parity/resources",
+    "genebayes": "/fsx/loftee-parity/resources/targeted-annotation/GeneBayes.Supplementary_Table_1.tsv",
+    "sample_sex_qc": "/fsx/loftee-parity/resources/sample-qc/g2mh.sex-chromosome-qc.tsv",
+    "sex_chromosome_regions": "/fsx/loftee-parity/resources/sample-qc/grch38-sex-chromosome-regions.json",
+    "postprocess_config": "/fsx/loftee-parity/resources/postprocess/g2mh-chrX/config.json"
+  }
+}

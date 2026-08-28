@@ -111,6 +111,8 @@ plof_tiered=$run_root/06.plof-tiered.tsv
 carriers=$run_root/07.plof-tiered.carriers.parquet
 carriers_raw=$run_root/07.plof-tiered.carriers.raw.parquet
 summary=$run_root/07.plof-tiered.genotype-summary.parquet
+plof_regions=$run_root/08.plof-region-filtered.parquet
+plof_qc=$run_root/09.plof-genotype-qc.parquet
 missense_tiered=$run_root/06.missense-tiered.parquet
 missense_carriers=$run_root/07.missense-tiered.carriers.parquet
 missense_carriers_raw=$run_root/07.missense-tiered.carriers.raw.parquet
@@ -178,6 +180,19 @@ if test "$sex_chromosome" = 1; then
 fi
 test -s "$carriers"
 test -s "$summary"
+
+if test -n "$postprocess_config"; then
+  test -r "$postprocess_config" || {
+    echo "ERROR: missing postprocess config: $postprocess_config" >&2
+    exit 1
+  }
+  run_stage "$plof_regions" "$python" scripts/postprocess/filter_regions.py \
+    --cohort "$cohort" --chrom "$chromosome" --resources "$postprocess_config" \
+    --input "$carriers" --output "$plof_regions"
+  run_stage "$plof_qc" "$python" scripts/postprocess/qc_genotype.py \
+    --cohort "$cohort" --chrom "$chromosome" --resources "$postprocess_config" \
+    --input "$plof_regions" --output "$plof_qc"
+fi
 
 if test -n "$missense_candidates"; then
   test -r "$missense_candidates" || {
