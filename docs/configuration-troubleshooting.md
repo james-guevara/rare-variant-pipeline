@@ -121,6 +121,19 @@ record transient scientific-result differences here.
 - **Prevention:** use the combined `g2mh-chr22-targeted-regression.json`; the older
   split fixture is explicitly marked superseded.
 
+### Historical chr1 fixture used incomplete aliases and stale QC counts (2026-08-28)
+
+- **Symptom:** the complete validator initially reported several legacy chr1 fields
+  as null, then reported seven missense QC/final-count differences after alias repair.
+- **Cause:** the chr1 fixture predated the complete LoF-plus-missense validator and
+  also described an earlier genotype-QC implementation.
+- **Evidence:** fresh current-container runs on AWS FSx and Expanse matched exactly:
+  8,966 genotype-QC rows and 4,533 final missense carrier rows. Five canonical LoF
+  and five canonical missense hashes also matched across systems.
+- **Prevention:** the validator maps every legacy chr1 key explicitly, the AWS chr1
+  binding now requires regression, and the fixture pins current counts plus ten
+  canonical hashes.
+
 ### Nextflow was pinned but inherited Java 8 on Expanse (2026-08-28)
 
 - **Symptom:** Nextflow reported that Java 17 or later was required although the

@@ -11,6 +11,11 @@ add_legacy_missense_aliases = module.add_legacy_missense_aliases
 
 def test_existing_missense_expectation_names_are_populated():
     observed = {
+        "lof_raw_carrier_rows": 4,
+        "lof_raw_carrier_samples": 3,
+        "missense_raw_carrier_rows": 12,
+        "missense_region_filtered_rows": 11,
+        "missense_genotype_qc_rows": 10,
         "missense_burden_eligible_rows": 10,
         "missense_burden_eligible_alleles": 8,
         "missense_burden_eligible_samples": 7,
@@ -24,4 +29,10 @@ def test_existing_missense_expectation_names_are_populated():
     add_legacy_missense_aliases(observed)
     assert observed["sensitivity_only_burden_rows"] == 1
     assert observed["primary_miss_t4_rows"] == 3
+    assert observed["final_miss_t4_rows"] == 3
     assert observed["burden_eligible_rows"] == 10
+    assert observed["lof_carrier_rows"] == 4
+    assert observed["lof_carrier_samples"] == 3
+    assert observed["missense_carrier_rows"] == 12
+    assert observed["region_filtered_rows"] == 11
+    assert observed["genotype_qc_rows"] == 10

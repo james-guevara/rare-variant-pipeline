@@ -106,6 +106,12 @@ def add_legacy_missense_aliases(observed: dict[str, int]) -> None:
     ]
     for tier in ("miss_t1", "miss_t2", "miss_t3", "miss_t4"):
         observed[f"primary_{tier}_rows"] = observed[f"missense_primary_{tier}_rows"]
+        observed[f"final_{tier}_rows"] = observed[f"missense_primary_{tier}_rows"]
+    observed["lof_carrier_rows"] = observed["lof_raw_carrier_rows"]
+    observed["lof_carrier_samples"] = observed["lof_raw_carrier_samples"]
+    observed["missense_carrier_rows"] = observed["missense_raw_carrier_rows"]
+    observed["region_filtered_rows"] = observed["missense_region_filtered_rows"]
+    observed["genotype_qc_rows"] = observed["missense_genotype_qc_rows"]
 
 
 def observe(args, expected_document: dict) -> tuple[dict[str, int], dict[str, dict]]:
@@ -167,6 +173,9 @@ def observe(args, expected_document: dict) -> tuple[dict[str, int], dict[str, di
         burden = pq(f"11.{stem}-burden-eligible.parquet")
         prefix = "lof_" if branch == "lof" else "missense_"
         observed[f"{prefix}raw_carrier_rows"] = count_rows(connection, raw)
+        observed[f"{prefix}raw_carrier_samples"] = scalar(
+            "SELECT count(DISTINCT sample_id) FROM read_parquet(?)", [str(raw)]
+        )
         observed[f"{prefix}region_filtered_rows"] = count_rows(connection, region)
         observed[f"{prefix}genotype_qc_rows"] = count_rows(connection, genotype)
         population_key = (
