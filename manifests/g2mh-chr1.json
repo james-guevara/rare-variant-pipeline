@@ -42,8 +42,7 @@
       "sha256": "ce929e45bb7aa9372ac0755683ce7cde01b329dc278ae1030c6106a70e49219e"
     },
     "postprocess_config": {
-      "kind": "file",
-      "sha256": "0c13d15f38462c9a060624b4db8e1d8fd6eb4a327daaebc01fb16f0378197243"
+      "kind": "file"
     }
   }
 }

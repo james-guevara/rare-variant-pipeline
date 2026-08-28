@@ -146,6 +146,19 @@ record transient scientific-result differences here.
   revision. Do not bypass regression or substitute an older fixture. The clean chr22
   validation used revision `89470da` for all three.
 
+### SSM RunShellScript used `sh`, not Bash (2026-08-28)
+
+- **Symptom:** a chr1 archive command failed immediately with
+  `set: Illegal option -o pipefail`.
+- **Cause:** AWS Systems Manager's `AWS-RunShellScript` executed the command block
+  with Ubuntu's POSIX `sh`; Bash-specific shell options were used without explicitly
+  starting Bash.
+- **Impact:** controller time only; compression and upload had not started.
+- **Avoidable:** yes.
+- **Prevention:** either keep SSM command blocks POSIX-compatible (`set -eu`) or
+  explicitly invoke a versioned Bash script. Validate the shell before beginning a
+  long FSx or S3 operation.
+
 ### Portable Nextflow config inherited legacy site defaults (2026-08-27)
 
 - **Symptom:** `nextflow config` for the local profile still showed Expanse Slurm,

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "regression": "/opt/rvp/resources/g2mh-chr1-targeted-regression.json",
+  "run_root": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-runs/g2mh/chr1-portable-v1",
+  "resources": {
+    "zarr_store": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/zarr/chr1.sharded-v3.zarr",
+    "target_bed": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/candidates/lof-plus-missense-candidates.chr1.bed",
+    "annotation_root": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1",
+    "loftee_root": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/GRCh38",
+    "genebayes": "/expanse/projects/sebat1/resources/rare-variant-pipeline/genebayes/GeneBayes.Supplementary_Table_1.tsv",
+    "missense_candidates": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/candidates/chr1.observed-missense-candidates.parquet",
+    "postprocess_config": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/qc/chr1.postprocess.json"
+  }
+}
