@@ -160,6 +160,12 @@ the rare-variant and PGS branches independently and join their participant-level
 tables only after both branches complete. Scheduler and container-runtime settings
 remain site-specific configuration rather than part of the scientific workflow.
 
+`RARE_BURDEN_GATHER_WORKFLOW` in `workflows/rare_burden_gather.nf` consumes a cohort
+sample manifest and the completed chromosome-output packages. It emits
+`rare_burdens.tsv` and `rare_burdens_by_chromosome_stratum.tsv`. The thin
+`gather.nf` entrypoint allows this aggregation contract to be run and tested on its
+own before composition with the PGS workflow.
+
 **New to this pipeline?** [`docs/running-g2mh.md`](docs/running-g2mh.md) is a runbook you
 can follow top to bottom — one-time setup, a chrY smoke test with the numbers to check
 against, then the full run. The rest of this section is reference material.
