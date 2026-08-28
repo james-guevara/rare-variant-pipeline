@@ -2,6 +2,8 @@
 
 Operational failures and their durable fixes are tracked in
 [`configuration-troubleshooting.md`](configuration-troubleshooting.md).
+The schemas, row grains, identifiers, and recommended PGS integration keys are in
+[`output-data-dictionary.md`](output-data-dictionary.md).
 The environment-neutral manifest, binding, and executor contract is documented in
 [`portable-targeted-execution.md`](portable-targeted-execution.md).
 
@@ -150,6 +152,22 @@ carrier Parquet, and genotype-summary Parquet. It also enforces the recorded all
 tier, carrier-row, and distinct-carrier counts. Any difference exits nonzero, making
 the command suitable for Batch validation or CI after the mounted reference fixture
 has been provisioned.
+
+### Targeted Zarr extraction benchmark
+
+The chr1 G2MH target extraction was profiled on Expanse `ind-shared` against the
+sharded Zarr v3 store using 26,160 merged BED intervals. The original implementation
+read complete 25,000-record outer shards and issued two scalar `searchsorted` calls
+per interval. It took 493 seconds and emitted 123,262 ALT rows from 115,522 records.
+
+Vectorized interval bounds plus selected-row Zarr reads reduced extraction to 153
+seconds with one reader (69% faster). Four concurrent readers took 148 seconds, only
+five seconds faster, so the portable default remains one worker; `--workers` is
+available for storage-specific benchmarking rather than assumed to scale. Both
+optimized outputs matched the reference exactly over all nine columns and both
+directions of `EXCEPT ALL`. The reproducible Expanse benchmark and validation launchers
+are `scripts/benchmark_targeted_extraction_expanse.sh` and
+`scripts/validate_extraction_benchmark_expanse.sh`.
 
 ## Population and cohort AF contract
 

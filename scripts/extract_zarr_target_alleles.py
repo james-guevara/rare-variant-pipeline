@@ -6,6 +6,8 @@ annotated alleles can be mapped back to the unchanged genotype arrays.
 """
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 from pathlib import Path
 
 import numpy as np
@@ -38,20 +40,84 @@ def overlapping_indexes(
     lengths: np.ndarray,
     intervals: list[tuple[int, int]],
 ) -> np.ndarray:
-    selected = []
+    if not intervals or positions.size == 0:
+        return np.array([], dtype=np.int64)
+    positions64 = positions.astype(np.int64, copy=False)
+    lengths64 = lengths.astype(np.int64, copy=False)
+    bed_starts = np.fromiter((start for start, _ in intervals), dtype=np.int64)
+    bed_ends = np.fromiter((end for _, end in intervals), dtype=np.int64)
     max_length = int(lengths.max(initial=1))
-    for bed_start, bed_end in intervals:
-        # VCF POS is 1-based; BED is zero-based, half-open. Include records that
-        # begin before an interval but whose REF span overlaps it.
-        lo = np.searchsorted(positions, bed_start - max_length + 2, side="left")
-        hi = np.searchsorted(positions, bed_end, side="right")
+    # Vectorizing these bounds avoids two full NumPy dispatches for every BED
+    # interval. VCF POS is 1-based; BED is zero-based, half-open. Include records
+    # that begin before an interval but whose REF span overlaps it.
+    lows = np.searchsorted(
+        positions64, bed_starts - max_length + 2, side="left"
+    )
+    highs = np.searchsorted(positions64, bed_ends, side="right")
+    selected = []
+    for bed_start, bed_end, lo, hi in zip(
+        bed_starts, bed_ends, lows, highs, strict=True
+    ):
         indexes = np.arange(lo, hi, dtype=np.int64)
-        record_start = positions[lo:hi].astype(np.int64) - 1
-        record_end = record_start + lengths[lo:hi].astype(np.int64)
-        selected.extend(indexes[(record_start < bed_end) & (record_end > bed_start)])
+        record_start = positions64[lo:hi] - 1
+        record_end = record_start + lengths64[lo:hi]
+        selected.append(
+            indexes[(record_start < bed_end) & (record_end > bed_start)]
+        )
     if not selected:
         return np.array([], dtype=np.int64)
-    return np.unique(np.asarray(selected, dtype=np.int64))
+    return np.unique(np.concatenate(selected))
+
+
+ROW_NAMES = (
+    "variant_index", "alt_index", "chrom", "pos", "record_end",
+    "ref", "alt", "variant_id", "filter",
+)
+
+
+def selected_chunk_rows(
+    chunk_id: int,
+    indexes: np.ndarray,
+    variant_chunk: int,
+    allele_array,
+    id_array,
+    filter_array,
+    filter_ids: list[str],
+    positions: np.ndarray,
+    lengths: np.ndarray,
+    chrom: str,
+) -> dict[str, list]:
+    """Read only selected rows from one outer Zarr shard."""
+    chunk_start = int(chunk_id * variant_chunk)
+    chunk_end = min(chunk_start + variant_chunk, len(positions))
+    in_chunk = indexes[(indexes >= chunk_start) & (indexes < chunk_end)]
+    alleles = allele_array.get_orthogonal_selection((in_chunk, slice(None)))
+    ids = id_array.get_orthogonal_selection((in_chunk,))
+    filters = filter_array.get_orthogonal_selection((in_chunk, slice(None)))
+    rows = {name: [] for name in ROW_NAMES}
+    for row_index, global_index in enumerate(in_chunk.tolist()):
+        ref = str(alleles[row_index, 0])
+        filt = ";".join(
+            filter_ids[i]
+            for i, present in enumerate(filters[row_index])
+            if present
+        ) or "."
+        for alt_index, alt in enumerate(alleles[row_index, 1:], start=1):
+            alt = str(alt)
+            if not alt:
+                continue
+            rows["variant_index"].append(global_index)
+            rows["alt_index"].append(alt_index)
+            rows["chrom"].append(chrom)
+            rows["pos"].append(int(positions[global_index]))
+            rows["record_end"].append(
+                int(positions[global_index] - 1 + lengths[global_index])
+            )
+            rows["ref"].append(ref)
+            rows["alt"].append(alt)
+            rows["variant_id"].append(str(ids[row_index]))
+            rows["filter"].append(filt)
+    return rows
 
 
 def main() -> None:
@@ -60,7 +126,13 @@ def main() -> None:
     parser.add_argument("--bed", required=True, type=Path)
     parser.add_argument("--chrom", default="chr22")
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument(
+        "--workers", type=int, default=1,
+        help="number of outer Zarr shards to read concurrently (default: 1)",
+    )
     args = parser.parse_args()
+    if args.workers < 1:
+        parser.error("--workers must be at least 1")
 
     root = zarr.open_group(str(args.zarr), mode="r")
     contig_ids = root["contig_id"][:].tolist()
@@ -82,38 +154,31 @@ def main() -> None:
     filter_ids = root["filter_id"][:].tolist()
     variant_chunk = allele_array.chunks[0]
 
-    rows = {name: [] for name in (
-        "variant_index", "alt_index", "chrom", "pos", "record_end",
-        "ref", "alt", "variant_id", "filter",
-    )}
-    for chunk_id in np.unique(indexes // variant_chunk):
-        chunk_start = int(chunk_id * variant_chunk)
-        chunk_end = min(chunk_start + variant_chunk, len(positions))
-        in_chunk = indexes[(indexes >= chunk_start) & (indexes < chunk_end)]
-        local = in_chunk - chunk_start
-        alleles = allele_array[chunk_start:chunk_end, :]
-        ids = id_array[chunk_start:chunk_end]
-        filters = filter_array[chunk_start:chunk_end, :]
-        for global_index, local_index in zip(in_chunk.tolist(), local.tolist()):
-            ref = str(alleles[local_index, 0])
-            filt = ";".join(
-                filter_ids[i] for i, present in enumerate(filters[local_index]) if present
-            ) or "."
-            for alt_index, alt in enumerate(alleles[local_index, 1:], start=1):
-                alt = str(alt)
-                if not alt:
-                    continue
-                rows["variant_index"].append(global_index)
-                rows["alt_index"].append(alt_index)
-                rows["chrom"].append(args.chrom)
-                rows["pos"].append(int(positions[global_index]))
-                rows["record_end"].append(
-                    int(positions[global_index] - 1 + lengths[global_index])
-                )
-                rows["ref"].append(ref)
-                rows["alt"].append(alt)
-                rows["variant_id"].append(str(ids[local_index]))
-                rows["filter"].append(filt)
+    rows = {name: [] for name in ROW_NAMES}
+    chunk_ids = np.unique(indexes // variant_chunk).tolist()
+    read_chunk = partial(
+        selected_chunk_rows,
+        indexes=indexes,
+        variant_chunk=variant_chunk,
+        allele_array=allele_array,
+        id_array=id_array,
+        filter_array=filter_array,
+        filter_ids=filter_ids,
+        positions=positions,
+        lengths=lengths,
+        chrom=args.chrom,
+    )
+    if args.workers == 1:
+        chunk_results = map(read_chunk, chunk_ids)
+        for chunk_rows in chunk_results:
+            for name in ROW_NAMES:
+                rows[name].extend(chunk_rows[name])
+    else:
+        # Executor.map preserves chunk order, so worker count cannot alter row order.
+        with ThreadPoolExecutor(max_workers=args.workers) as executor:
+            for chunk_rows in executor.map(read_chunk, chunk_ids):
+                for name in ROW_NAMES:
+                    rows[name].extend(chunk_rows[name])
 
     schema = pa.schema([
         ("variant_index", pa.int64()),
