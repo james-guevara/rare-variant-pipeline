@@ -159,3 +159,13 @@ ambiguous-sample sensitivity rows. ChrY retained 14 primary XY-like carrier rows
 across 11 alleles; no ambiguous chrY carrier survived QC. Exact metrics and
 canonical hashes are pinned in `resources/g2mh-chrX-targeted-regression.json`
 and `resources/g2mh-chrY-targeted-regression.json`.
+
+The combined workflow also applies the same explicit AF semantics to LoF after
+region and genotype QC. Population metadata is preserved in an annotated
+Parquet; eligibility uses `gnomAD4.1_joint_AF < 0.01`, with missing AF retained.
+Cohort AC/AN/AF uses the primary-eligible sex-chromosome denominator and the
+cohort threshold is applied last. ChrX retained 43 primary LoF carrier rows
+across 37 alleles and 42 samples (20 t1, 23 t2); chrY retained the single
+primary `KDM5D` t1 carrier. Primary and ambiguous-sensitivity gene-level burden
+tables are emitted separately. Both final sensitivity tables are empty in this
+G2MH run, while pre-filter QC provenance remains available.

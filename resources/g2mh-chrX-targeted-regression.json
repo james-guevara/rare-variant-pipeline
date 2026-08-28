@@ -16,6 +16,13 @@
     "lof_raw_carrier_rows": 536,
     "lof_region_filtered_rows": 109,
     "lof_genotype_qc_rows": 67,
+    "lof_population_af_eligible_rows": 43,
+    "lof_burden_eligible_rows": 43,
+    "lof_burden_eligible_alleles": 37,
+    "lof_burden_eligible_samples": 42,
+    "lof_primary_t1_rows": 20,
+    "lof_primary_t2_rows": 23,
+    "lof_sensitivity_only_rows": 0,
     "observed_missense_candidates": 1104,
     "selected_missense": 1045,
     "selected_miss_t1": 5,
@@ -35,6 +42,13 @@
     "primary_miss_t2_rows": 29,
     "primary_miss_t3_rows": 143,
     "primary_miss_t4_rows": 668
+  },
+  "canonical_lof_hashes": {
+    "carrier_sha256": "2a9c97ac510f88a5381d1cb90282b9af454c7463efd3051359ee8426d00307a1",
+    "variant_sha256": "12cb5165b34b0df01f2c511db98009ed4e20aea5bf201187572d1e02ccaa6475",
+    "coordinate_sha256": "451d4c3aafb378e52b105a3e1c9b977abfc88e5cabdc1ee4c718d67609f4e081",
+    "variant_core_sha256": "42cbc21ef457d6c7554b6c8d7ce5feeae52b4326c49b2df30657a343da16f2a1",
+    "carrier_core_sha256": "9eca84c2789ab0ec661381e342c49dd9c21768be1291afba6f66600505f11494"
   },
   "canonical_missense_hashes": {
     "carrier_sha256": "87829f5b22c5aa4d7547aae48297a95e00bed53fee0b0042acc0c83038195f5c",

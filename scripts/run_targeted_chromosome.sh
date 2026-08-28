@@ -113,6 +113,16 @@ carriers_raw=$run_root/07.plof-tiered.carriers.raw.parquet
 summary=$run_root/07.plof-tiered.genotype-summary.parquet
 plof_regions=$run_root/08.plof-region-filtered.parquet
 plof_qc=$run_root/09.plof-genotype-qc.parquet
+plof_pop_annotated=$run_root/10.plof-population-af-annotated.parquet
+plof_pop_eligible=$run_root/10.plof-population-af-eligible.parquet
+plof_cohort_annotated=$run_root/11.plof-cohort-af-annotated.parquet
+plof_burden_eligible=$run_root/11.plof-burden-eligible.parquet
+plof_counts=$run_root/12.plof-per-sample-counts.tsv
+plof_totals=$run_root/12.plof-tier-totals.tsv
+plof_sample_gene=$run_root/12.plof-primary-sample-gene.tsv
+plof_sample_burden=$run_root/12.plof-primary-sample-burden.tsv
+plof_sensitivity_gene=$run_root/12.plof-sensitivity-sample-gene.tsv
+plof_sensitivity_burden=$run_root/12.plof-sensitivity-sample-burden.tsv
 missense_tiered=$run_root/06.missense-tiered.parquet
 missense_carriers=$run_root/07.missense-tiered.carriers.parquet
 missense_carriers_raw=$run_root/07.missense-tiered.carriers.raw.parquet
@@ -192,6 +202,64 @@ if test -n "$postprocess_config"; then
   run_stage "$plof_qc" "$python" scripts/postprocess/qc_genotype.py \
     --cohort "$cohort" --chrom "$chromosome" --resources "$postprocess_config" \
     --input "$plof_regions" --output "$plof_qc"
+  lof_af_enabled=$(
+    "$python" -c \
+      'import json,sys; print(int(bool(json.load(open(sys.argv[1])).get("dbnsfp_af_dir"))))' \
+      "$postprocess_config"
+  )
+  if test "$lof_af_enabled" = 1; then
+    run_stage "$plof_pop_annotated" "$python" scripts/postprocess/join_pop_af.py \
+      --cohort "$cohort" --chrom "$chromosome" --resources "$postprocess_config" \
+      --input "$plof_qc" --output "$plof_pop_annotated"
+    run_stage "$plof_pop_eligible" "$python" scripts/apply_population_af_filter.py \
+      --input "$plof_pop_annotated" --output "$plof_pop_eligible" \
+      --column gnomAD4.1_joint_AF --max-af "$population_af_max"
+    if ! test -s "$plof_cohort_annotated" || ! test -s "$plof_burden_eligible"; then
+      summary_prefix=genotype
+      if test "$sex_chromosome" = 1; then summary_prefix=primary_genotype; fi
+      "$python" scripts/apply_cohort_af_filter.py \
+        --input "$plof_pop_eligible" --allele-summary "$summary" \
+        --max-af "$cohort_af_max" --summary-prefix "$summary_prefix" \
+        --annotated-output "$plof_cohort_annotated" \
+        --eligible-output "$plof_burden_eligible"
+    fi
+    test -s "$plof_cohort_annotated"
+    test -s "$plof_burden_eligible"
+    if ! test -s "$plof_counts" || ! test -s "$plof_totals"; then
+      count_eligibility=()
+      if test "$sex_chromosome" = 1; then
+        count_eligibility=(--eligibility-col primary_analysis_eligible)
+      fi
+      "$python" scripts/postprocess/count_carriers.py \
+        --input "$plof_burden_eligible" --sample-col sample_id \
+        --group-col lof_tier --out-counts "$plof_counts" \
+        --out-totals "$plof_totals" "${count_eligibility[@]}"
+    fi
+    test -s "$plof_counts"
+    test -s "$plof_totals"
+    if ! test -s "$plof_sample_gene" || ! test -s "$plof_sample_burden"; then
+      collapse_args=()
+      if test "$sex_chromosome" = 1; then
+        collapse_args=(
+          --eligibility-col primary_analysis_eligible
+          --burden-available-col burden_count_available
+          --sensitivity-sample-gene-output "$plof_sensitivity_gene"
+          --sensitivity-sample-burden-output "$plof_sensitivity_burden"
+        )
+      fi
+      "$python" scripts/collapse_lof_carriers.py \
+        --input "$plof_burden_eligible" \
+        --sample-gene-output "$plof_sample_gene" \
+        --sample-burden-output "$plof_sample_burden" \
+        "${collapse_args[@]}"
+    fi
+    test -s "$plof_sample_gene"
+    test -s "$plof_sample_burden"
+    if test "$sex_chromosome" = 1; then
+      test -s "$plof_sensitivity_gene"
+      test -s "$plof_sensitivity_burden"
+    fi
+  fi
 fi
 
 if test -n "$missense_candidates"; then
