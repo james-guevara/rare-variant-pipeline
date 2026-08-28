@@ -154,3 +154,35 @@ def test_cohort_af_filter_keeps_complete_annotated_output(tmp_path: Path):
     assert con.execute(
         "SELECT record_id FROM read_parquet(?)", [str(eligible)]
     ).fetchone()[0] == 1
+
+
+def test_cohort_af_filter_can_use_primary_sex_chromosome_denominator(tmp_path: Path):
+    carriers = tmp_path / "carriers.parquet"
+    summary = tmp_path / "summary.parquet"
+    annotated = tmp_path / "annotated.parquet"
+    eligible = tmp_path / "eligible.parquet"
+    con = duckdb.connect()
+    con.execute(
+        "COPY (SELECT 1 AS record_id, 'S1' AS sample_id) TO ? (FORMAT PARQUET)",
+        [str(carriers)],
+    )
+    con.execute(
+        """COPY (SELECT 1 AS record_id,
+                    20 AS primary_genotype_ac, 100 AS primary_genotype_an,
+                    0.20::DOUBLE AS primary_genotype_af,
+                    10 AS primary_carrier_count, 1 AS primary_hom_alt_count)
+             TO ? (FORMAT PARQUET)""",
+        [str(summary)],
+    )
+    subprocess.run([
+        sys.executable, str(REPO / "scripts/apply_cohort_af_filter.py"),
+        "--input", str(carriers), "--allele-summary", str(summary),
+        "--summary-prefix", "primary_genotype", "--max-af", "0.01",
+        "--annotated-output", str(annotated), "--eligible-output", str(eligible),
+    ], check=True)
+    assert con.execute(
+        "SELECT cohort_an, cohort_af FROM read_parquet(?)", [str(annotated)]
+    ).fetchone() == (100, 0.2)
+    assert con.execute(
+        "SELECT COUNT(*) FROM read_parquet(?)", [str(eligible)]
+    ).fetchone()[0] == 0

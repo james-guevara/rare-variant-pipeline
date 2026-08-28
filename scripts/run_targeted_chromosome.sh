@@ -162,9 +162,14 @@ test -s "$plof_tiered"
 extract_carriers=$carriers
 if test "$sex_chromosome" = 1; then extract_carriers=$carriers_raw; fi
 if ! test -s "$extract_carriers" || ! test -s "$summary"; then
+  sex_extraction_args=()
+  if test "$sex_chromosome" = 1; then
+    sex_extraction_args=(--sample-sex-qc "$sample_sex_qc" \
+      --sex-chromosome-regions "$sex_chromosome_regions")
+  fi
   "$python" scripts/extract_zarr_allele_genotypes.py --zarr "$zarr_store" \
     --alleles "$plof_tiered" --carriers-output "$extract_carriers" \
-    --summary-output "$summary"
+    --summary-output "$summary" "${sex_extraction_args[@]}"
 fi
 if test "$sex_chromosome" = 1; then
   run_stage "$carriers" "$python" scripts/annotate_sex_chromosome_carriers.py \
@@ -187,9 +192,14 @@ if test -n "$missense_candidates"; then
     extract_missense_carriers=$missense_carriers_raw
   fi
   if ! test -s "$extract_missense_carriers" || ! test -s "$missense_summary"; then
+    sex_extraction_args=()
+    if test "$sex_chromosome" = 1; then
+      sex_extraction_args=(--sample-sex-qc "$sample_sex_qc" \
+        --sex-chromosome-regions "$sex_chromosome_regions")
+    fi
     "$python" scripts/extract_zarr_allele_genotypes.py --zarr "$zarr_store" \
       --alleles "$missense_tiered" --carriers-output "$extract_missense_carriers" \
-      --summary-output "$missense_summary"
+      --summary-output "$missense_summary" "${sex_extraction_args[@]}"
   fi
   if test "$sex_chromosome" = 1; then
     run_stage "$missense_carriers" "$python" scripts/annotate_sex_chromosome_carriers.py \
@@ -217,9 +227,11 @@ if test -n "$missense_candidates"; then
       --input "$missense_pop_annotated" --output "$missense_pop_eligible" \
       --column gnomAD4.1_joint_AF --max-af "$population_af_max"
     if ! test -s "$missense_cohort_annotated" || ! test -s "$missense_burden_eligible"; then
+      summary_prefix=genotype
+      if test "$sex_chromosome" = 1; then summary_prefix=primary_genotype; fi
       "$python" scripts/apply_cohort_af_filter.py \
         --input "$missense_pop_eligible" --allele-summary "$missense_summary" \
-        --max-af "$cohort_af_max" \
+        --max-af "$cohort_af_max" --summary-prefix "$summary_prefix" \
         --annotated-output "$missense_cohort_annotated" \
         --eligible-output "$missense_burden_eligible"
     fi

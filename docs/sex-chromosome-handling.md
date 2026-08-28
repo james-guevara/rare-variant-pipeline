@@ -85,6 +85,12 @@ prevents uncertainty about karyotype from destroying observed burden data or
 silently entering the primary test. Noncanonical chrY PAR records are retained
 for provenance but have `burden_count_available=false` to prevent double counts.
 
+The genotype-summary sidecar likewise retains whole-cohort `genotype_*` fields
+and adds `primary_genotype_ac`, `primary_genotype_an`, and
+`primary_genotype_af`. Sex-chromosome cohort-AF filtering explicitly selects the
+`primary_genotype` prefix. Thus ambiguous carriers remain inspectable without
+contributing alleles to the primary frequency numerator or denominator.
+
 The chrX/autosome median-DP ratio is a strong independent signal in G2MH:
 approximately 1.0 for XX-like samples and 0.5 for XY-like samples. Raw chrY depth
 is inflated by repetitive/multicopy mapping and is diagnostic only; it is not a

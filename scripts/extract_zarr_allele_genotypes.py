@@ -3,6 +3,7 @@
 
 import argparse
 import csv
+import json
 import re
 from pathlib import Path
 
@@ -15,13 +16,33 @@ import zarr
 POINTER = re.compile(r"^z([0-9]+)_a([0-9]+)$")
 
 
+def primary_sample_mask(chrom, position, karyotypes, regions):
+    par = any(
+        region["start"] <= position <= region["end"]
+        for region in regions["pseudoautosomal_regions"].get(chrom, [])
+    )
+    if par:
+        return np.full(len(karyotypes), (
+            chrom == regions["par_canonical_representation"]
+        ))
+    if chrom == "chrY":
+        return karyotypes == "XY-like"
+    if chrom == "chrX":
+        return np.isin(karyotypes, ["XX-like", "XY-like"])
+    raise ValueError(f"sex QC supplied for non-sex chromosome: {chrom}")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--zarr", required=True, type=Path)
     parser.add_argument("--alleles", required=True, type=Path)
     parser.add_argument("--carriers-output", required=True, type=Path)
     parser.add_argument("--summary-output", required=True, type=Path)
+    parser.add_argument("--sample-sex-qc", type=Path)
+    parser.add_argument("--sex-chromosome-regions", type=Path)
     args = parser.parse_args()
+    if bool(args.sample_sex_qc) != bool(args.sex_chromosome_regions):
+        parser.error("--sample-sex-qc and --sex-chromosome-regions must be supplied together")
 
     if args.alleles.suffix == ".parquet":
         alleles = pq.read_table(args.alleles).to_pylist()
@@ -41,6 +62,19 @@ def main():
     genotypes = root["call_genotype"]
     masks = root["call_genotype_mask"]
     sample_ids = [str(value) for value in root["sample_id"][:]]
+    sex_qc = None
+    sex_regions = None
+    if args.sample_sex_qc:
+        with args.sample_sex_qc.open() as handle:
+            qc_rows = list(csv.DictReader(handle, delimiter="\t"))
+        qc_by_sample = {row["sample_id"]: row for row in qc_rows}
+        missing = sorted(set(sample_ids) - qc_by_sample.keys())
+        if missing:
+            raise ValueError(f"VCZ samples lack sex-chromosome QC: {missing[:5]}")
+        sex_qc = np.asarray([
+            qc_by_sample[sample_id]["inferred_karyotype"] for sample_id in sample_ids
+        ])
+        sex_regions = json.loads(args.sex_chromosome_regions.read_text())
     gq_array = root.get("call_GQ")
     dp_array = root.get("call_DP")
     laa_array = root.get("call_LAA")
@@ -97,6 +131,25 @@ def main():
                 "carrier_count": int(len(carrier_indexes)),
                 "hom_alt_count": int(np.count_nonzero(dosage == 2)),
             })
+            if sex_qc is not None:
+                chrom = "chr" + str(allele.get("CHROM", "")).removeprefix("chr")
+                position = int(allele["POS"])
+                primary_samples = primary_sample_mask(
+                    chrom, position, sex_qc, sex_regions
+                )
+                primary_called = called & primary_samples[:, None]
+                primary_dosage = dosage * primary_samples
+                primary_an = int(primary_called.sum())
+                primary_ac = int(primary_dosage.sum())
+                summaries[-1].update({
+                    "primary_genotype_ac": primary_ac,
+                    "primary_genotype_an": primary_an,
+                    "primary_genotype_af": (
+                        primary_ac / primary_an if primary_an else None
+                    ),
+                    "primary_carrier_count": int(np.count_nonzero(primary_dosage > 0)),
+                    "primary_hom_alt_count": int(np.count_nonzero(primary_dosage == 2)),
+                })
 
             site_filter = "."
             if filter_chunk is not None:
