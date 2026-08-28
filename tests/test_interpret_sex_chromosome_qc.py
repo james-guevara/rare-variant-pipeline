@@ -24,11 +24,12 @@ THRESHOLDS = {
 }
 
 
-def row(x, y, calls):
+def row(x, y, calls, karyotype="ambiguous"):
     return {
         "x_autosome_dp_ratio": str(x),
         "y_autosome_dp_ratio": str(y),
         "y_call_rate": str(calls),
+        "inferred_karyotype": karyotype,
     }
 
 
@@ -38,3 +39,6 @@ def test_non_diagnostic_evidence_patterns():
     assert interpret(row(0.47, 0.91, 0.98), THRESHOLDS) == "one-X-with-excess-Y-signal"
     assert interpret(row(0.52, 0.36, 0.96), THRESHOLDS) == "one-X-plus-Y-with-GT-ploidy-discordance"
     assert interpret(row(0.95, 0.05, 0.28), THRESHOLDS) == "two-X-with-uncertain-Y-signal"
+    assert interpret(
+        row(0.50, 0.47, 0.98, "XY-like"), THRESHOLDS
+    ) == "one-X-plus-Y-compatible"

@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "cohort": "g2mh",
-  "chromosome": "chrX",
-  "contig": "X",
-  "contig_length": 156040895,
+  "chromosome": "chrY",
+  "contig": "Y",
+  "contig_length": 57227415,
   "reference_build": "GRCh38",
   "annotation_release": "Ensembl 115",
   "thresholds": {
@@ -24,15 +24,15 @@
     },
     "target_bed": {
       "kind": "file",
-      "sha256": "12ab38cee361eff77c9b3a2179f5fe93e5cbd8accaa96c1cd69ed60f2ef1f772"
+      "sha256": "b397c4946bfbabff18a264b94b24b80d60acecfe8a482495224ab07ca229a32d"
     },
     "annotation_root": {
       "kind": "directory",
-      "sentinel": "Homo_sapiens.GRCh38.115.chrX.gff3.fastvep.cache"
+      "sentinel": "Homo_sapiens.GRCh38.115.chrY.gff3.fastvep.cache"
     },
     "loftee_root": {
       "kind": "directory",
-      "sentinel": "ensembl-115/chrX.transcripts.sqlite"
+      "sentinel": "ensembl-115/chrY.transcripts.sqlite"
     },
     "genebayes": {
       "kind": "file",
@@ -48,7 +48,7 @@
     },
     "postprocess_config": {
       "kind": "file",
-      "sha256": "5c0749e934a610f96fd54a5c069b6f246bc98f90d2d2c3d2c0231f2f1cc7ce70"
+      "sha256": "a0fc463896abc54b893cd8ff2ef5ad4f622d4ad154b0aea3c2c93853a6575230"
     }
   }
 }

@@ -3,7 +3,7 @@
   "reference_build": "GRCh38",
   "annotation_release": "Ensembl 115",
   "target_bed_sha256": "12ab38cee361eff77c9b3a2179f5fe93e5cbd8accaa96c1cd69ed60f2ef1f772",
-  "sample_sex_qc_sha256": "550bd5af0d74bdb396d8a260860715525922fe91688c7b43d5bcac79e562d529",
+  "sample_sex_qc_sha256": "68b379dab3e0212e7e101149c087ad9c9077d0e17ebc33ce6cdaedfd94957487",
   "postprocess_config_sha256": "5c0749e934a610f96fd54a5c069b6f246bc98f90d2d2c3d2c0231f2f1cc7ce70",
   "expected_counts": {
     "target_intervals": 6180,

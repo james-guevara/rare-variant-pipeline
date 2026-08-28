@@ -135,3 +135,11 @@ genotype QC retained 67 rows across 38 alleles and 65 samples. Sixty-six rows
 are primary eligible and one ambiguous-sample `ABCB7` carrier is retained for
 sensitivity analysis only. Exact counts and canonical hashes are pinned in
 `resources/g2mh-chrX-lof-regression.json`.
+
+The corresponding chrY LoF-only validation targeted 254 intervals and 606
+observed alleles. Eight tiered LoF alleles produced 11 raw carrier rows: two
+XY-like primary rows, one ambiguous sensitivity row, and eight XX-like Y calls
+retained for QC provenance only. Region filtering retained eight rows; genotype
+QC retained one high-quality, haploid `KDM5D` LoF carrier in an XY-like sample.
+No ambiguous chrY burden row survived genotype QC. Exact chrY counts and hashes
+are pinned in `resources/g2mh-chrY-lof-regression.json`.

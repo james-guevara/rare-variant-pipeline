@@ -45,3 +45,6 @@ def test_y_nonpar_primary_requires_xy_like_pattern():
     policy = load_module().policy
     assert policy("chrY", 5_000_000, "XY-like", REGIONS)["primary_analysis_eligible"]
     assert not policy("chrY", 5_000_000, "XX-like", REGIONS)["primary_analysis_eligible"]
+    xx = policy("chrY", 5_000_000, "XX-like", REGIONS)
+    assert xx["burden_count_available"] is False
+    assert xx["sensitivity_analysis_group"] == "qc_only_y_ineligible_karyotype"

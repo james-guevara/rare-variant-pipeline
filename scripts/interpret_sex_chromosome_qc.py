@@ -34,6 +34,8 @@ def interpret(row: dict[str, str], thresholds: dict[str, float]) -> str:
     if x_one and y_present and y_ratio >= thresholds["excess_y_dp_ratio_min"]:
         return "one-X-with-excess-Y-signal"
     if x_one and y_present:
+        if row.get("inferred_karyotype") == "XY-like":
+            return "one-X-plus-Y-compatible"
         return "one-X-plus-Y-with-GT-ploidy-discordance"
     if x_two and y_absent:
         return "two-X-no-Y-compatible"

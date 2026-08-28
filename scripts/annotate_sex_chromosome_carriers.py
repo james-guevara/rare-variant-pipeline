@@ -33,18 +33,27 @@ def policy(chrom: str, position: int, karyotype: str, regions: dict) -> dict:
     else:
         primary = karyotype in {"XX-like", "XY-like"}
         reason = "X-nonPAR-karyotype-policy"
+    burden_available = not duplicate_par
+    if not par and chrom == "chrY" and karyotype == "XX-like":
+        burden_available = False
+    if duplicate_par:
+        sensitivity_group = "qc_only_noncanonical_par"
+    elif not par and chrom == "chrY" and karyotype == "XX-like":
+        sensitivity_group = "qc_only_y_ineligible_karyotype"
+    elif karyotype == "ambiguous":
+        sensitivity_group = "ambiguous_karyotype"
+    else:
+        sensitivity_group = "primary"
     return {
         "sex_chromosome_region": "PAR" if par else "nonPAR",
         "par_duplicate_excluded": duplicate_par,
         # Noncanonical chrY PAR rows are retained for provenance, but are not
         # burden counts because their chrX homolog is the canonical record.
-        "burden_count_available": not duplicate_par,
+        "burden_count_available": burden_available,
         "primary_analysis_eligible": primary,
         "frequency_denominator_eligible": primary,
         "sex_chromosome_policy_reason": reason,
-        "sensitivity_analysis_group": (
-            "ambiguous_karyotype" if karyotype == "ambiguous" else "primary"
-        ),
+        "sensitivity_analysis_group": sensitivity_group,
     }
 
 
