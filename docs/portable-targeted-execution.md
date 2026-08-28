@@ -70,6 +70,13 @@ Validated/example adapters are:
 The Expanse profile is an example, not a privileged workflow target. Expanse currently
 provides SingularityPRO 4.1.2 and 3.11 modules; it does not expose an Apptainer module.
 
+The GHCR image for commit `199d55e` was pulled as a scheduled `ind-shared` job and
+converted to a 189 MB SIF in shared project space. A second `ind-shared` job validated
+FastVEP, bcftools, `procps`, DuckDB/Arrow/Zarr/Pysam/PyBigWig, the embedded manifests,
+bindings and regressions, and both portable runner CLIs under SingularityPRO 4.1.2.
+Set `SINGULARITYENV_OPENBLAS_NUM_THREADS=1` and
+`SINGULARITYENV_OMP_NUM_THREADS=1` for scientific runs.
+
 ## Adding another environment
 
 1. Make the immutable scientific container accessible to the site's runtime.
