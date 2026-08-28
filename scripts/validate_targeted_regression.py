@@ -94,6 +94,20 @@ def eligible_predicates(connection, path: Path) -> tuple[str, str]:
     return primary, sensitivity
 
 
+def add_legacy_missense_aliases(observed: dict[str, int]) -> None:
+    """Expose names used by the existing pinned regression documents."""
+    for suffix in (
+        "burden_eligible_rows", "burden_eligible_alleles",
+        "burden_eligible_samples", "primary_burden_rows", "sensitivity_only_rows",
+    ):
+        observed[suffix] = observed[f"missense_{suffix}"]
+    observed["sensitivity_only_burden_rows"] = observed[
+        "missense_sensitivity_only_rows"
+    ]
+    for tier in ("miss_t1", "miss_t2", "miss_t3", "miss_t4"):
+        observed[f"primary_{tier}_rows"] = observed[f"missense_primary_{tier}_rows"]
+
+
 def observe(args, expected_document: dict) -> tuple[dict[str, int], dict[str, dict]]:
     bindings = json.loads(args.bindings.read_text())["resources"]
     run = args.run_root
@@ -189,13 +203,7 @@ def observe(args, expected_document: dict) -> tuple[dict[str, int], dict[str, di
         hashes[branch] = canonical_hashes(connection, burden, tier_column)
 
     # Older expectation files use unprefixed names for the missense final stage.
-    for suffix in (
-        "burden_eligible_rows", "burden_eligible_alleles",
-        "burden_eligible_samples", "primary_burden_rows", "sensitivity_only_rows",
-    ):
-        observed[suffix] = observed[f"missense_{suffix}"]
-    for tier in ("miss_t1", "miss_t2", "miss_t3", "miss_t4"):
-        observed[f"primary_{tier}_rows"] = observed[f"missense_primary_{tier}_rows"]
+    add_legacy_missense_aliases(observed)
     return observed, hashes
 
 
