@@ -1,6 +1,7 @@
 process GATHER_RARE_BURDENS {
     tag 'cohort'
     container params.targeted_container
+    publishDir "${params.outdir}/rare_burdens", mode: 'copy'
     cpus 1
     memory '4 GB'
     time '1h'

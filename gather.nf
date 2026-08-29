@@ -5,6 +5,7 @@ params.sample_manifest = null
 params.package_glob = null
 params.expected_chromosomes = (1..22).collect { "chr${it}" }.plus(['chrX', 'chrY']).join(',')
 params.targeted_container = null
+params.outdir = 'results'
 
 include { RARE_BURDEN_GATHER_WORKFLOW } from './workflows/rare_burden_gather'
 

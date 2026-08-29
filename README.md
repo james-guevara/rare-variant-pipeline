@@ -174,6 +174,22 @@ sample manifest and the completed chromosome-output packages. It emits
 `gather.nf` entrypoint allows this aggregation contract to be run and tested on its
 own before composition with the PGS workflow.
 
+`cohort.nf` connects those two reusable pieces without adding another scientific
+implementation. Its tab-separated run sheet has exactly three columns:
+
+```text
+chromosome\tmanifest\tbindings
+chr1\t/path/to/g2mh-chr1.json\t/path/to/aws-g2mh-chr1.json
+chrX\t/path/to/g2mh-chrX.json\t/path/to/aws-g2mh-chrX.json
+```
+
+Each binding must name a unique chromosome run root. The wrapper scatters all rows,
+passes the resulting checksummed chromosome packages directly to the gather workflow,
+and publishes `rare_burdens.tsv` plus
+`rare_burdens_by_chromosome_stratum.tsv` under `${params.outdir}/rare_burdens`.
+`--expected_chromosomes` is required and must match the packages exactly, preventing
+an incomplete cohort from silently producing zero-filled burdens.
+
 **New to this pipeline?** [`docs/running-g2mh.md`](docs/running-g2mh.md) is a runbook you
 can follow top to bottom — one-time setup, a chrY smoke test with the numbers to check
 against, then the full run. The rest of this section is reference material.
