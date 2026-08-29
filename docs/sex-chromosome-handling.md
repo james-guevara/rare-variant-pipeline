@@ -177,3 +177,6 @@ as `inframe_insertion&stop_retained_variant`. FastVEP commit `cb8113d` applies t
 peptide-derived CDS boundary during consequence calculation; an end-to-end rerun
 removed the three false carrier rows and reproduced the previous VEP pipeline's
 18 `lof_t1` and 22 `lof_t2` rows exactly. The missense branch was unchanged.
+The production container also represents one retained multiallelic call as
+allele-specific `GT=0|1` while preserving its original-site `source_GT=0|9`;
+carrier identity, tier, and all variant-level hashes remain unchanged.

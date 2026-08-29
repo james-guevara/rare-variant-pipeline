@@ -44,11 +44,11 @@
     "primary_miss_t4_rows": 668
   },
   "canonical_lof_hashes": {
-    "carrier_sha256": "0ed97a815a6ce74eabc89d7ff67c70f30d218703397843cc565eecd0f5fd2cee",
+    "carrier_sha256": "1a606d8684c56d76dcc0fbcfa9ab8209f49c330d8debaab3ea13a116106cb332",
     "variant_sha256": "645ccf930ee1de77411094212000f991d22218ca92797af56f7bf2665d8e573f",
     "coordinate_sha256": "2d7745d5cbe20bb9bac1eb62d7657508d8c8870fa13c60e22e2b768feeee852c",
     "variant_core_sha256": "8187cb2c92070f62eb95b75a601c46a982776501aecc7a5f87b83e7df9df201b",
-    "carrier_core_sha256": "6e01e4ad2787e2043cf560c86bba0160df04829ec2db312d912ef359bc5ed0b6"
+    "carrier_core_sha256": "f9bf53fb9e8e8a965b3c8340fabdd8e0e489960252b70ee443edf186d971010e"
   },
   "canonical_missense_hashes": {
     "carrier_sha256": "87829f5b22c5aa4d7547aae48297a95e00bed53fee0b0042acc0c83038195f5c",
