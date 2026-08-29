@@ -4,6 +4,18 @@ This is a running ledger of operational problems encountered while validating th
 targeted AWS workflow. Add an entry when a failure teaches a reusable lesson; do not
 record transient scientific-result differences here.
 
+### Resource helper expected `curl` inside science image (2026-08-28)
+
+- **Symptom:** the Ensembl resource helper exited immediately with
+  `curl: command not found` in the validated targeted container.
+- **Cause:** the helper can download missing sources, but the deliberately minimal
+  runtime image does not contain transfer utilities.
+- **Impact:** a three-second chr2 preflight failed before producing annotation
+  derivatives; no scientific chromosome run was affected.
+- **Resolution:** download immutable source archives on the Expanse host, checksum
+  them in the shared registry, and perform only deterministic derivation inside the
+  container. Do not expand the science image solely to add `curl`.
+
 ## Prevention built into the workflow
 
 - Build and runtime dependencies live in one pinned container.
