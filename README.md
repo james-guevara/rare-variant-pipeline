@@ -146,9 +146,17 @@ the named DSL2 workflow in `workflows/targeted_manifest.nf`:
 include { TARGETED_MANIFEST_WORKFLOW } from './workflows/targeted_manifest'
 
 workflow {
-    TARGETED_MANIFEST_WORKFLOW()
+    manifest_bindings = Channel.of(tuple(file(params.manifest), file(params.bindings)))
+    TARGETED_MANIFEST_WORKFLOW(manifest_bindings)
 }
 ```
+
+The reusable workflow takes a channel of `(science_manifest, environment_bindings)`
+file tuples. The standalone wrapper creates a one-element channel; a cohort-level
+parent can provide one tuple per chromosome and Nextflow will scatter the same
+validated process without copying its implementation. Each binding supplies its own
+unique run root. `params.targeted_container` remains the single digest-pinned runtime
+for every tuple in a launch.
 
 The named workflow uses the same manifest, environment bindings, container,
 preflight, and run-root parameters as the standalone command and emits both

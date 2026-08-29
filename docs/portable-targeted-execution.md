@@ -103,6 +103,28 @@ Validated/example adapters are:
 - `expanse`: Slurm `ind-shared` and `singularitypro/4.1.2`;
 - `aws_batch`: AWS Batch executor, with queue and region supplied as parameters.
 
+AWS Batch additionally requires an S3 Nextflow work location and an explicit mount
+for any host filesystem used by the bindings. For the existing us-east-1 FSx compute
+environment, the controller command is:
+
+```bash
+nextflow -C targeted.config run targeted.nf -profile aws_batch \
+  -bucket-dir s3://sebat-genomics-work/nextflow/rare-variant-targeted/work \
+  --manifest manifests/g2mh-chrY.json \
+  --bindings config/bindings/aws-g2mh-chrY.json \
+  --run_root /fsx/loftee-parity/workflows/g2mh/chrY-nextflow-run-id \
+  --targeted_container \
+    640838474376.dkr.ecr.us-east-1.amazonaws.com/rare-variant-pipeline-targeted@sha256:DIGEST \
+  --scheduler_queue rare-variant-vcz-fsx \
+  --aws_batch_volumes /fsx:/fsx
+```
+
+`-bucket-dir` is controller/task scratch and checkpoint state; scientific resources
+and outputs remain on the binding's FSx paths. The launch template must already mount
+FSx on the Batch host, while `--aws_batch_volumes` exposes that host mount inside the
+task container. Other AWS deployments supply their own queue, work bucket, and volume
+mapping rather than editing the scientific manifest.
+
 The Expanse profile is an example, not a privileged workflow target. Expanse currently
 provides SingularityPRO 4.1.2 and 3.11 modules; it does not expose an Apptainer module.
 

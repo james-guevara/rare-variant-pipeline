@@ -42,12 +42,11 @@ process TARGETED_CHROMOSOME {
 }
 
 workflow TARGETED_MANIFEST_WORKFLOW {
+    take:
+    manifest_bindings
+
     main:
-    if (!params.manifest || !params.bindings || !params.targeted_container) {
-        error 'Required: --manifest, --bindings, and --targeted_container'
-    }
-    manifests = Channel.of(tuple(file(params.manifest), file(params.bindings)))
-    TARGETED_CHROMOSOME(manifests)
+    TARGETED_CHROMOSOME(manifest_bindings)
 
     emit:
     execution_receipt = TARGETED_CHROMOSOME.out[0]

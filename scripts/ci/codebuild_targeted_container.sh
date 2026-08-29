@@ -56,6 +56,7 @@ docker build \
 docker run --rm --entrypoint /bin/bash "$IMAGE_URI" -c '
   set -euo pipefail
   fastvep --version
+  aws --version
   bcftools --version | head -n1
   python -c "import duckdb, pyarrow, pyBigWig, pysam, zarr"
   python scripts/run_standalone_loftee.py --help >/dev/null

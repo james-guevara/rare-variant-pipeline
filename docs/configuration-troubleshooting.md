@@ -186,6 +186,20 @@ record transient scientific-result differences here.
   explicitly invoke a versioned Bash script. Validate the shell before beginning a
   long FSx or S3 operation.
 
+### Nextflow AWS Batch task image lacked the AWS CLI (2026-08-28)
+
+- **Symptom:** Nextflow submitted the task successfully and mounted `/fsx`, but both
+  attempts exited immediately with code 127 and `aws: command not found`.
+- **Cause:** the AWS Batch executor's task wrapper uses the AWS CLI inside the process
+  container to fetch `.command.run` from the S3 work directory and upload its log.
+  The scientific image did not yet include that executor runtime dependency.
+- **Impact:** two sub-second failed tasks; no scientific command ran and the existing
+  checkpoints and outputs were untouched.
+- **Avoidable:** yes.
+- **Prevention:** install `awscli` in the targeted image, assert `aws --version` during
+  CodeBuild, and retain the `-preview` controller check separately. Preview validates
+  DSL and executor configuration but cannot prove commands installed inside an image.
+
 ### Portable Nextflow config inherited legacy site defaults (2026-08-27)
 
 - **Symptom:** `nextflow config` for the local profile still showed Expanse Slurm,

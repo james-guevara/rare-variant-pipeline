@@ -21,6 +21,7 @@ RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         bcftools \
         ca-certificates \
+        awscli \
         procps \
         tabix \
     && rm -rf /var/lib/apt/lists/*
@@ -34,6 +35,7 @@ COPY src ./src
 RUN uv sync --frozen --no-dev \
     && .venv/bin/python -c "import duckdb, pyarrow, pyBigWig, pysam, zarr" \
     && /opt/fastvep/fastvep --version \
+    && aws --version \
     && bcftools --version | head -n 1
 
 COPY scripts ./scripts

@@ -26,5 +26,7 @@ def test_targeted_wrapper_compiles_and_exposes_receipt(tmp_path: Path):
     assert result.returncode == 0, result.stdout + result.stderr
     workflow = (REPO / "workflows" / "targeted_manifest.nf").read_text()
     assert "workflow TARGETED_MANIFEST_WORKFLOW" in workflow
+    assert "take:\n    manifest_bindings" in workflow
+    assert "TARGETED_CHROMOSOME(manifest_bindings)" in workflow
     assert "execution_receipt = TARGETED_CHROMOSOME.out[0]" in workflow
     assert "chromosome_outputs = TARGETED_CHROMOSOME.out[1]" in workflow
