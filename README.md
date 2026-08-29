@@ -190,6 +190,39 @@ and publishes `rare_burdens.tsv` plus
 `--expected_chromosomes` is required and must match the packages exactly, preventing
 an incomplete cohort from silently producing zero-filled burdens.
 
+### PGS and rare-burden integration
+
+`INTEGRATED_ANALYSIS_WORKFLOW` in `workflows/integrated_analysis.nf` is the narrow
+join boundary between this repository and the reusable `PGS_WORKFLOW` from
+`james-guevara/pgs_pipeline`. It consumes the PGS `analysis_dataset` and
+`analysis_dictionary` outputs plus this pipeline's gathered `rare_burdens` table.
+The standalone `integrate.nf` wrapper accepts the same artifacts as paths.
+
+The join deliberately uses the PGS analysis dataset as its participant universe, in
+the original row order. Every PGS IID must be present in the completed wide
+rare-burden table; missing participants or blank/non-integer burden values fail the
+job instead of being silently converted to zero. Rare-only participants are excluded
+but counted in `integrated_analysis_qc.json`. Nonempty `FID` and `SEX` values must
+agree if both inputs provide them.
+
+Outputs under `${params.outdir}/integrated_analysis` are:
+
+- `integrated_analysis_dataset.tsv`, containing PGS/PCA variables and `lof_t1`,
+  `lof_t2`, and `miss_t1` through `miss_t4`;
+- `integrated_analysis_dictionary.tsv`, following the merged variable template;
+- `integrated_analysis_qc.json`, recording cohort ID, input/output participant counts,
+  excluded rare-only participants, and the analysis-universe rule.
+
+```bash
+nextflow -C targeted.config run integrate.nf -profile local_docker \
+  --pgs_dataset /path/to/analysis_dataset.tsv \
+  --pgs_dictionary /path/to/analysis_dataset_dictionary.tsv \
+  --rare_burdens /path/to/rare_burdens.tsv \
+  --cohort_id g2mh \
+  --targeted_container docker.io/example/targeted@sha256:DIGEST \
+  --outdir results/g2mh
+```
+
 **New to this pipeline?** [`docs/running-g2mh.md`](docs/running-g2mh.md) is a runbook you
 can follow top to bottom — one-time setup, a chrY smoke test with the numbers to check
 against, then the full run. The rest of this section is reference material.

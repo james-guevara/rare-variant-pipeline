@@ -64,3 +64,13 @@ def test_cohort_wrapper_compiles_with_scatter_and_gather(tmp_path: Path):
     assert "TARGETED_MANIFEST_WORKFLOW(manifest_bindings)" in source
     assert "RARE_BURDEN_GATHER_WORKFLOW(" in source
     assert "rare_burdens = RARE_BURDEN_GATHER_WORKFLOW.out.rare_burdens" in source
+
+
+def test_integrated_analysis_named_workflow_is_composable():
+    source = (REPO / "workflows" / "integrated_analysis.nf").read_text()
+    assert "workflow INTEGRATED_ANALYSIS_WORKFLOW" in source
+    assert "pgs_dataset" in source
+    assert "rare_burdens" in source
+    assert "dataset = BUILD_INTEGRATED_ANALYSIS_DATASET.out.dataset" in source
+    assert "dictionary = BUILD_INTEGRATED_ANALYSIS_DATASET.out.dictionary" in source
+    assert "qc = BUILD_INTEGRATED_ANALYSIS_DATASET.out.qc" in source
