@@ -173,6 +173,21 @@ candidate/QC resources, and only then materialize ready-to-run manifests and bin
 Shared Ensembl, LOFTEE, GeneBayes, dbNSFP, and problematic-region resources remain
 pipeline-owned rather than user inputs.
 
+The first read-only preparation stage is:
+
+```bash
+python scripts/inspect_cohort_vcfs.py \
+  --preparation-plan setup/new_cohort/chromosome_preparation.tsv \
+  --sample-manifest setup/new_cohort/sample_manifest.tsv \
+  --output-plan setup/new_cohort/chromosome_preparation.inspected.tsv \
+  --report setup/new_cohort/vcf_inspection.json
+```
+
+It reads VCF headers only, resolves `1` versus `chr1`, checks GRCh38 contig lengths,
+requires exact PSAM/VCF sample-set concordance, and verifies `GT`, `GQ`, `DP`, and
+`AD` are declared. Passing rows advance to `READY_FOR_ZARR`; no variant records are
+converted or annotated by this stage.
+
 ### Reusable targeted workflow
 
 `targeted.nf` remains the standalone entrypoint, but is now a thin wrapper around
