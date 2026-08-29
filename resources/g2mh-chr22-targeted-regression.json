@@ -7,7 +7,7 @@
   "expected_counts": {
     "target_intervals": 5391,
     "targeted_alleles": 28966,
-    "plof_rows": 351,
+    "plof_rows": 350,
     "lof_t1": 10,
     "lof_t2": 43,
     "qualifying_lof": 53,
@@ -49,10 +49,10 @@
     "carrier_core_sha256": "52cb792ea95ee10117dcf5866aceed5f631ab26a3f046cc1c972dc6879e6bc85"
   },
   "canonical_missense_hashes": {
-    "carrier_sha256": "13f3c331d6f98cc67bca9b6cb15060ed4d763293245f2c79b4f64a30d0c66e67",
+    "carrier_sha256": "ba0813f0d242937eea949e2c9eb514ef6fda111fd0a27a78427adf97057bdb0b",
     "variant_sha256": "3f4c94ec0e9c7c30a40a9a6d2a3639a6c7e193b974ceeee51c8568f4032ddcb1",
     "coordinate_sha256": "8cec74cb40896c9b7a1c5f9b9afb411b2ba34e9655fa9565d602081c8dd0e625",
     "variant_core_sha256": "6768b878c71648ed7a50e374c47da8248fba8ad9cee508dd1473b55edc147549",
-    "carrier_core_sha256": "c54e66e72c2dae42013bba7efe7d6756817f1c0a4bf80aa3f02dc7bed24c7023"
+    "carrier_core_sha256": "c0b956c467cbdf0629a40735b9b5082fae1fd56bffcc003e8ad9e133fdc06919"
   }
 }

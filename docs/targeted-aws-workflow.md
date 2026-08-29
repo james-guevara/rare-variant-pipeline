@@ -207,6 +207,15 @@ alleles and reproduced the earlier full-VEP result exactly: 40 LoF rows (18 `lof
 22 `lof_t2`). All 847 missense rows and their canonical hashes were unchanged. The
 corrected counts and hashes now define the chrX regression contract.
 
+The same final container was regression-tested on chr22. FastVEP `cb8113d`
+corrected one additional terminal shifted insertion in `CBY1` from
+`frameshift_variant`/LOFTEE HC to `inframe_insertion&stop_retained_variant`, matching
+the corrected boundary semantics. This allele was not in a tiered gene, so all 53
+qualifying LoF alleles and all 38 final LoF carrier rows were unchanged. All 1,111
+final missense carrier keys were also unchanged; only serialization-sensitive hashes
+changed where multiallelic `GT` is now allele-specific and `source_GT` preserves the
+original call.
+
 The policy is cohort-neutral; a new cohort supplies its own sample-sex QC binding and
 must establish a regression fixture before production use. Unknown or unusual
 karyotypes remain reportable sensitivity strata rather than hard-coded exclusions.
