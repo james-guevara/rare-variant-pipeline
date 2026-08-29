@@ -74,3 +74,4 @@ def test_integrated_analysis_named_workflow_is_composable():
     assert "dataset = BUILD_INTEGRATED_ANALYSIS_DATASET.out.dataset" in source
     assert "dictionary = BUILD_INTEGRATED_ANALYSIS_DATASET.out.dictionary" in source
     assert "qc = BUILD_INTEGRATED_ANALYSIS_DATASET.out.qc" in source
+    assert "exclusions = BUILD_INTEGRATED_ANALYSIS_DATASET.out.exclusions" in source

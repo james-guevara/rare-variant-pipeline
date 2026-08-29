@@ -198,12 +198,14 @@ join boundary between this repository and the reusable `PGS_WORKFLOW` from
 `analysis_dictionary` outputs plus this pipeline's gathered `rare_burdens` table.
 The standalone `integrate.nf` wrapper accepts the same artifacts as paths.
 
-The join deliberately uses the PGS analysis dataset as its participant universe, in
-the original row order. Every PGS IID must be present in the completed wide
-rare-burden table; missing participants or blank/non-integer burden values fail the
-job instead of being silently converted to zero. Rare-only participants are excluded
-but counted in `integrated_analysis_qc.json`. Nonempty `FID` and `SEX` values must
-agree if both inputs provide them.
+The join deliberately starts from the PGS analysis dataset, in its original row
+order. `--missing_rare_policy error` is the default: every PGS IID must be present in
+the completed wide rare-burden table. Set `--missing_rare_policy exclude` to continue
+with matched participants and record missing PGS IIDs in
+`integrated_analysis_exclusions.tsv`. Neither policy converts missing data to zero;
+blank/non-integer burden values still fail. Rare-only participants are excluded but
+counted in `integrated_analysis_qc.json`. Nonempty `FID` and `SEX` values must agree
+if both inputs provide them.
 
 Outputs under `${params.outdir}/integrated_analysis` are:
 
@@ -212,6 +214,8 @@ Outputs under `${params.outdir}/integrated_analysis` are:
 - `integrated_analysis_dictionary.tsv`, following the merged variable template;
 - `integrated_analysis_qc.json`, recording cohort ID, input/output participant counts,
   excluded rare-only participants, and the analysis-universe rule.
+- `integrated_analysis_exclusions.tsv`, listing PGS participants omitted under the
+  configurable `exclude` policy (header-only under a complete strict join).
 
 ```bash
 nextflow -C targeted.config run integrate.nf -profile local_docker \

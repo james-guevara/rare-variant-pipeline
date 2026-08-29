@@ -16,6 +16,7 @@ process BUILD_INTEGRATED_ANALYSIS_DATASET {
     path 'integrated_analysis_dataset.tsv', emit: dataset
     path 'integrated_analysis_dictionary.tsv', emit: dictionary
     path 'integrated_analysis_qc.json', emit: qc
+    path 'integrated_analysis_exclusions.tsv', emit: exclusions
 
     script:
     """
@@ -25,9 +26,11 @@ process BUILD_INTEGRATED_ANALYSIS_DATASET {
       --rare-burdens ${rare_burdens} \
       --variable-template ${variable_template} \
       --cohort-id '${params.cohort_id}' \
+      --missing-rare-policy '${params.missing_rare_policy}' \
       --output integrated_analysis_dataset.tsv \
       --dictionary integrated_analysis_dictionary.tsv \
-      --qc integrated_analysis_qc.json
+      --qc integrated_analysis_qc.json \
+      --exclusions integrated_analysis_exclusions.tsv
     """
 }
 
@@ -47,4 +50,5 @@ workflow INTEGRATED_ANALYSIS_WORKFLOW {
     dataset = BUILD_INTEGRATED_ANALYSIS_DATASET.out.dataset
     dictionary = BUILD_INTEGRATED_ANALYSIS_DATASET.out.dictionary
     qc = BUILD_INTEGRATED_ANALYSIS_DATASET.out.qc
+    exclusions = BUILD_INTEGRATED_ANALYSIS_DATASET.out.exclusions
 }

@@ -46,6 +46,7 @@ def test_integrates_on_pgs_universe_and_reports_rare_only(tmp_path):
         "--output", str(output),
         "--dictionary", str(merged_dictionary),
         "--qc", str(qc),
+        "--exclusions", str(tmp_path / "exclusions.tsv"),
     ], check=True)
 
     integrated = rows(output)
@@ -69,7 +70,32 @@ def test_rejects_pgs_participant_without_completed_rare_burdens(tmp_path):
         "--pgs-dictionary", str(dictionary), "--rare-burdens", str(rare),
         "--variable-template", str(TEMPLATE), "--cohort-id", "test",
         "--output", str(tmp_path / "out"), "--dictionary", str(tmp_path / "dict"),
-        "--qc", str(tmp_path / "qc"),
+        "--qc", str(tmp_path / "qc"), "--exclusions", str(tmp_path / "exclusions"),
     ], capture_output=True, text=True)
     assert result.returncode != 0
     assert "PGS participants are absent" in result.stderr
+
+
+def test_exclude_policy_continues_and_reports_missing_pgs_participant(tmp_path):
+    pgs = tmp_path / "pgs.tsv"; pgs.write_text("IID\nS1\nS2\n")
+    dictionary = tmp_path / "dictionary.tsv"
+    dictionary.write_text("variable\tdata_type\tnullable\tdescription\tsource\nIID\tstring\tfalse\tID\tPGS\n")
+    rare = tmp_path / "rare.tsv"
+    rare.write_text(
+        "FID\tIID\tSEX\tlof_t1\tlof_t2\tmiss_t1\tmiss_t2\tmiss_t3\tmiss_t4\n"
+        "F1\tS1\tF\t0\t0\t0\t0\t0\t0\n"
+    )
+    output, qc, exclusions = tmp_path / "out.tsv", tmp_path / "qc.json", tmp_path / "excluded.tsv"
+    subprocess.run([
+        sys.executable, str(SCRIPT), "--pgs-dataset", str(pgs),
+        "--pgs-dictionary", str(dictionary), "--rare-burdens", str(rare),
+        "--variable-template", str(TEMPLATE), "--cohort-id", "test",
+        "--missing-rare-policy", "exclude", "--output", str(output),
+        "--dictionary", str(tmp_path / "dict.tsv"), "--qc", str(qc),
+        "--exclusions", str(exclusions),
+    ], check=True)
+    assert [row["IID"] for row in rows(output)] == ["S1"]
+    assert rows(exclusions) == [{"IID": "S2", "reason": "missing_from_rare_burdens"}]
+    report = json.loads(qc.read_text())
+    assert report["missing_rare_policy"] == "exclude"
+    assert report["pgs_participants_missing_rare_burdens"] == 1

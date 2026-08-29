@@ -47,9 +47,14 @@ def main():
     parser.add_argument("--rare-burdens", required=True, type=Path)
     parser.add_argument("--variable-template", required=True, type=Path)
     parser.add_argument("--cohort-id", required=True)
+    parser.add_argument(
+        "--missing-rare-policy", choices=("error", "exclude"), default="error",
+        help="error on PGS participants absent from rare burdens, or exclude and report them",
+    )
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--dictionary", required=True, type=Path)
     parser.add_argument("--qc", required=True, type=Path)
+    parser.add_argument("--exclusions", required=True, type=Path)
     args = parser.parse_args()
 
     pgs_fields, pgs_rows, pgs = index_unique(args.pgs_dataset, "IID")
@@ -58,7 +63,7 @@ def main():
     if missing_tiers:
         raise ValueError(f"rare burden table is missing tiers: {missing_tiers}")
     missing_rare = sorted(set(pgs) - set(rare))
-    if missing_rare:
+    if missing_rare and args.missing_rare_policy == "error":
         raise ValueError(
             "PGS participants are absent from the completed rare-burden table: "
             f"count={len(missing_rare)} examples={missing_rare[:5]}"
@@ -69,6 +74,8 @@ def main():
     output_rows = []
     for pgs_row in pgs_rows:
         iid = pgs_row["IID"]
+        if iid not in rare:
+            continue
         rare_row = rare[iid]
         result = {
             "FID": compatible(pgs_row, rare_row, "FID", iid),
@@ -129,15 +136,26 @@ def main():
         writer.writeheader()
         writer.writerows(dictionary_rows)
 
+    with args.exclusions.open("w", newline="") as handle:
+        writer = csv.DictWriter(
+            handle, ["IID", "reason"], delimiter="\t", lineterminator="\n"
+        )
+        writer.writeheader()
+        writer.writerows(
+            {"IID": iid, "reason": "missing_from_rare_burdens"}
+            for iid in missing_rare
+        )
+
     args.qc.write_text(json.dumps({
         "schema_version": 1,
         "cohort_id": args.cohort_id,
         "analysis_universe": "pgs_analysis_dataset",
+        "missing_rare_policy": args.missing_rare_policy,
         "pgs_participants": len(pgs_rows),
         "rare_burden_participants": len(rare_rows),
         "integrated_participants": len(output_rows),
         "rare_only_participants_excluded": len(set(rare) - set(pgs)),
-        "pgs_participants_missing_rare_burdens": 0,
+        "pgs_participants_missing_rare_burdens": len(missing_rare),
         "burden_variables": list(TIERS),
     }, indent=2, sort_keys=True) + "\n")
 

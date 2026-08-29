@@ -8,6 +8,7 @@ params.variable_template = "${projectDir}/resources/integrated-analysis-variable
 params.cohort_id = null
 params.targeted_container = null
 params.outdir = 'results'
+params.missing_rare_policy = 'error'
 
 include { INTEGRATED_ANALYSIS_WORKFLOW } from './workflows/integrated_analysis'
 
