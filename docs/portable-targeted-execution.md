@@ -30,6 +30,12 @@ on Expanse; only the chromosome-specific portable derivatives remained to be
 built. This distinction avoids unnecessary source downloads and prevents
 AWS-only resources from becoming the accidental source of truth.
 
+Threshold-specific dbNSFP/GeneBayes candidate bundles are optional caches, not a
+required workflow layer. The default multi-cohort path should broadly extract
+observed coding/splice-region sites from Zarr, run FastVEP, join the fast Parquet
+annotations, and recover genotypes only after filtering. This keeps changes to
+missense thresholds, gene sets, or constraint models from requiring BED rebuilds.
+
 The targeted workflow has three independent layers. Keeping them separate is the
 portability contract.
 
