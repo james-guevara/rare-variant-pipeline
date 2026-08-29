@@ -137,6 +137,42 @@ for user accounts, so `singularity build --fakeroot` is refused — hence CI.
 
 ## Usage
 
+### Initialize a new cohort from VCF and PSAM
+
+The user-facing starting point is `scripts/initialize_cohort.py`. It requires only a
+joint VCF (or a per-chromosome VCF template), a PLINK PSAM, a shared pipeline-resource
+root, and a cohort output root:
+
+```bash
+python scripts/initialize_cohort.py \
+  --cohort new_cohort \
+  --joint-vcf s3://bucket/new_cohort.vcf.gz \
+  --psam /path/to/new_cohort.psam \
+  --reference-build GRCh38 \
+  --shared-resources-root /shared/rare-variant-pipeline \
+  --cohort-root /cohorts/new_cohort \
+  --output-dir setup/new_cohort
+```
+
+For separate chromosome files, replace `--joint-vcf` with a template such as
+`--vcf-template 's3://bucket/new_cohort.{chrom}.vcf.gz'`.
+
+Initialization performs no annotation and does not pretend cohort-derived resources
+already exist. It emits:
+
+- `cohort.json`: the small user declaration;
+- `sample_manifest.tsv`: normalized `FID`, `IID`, and `SEX` from the PSAM;
+- `chromosome_preparation.tsv`: paths for VCF inspection, Zarr conversion, observed
+  candidate derivation, postprocessing configuration, and eventual manifests/bindings;
+- `initialization_qc.json`: sample/sex counts and
+  `derived_resources_ready=false`.
+
+Every chromosome begins in `PENDING_DERIVED_RESOURCES`. Subsequent preparation stages
+inspect VCF headers and sample concordance, create the Zarr stores and cohort-derived
+candidate/QC resources, and only then materialize ready-to-run manifests and bindings.
+Shared Ensembl, LOFTEE, GeneBayes, dbNSFP, and problematic-region resources remain
+pipeline-owned rather than user inputs.
+
 ### Reusable targeted workflow
 
 `targeted.nf` remains the standalone entrypoint, but is now a thin wrapper around
