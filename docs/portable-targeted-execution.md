@@ -125,6 +125,22 @@ FSx on the Batch host, while `--aws_batch_volumes` exposes that host mount insid
 task container. Other AWS deployments supply their own queue, work bucket, and volume
 mapping rather than editing the scientific manifest.
 
+### Validated AWS Batch controller path
+
+On 2026-08-28, Nextflow 26.04.6 submitted the named workflow to
+`rare-variant-vcz-fsx` using targeted image digest
+`sha256:0bfe456debcff9a5936ecbcba705304ca5f402b6d82875184e574557e7827734`.
+The chrY task reused only extraction/normalization checkpoints 01–03, reran FastVEP
+through burden packaging, and passed all 35 pinned count checks and ten canonical
+hashes. The run root is
+`/fsx/loftee-parity/workflows/g2mh/chrY-nextflow-e628b3d-v1`; its Nextflow work
+package is under S3 work hash `8f/a2a2a65101748a04f11c8001893d38`.
+
+The first submission test established a required runtime contract: the process image
+must contain the AWS CLI because Nextflow's Batch wrapper transfers `.command.run`,
+logs, and declared outputs through the S3 work directory. Image commit `03f439b`
+adds that dependency and CodeBuild now checks `aws --version` before publishing.
+
 The Expanse profile is an example, not a privileged workflow target. Expanse currently
 provides SingularityPRO 4.1.2 and 3.11 modules; it does not expose an Apptainer module.
 
