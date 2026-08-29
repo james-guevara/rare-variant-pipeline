@@ -15,6 +15,8 @@ record transient scientific-result differences here.
 - **Resolution:** download immutable source archives on the Expanse host, checksum
   them in the shared registry, and perform only deterministic derivation inside the
   container. Do not expand the science image solely to add `curl`.
+- **Python path:** resource construction must use `/opt/rvp/.venv/bin/python`, not
+  the image's system Python; the latter intentionally lacks `pysam`.
 
 ## Prevention built into the workflow
 
