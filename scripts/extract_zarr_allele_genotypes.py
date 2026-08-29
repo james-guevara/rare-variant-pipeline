@@ -16,6 +16,24 @@ import zarr
 POINTER = re.compile(r"^z([0-9]+)_a([0-9]+)$")
 
 
+def render_genotype(genotype, called, separator, alt_index=None):
+    """Render a source or allele-specific genotype.
+
+    When ``alt_index`` is supplied, the selected ALT is encoded as 1 and every
+    other called allele as 0. This keeps GT consistent with the biallelic
+    REF/ALT and AD fields emitted for each carrier row.
+    """
+    values = []
+    for value, is_called in zip(genotype, called):
+        if not is_called:
+            values.append(".")
+        elif alt_index is None:
+            values.append(str(int(value)))
+        else:
+            values.append("1" if int(value) == alt_index else "0")
+    return separator.join(values)
+
+
 def primary_sample_mask(chrom, position, karyotypes, regions):
     par = any(
         region["start"] <= position <= region["end"]
@@ -167,9 +185,11 @@ def main():
                 separator = "|" if (
                     phased_chunk is not None and phased_chunk[local_index, sample_index]
                 ) else "/"
-                gt_text = separator.join(
-                    str(int(value)) if is_called else "."
-                    for value, is_called in zip(genotype, genotype_called)
+                source_gt_text = render_genotype(
+                    genotype, genotype_called, separator
+                )
+                gt_text = render_genotype(
+                    genotype, genotype_called, separator, alt_index
                 )
                 ad_ref = None
                 ad_alt = None
@@ -220,6 +240,7 @@ def main():
                     "sample_id": sample_ids[sample_index],
                     "FILTER": site_filter,
                     "GT": gt_text,
+                    "source_GT": source_gt_text,
                     "AD": ad_text,
                     "genotype": gt_text,
                     # QC must use these mask-derived values, never the spelling

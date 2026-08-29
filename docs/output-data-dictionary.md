@@ -81,6 +81,9 @@ numbered filtering and annotation stages unless stated otherwise.
 | `is_heterozygous` | boolean | `called_ploidy == 2` and `alt_dosage == 1`. |
 | `is_homozygous_alt` | boolean | `called_ploidy == 2` and `alt_dosage == 2`. |
 | `is_hemizygous_alt` | boolean | `called_ploidy == 1` and `alt_dosage == 1`. |
+| `GT`, `genotype` | string | Genotype recoded relative to the carrier row's single `ALT` (`0/1`, `1/1`, and haploid equivalents). |
+| `source_GT` | string | Original VCZ genotype encoding before biallelic decomposition; this may contain allele indices such as `0/2`. |
+| `AD` | string | Reference and selected-ALT depths for this biallelic carrier row. |
 
 The genotype-QC stage computes allele balance from `AD` but does not retain a separate
 `AB` column. Its thresholds are recorded in the run's postprocessing configuration.
