@@ -1,7 +1,7 @@
 FROM public.ecr.aws/docker/library/rust:1.89-bookworm AS fastvep-builder
 
 ARG FASTVEP_REPOSITORY=https://github.com/james-guevara/fastVEP.git
-ARG FASTVEP_COMMIT=3bdb862b3153a90ef8cca0b07f02f357a15a3eb0
+ARG FASTVEP_COMMIT=cb8113d7bab2db42cb06bb2b2a40c57b60ea2561
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates git \
     && rm -rf /var/lib/apt/lists/* \
