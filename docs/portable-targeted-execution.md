@@ -1,5 +1,35 @@
 # Portable targeted execution
 
+## Authoritative resource locations
+
+Do not interpret an absent chromosome under the curated portable registry as proof
+that the underlying annotation resource is unavailable. The resource layers have
+different purposes:
+
+- `/expanse/projects/sebat1/s3/data/sebat/resources/dbNSFP/5.3.1a` is the
+  authoritative Expanse dbNSFP source and contains the genome-wide score and AF
+  Parquets.
+- `/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/VEP_CACHE/homo_sapiens/115_GRCh38`
+  is the existing Ensembl VEP 115 cache. It can be used to export the
+  VEP-compatible transcript-priority table for chromosomes not yet packaged.
+- `/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/ensembl-vep_115.2--pl5321h2a3209d_1.with_samtools`
+  is the validated custom VEP 115 container used for that export.
+- `/expanse/projects/sebat1/resources/rare-variant-pipeline` is the curated,
+  shared portable-resource registry. A chromosome appears here only after its
+  derived FASTA/GFF3, FastVEP cache, LOFTEE transcript database, transcript
+  priority, targets, checksums, and manifests have been validated.
+- `/expanse/projects/sebat1/resources/rare-variant-pipeline/containers/rare-variant-targeted-sha-41de024.sif`
+  is the validated targeted science container currently used for portable runs.
+- AWS FSx is a temporary execution/staging layer, not the authoritative resource
+  registry. Missing FSx files should first be recovered or derived from Expanse,
+  then checksum-staged to AWS.
+
+As of 2026-08-28, chr1, chr21, chr22, chrX, and chrY had validated portable
+annotation bundles. For chr2–20, the genome-wide source resources already existed
+on Expanse; only the chromosome-specific portable derivatives remained to be
+built. This distinction avoids unnecessary source downloads and prevents
+AWS-only resources from becoming the accidental source of truth.
+
 The targeted workflow has three independent layers. Keeping them separate is the
 portability contract.
 
