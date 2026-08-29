@@ -164,8 +164,16 @@ The combined workflow also applies the same explicit AF semantics to LoF after
 region and genotype QC. Population metadata is preserved in an annotated
 Parquet; eligibility uses `gnomAD4.1_joint_AF < 0.01`, with missing AF retained.
 Cohort AC/AN/AF uses the primary-eligible sex-chromosome denominator and the
-cohort threshold is applied last. ChrX retained 43 primary LoF carrier rows
-across 37 alleles and 42 samples (20 t1, 23 t2); chrY retained the single
+cohort threshold is applied last. ChrX retained 40 primary LoF carrier rows
+across 35 alleles and 39 samples (18 t1, 22 t2); chrY retained the single
 primary `KDM5D` t1 carrier. Primary and ambiguous-sensitivity gene-level burden
 tables are emitted separately. Both final sensitivity tables are empty in this
 G2MH run, while pre-filter QC provenance remains available.
+
+The chrX LoF counts were corrected after real-variant parity testing against full
+VEP. FastVEP had classified two terminal shifted insertions in `TMSB4X` and `PDK3`
+as frameshifts before applying their HGVS 3-prime offsets. Full VEP classifies both
+as `inframe_insertion&stop_retained_variant`. FastVEP commit `cb8113d` applies the
+peptide-derived CDS boundary during consequence calculation; an end-to-end rerun
+removed the three false carrier rows and reproduced the previous VEP pipeline's
+18 `lof_t1` and 22 `lof_t2` rows exactly. The missense branch was unchanged.

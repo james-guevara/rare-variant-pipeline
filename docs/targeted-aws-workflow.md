@@ -191,7 +191,7 @@ The packaged G2MH regression contracts cover both LoF and missense branches. Wit
 image digest `sha256:edc522a8b6b9dbbdcf25a6fd138a4c5170fca0e47685db95771d9a1a11e908e6`,
 AWS Batch revision 3 reproduced every pinned count and all ten canonical hashes:
 
-- chrX: 43 final LoF carrier rows and 847 final missense carrier rows;
+- chrX: 40 final LoF carrier rows and 847 final missense carrier rows;
 - chrY: 1 final LoF carrier row and 14 final missense carrier rows.
 
 After the selected-row Zarr extraction optimization, commit `41de024` was rebuilt as
@@ -200,6 +200,12 @@ ECR digest
 AWS Batch revision 6 reran chrX from a fresh FSx root and reproduced all 35 counts and
 10 hashes exactly. Target extraction selected 39,983 records/44,371 ALT alleles in 25
 seconds, and the complete container ran for 72 seconds.
+
+A subsequent full chrX rerun with FastVEP `cb8113d` corrected terminal shifted-
+insertion consequence handling. It removed three false pLoF carrier rows at two
+alleles and reproduced the earlier full-VEP result exactly: 40 LoF rows (18 `lof_t1`,
+22 `lof_t2`). All 847 missense rows and their canonical hashes were unchanged. The
+corrected counts and hashes now define the chrX regression contract.
 
 The policy is cohort-neutral; a new cohort supplies its own sample-sex QC binding and
 must establish a regression fixture before production use. Unknown or unusual
