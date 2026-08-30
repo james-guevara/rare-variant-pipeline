@@ -67,6 +67,22 @@ def test_manifest_preflight_fails_on_checksum_drift(tmp_path: Path):
     assert "resource checksum differs" in result.stderr
 
 
+def test_manifest_preflight_accepts_all_observed_mode_without_target_bed(tmp_path: Path):
+    manifest, bindings = _fixture(tmp_path)
+    science = json.loads(manifest.read_text())
+    science["resources"].pop("target_bed")
+    manifest.write_text(json.dumps(science))
+    deployment = json.loads(bindings.read_text())
+    deployment["resources"].pop("target_bed")
+    bindings.write_text(json.dumps(deployment))
+    result = subprocess.run(
+        [sys.executable, str(SCRIPT), "--manifest", str(manifest),
+         "--bindings", str(bindings), "--preflight-only", "--skip-runtime-checks"],
+        check=True, capture_output=True, text=True,
+    )
+    assert "preflight=PASS" in result.stdout
+
+
 def test_manifest_preflight_rejects_site_qc_drift(tmp_path: Path):
     manifest, bindings = _fixture(tmp_path)
     postprocess = tmp_path / "postprocess.json"

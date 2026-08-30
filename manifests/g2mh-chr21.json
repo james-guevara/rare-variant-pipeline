@@ -22,10 +22,6 @@
       "kind": "directory",
       "sentinel": "zarr.json"
     },
-    "target_bed": {
-      "kind": "file",
-      "sha256": "36739f6aefaa1e95b93ea43d12f1928e6740d72bdb45d15e309fa544a00ce159"
-    },
     "annotation_root": {
       "kind": "directory",
       "sentinel": "Homo_sapiens.GRCh38.115.chr21.gff3.fastvep.cache"

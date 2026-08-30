@@ -19,10 +19,6 @@
   },
   "resources": {
     "zarr_store": {"kind": "directory", "sentinel": "zarr.json"},
-    "target_bed": {
-      "kind": "file",
-      "sha256": "f57b56979007ceefab8c2694b068507201d981a49bb74307697297d427e16dbc"
-    },
     "annotation_root": {
       "kind": "directory",
       "sentinel": "Homo_sapiens.GRCh38.115.chrX.gff3.fastvep.cache"

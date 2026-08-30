@@ -4,7 +4,6 @@
   "run_root": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-runs/g2mh/chr22-portable-v1",
   "resources": {
     "zarr_store": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/zarr/chr22.sharded-v3.zarr",
-    "target_bed": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/candidates/lof-plus-missense-candidates.chr22.bed",
     "annotation_root": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22",
     "loftee_root": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/GRCh38",
     "genebayes": "/expanse/projects/sebat1/resources/rare-variant-pipeline/genebayes/GeneBayes.Supplementary_Table_1.tsv",

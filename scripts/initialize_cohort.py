@@ -116,7 +116,6 @@ def main():
             "input_vcf": input_vcf,
             "zarr_store": f"{cohort_root}/zarr/{chrom}.sharded-v3.zarr",
             "vcz_work_root": f"{cohort_root}/vcz-work/{chrom}",
-            "target_bed": f"{shared}/targeted-annotation/inputs/lof-plus-missense-candidates.{chrom}.bed",
             "missense_candidates": f"{cohort_root}/candidates/{chrom}.observed-missense-candidates.parquet",
             "annotation_root": f"{shared}/targeted-annotation/ensembl-115",
             "loftee_root": shared,

@@ -120,7 +120,7 @@ def observe(args, expected_document: dict) -> tuple[dict[str, int], dict[str, di
     if not (run / "_SUCCESS").is_file():
         raise ValueError(f"run is not complete: {run}")
     for name in ("target_bed", "missense_candidates"):
-        if f"{name}_sha256" not in expected_document:
+        if name not in bindings or f"{name}_sha256" not in expected_document:
             continue
         observed_digest = file_sha256(Path(bindings[name]))
         expected_digest = expected_document[f"{name}_sha256"]
@@ -132,13 +132,8 @@ def observe(args, expected_document: dict) -> tuple[dict[str, int], dict[str, di
     connection = duckdb.connect()
     pq = lambda name: run / name
     scalar = lambda query, values=(): connection.execute(query, values).fetchone()[0]
-    target_bed = Path(bindings["target_bed"])
     candidates = Path(bindings["missense_candidates"])
     observed = {
-        "target_intervals": sum(
-            bool(line and not line.startswith("#"))
-            for line in target_bed.read_text().splitlines()
-        ),
         "targeted_alleles": count_rows(connection, pq("01.target-alleles.parquet")),
         "plof_rows": scalar(
             "SELECT count(*) FROM read_csv(?, delim='\\t', header=true)",
@@ -151,6 +146,12 @@ def observe(args, expected_document: dict) -> tuple[dict[str, int], dict[str, di
         "observed_missense_candidates": count_rows(connection, candidates),
         "selected_missense": count_rows(connection, pq("06.missense-tiered.parquet")),
     }
+    if "target_bed" in bindings:
+        target_bed = Path(bindings["target_bed"])
+        observed["target_intervals"] = sum(
+            bool(line and not line.startswith("#"))
+            for line in target_bed.read_text().splitlines()
+        )
     for tier in ("lof_t1", "lof_t2"):
         observed[tier] = scalar(
             "SELECT count(*) FROM read_csv(?, delim='\\t', header=true) WHERE lof_tier=?",
@@ -224,7 +225,13 @@ def main() -> None:
     args = parser.parse_args()
     expected_document = json.loads(args.regression.read_text())
     observed, hashes = observe(args, expected_document)
-    expected = expected_document["expected_counts"]
+    expected = dict(expected_document["expected_counts"])
+    if "target_bed" not in json.loads(args.bindings.read_text())["resources"]:
+        # Legacy fixtures describe a BED-restricted annotation substrate. Their
+        # qualifying variants, carriers, tiers, and final hashes remain valid in
+        # all-observed mode, but pre-tier substrate sizes are intentionally larger.
+        for key in ("target_intervals", "targeted_alleles", "plof_rows"):
+            expected.pop(key, None)
     differences = {
         key: {"expected": value, "observed": observed.get(key)}
         for key, value in expected.items()

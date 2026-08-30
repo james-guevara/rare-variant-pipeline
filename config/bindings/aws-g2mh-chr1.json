@@ -4,7 +4,6 @@
   "run_root": "/fsx/loftee-parity/workflows/g2mh/manifest-preflight-chr1",
   "resources": {
     "zarr_store": "/fsx/rare-variant-pilot/g2mh-vcz-v3/v1/chr1.sharded-v3.zarr",
-    "target_bed": "/fsx/loftee-parity/resources/targeted-annotation/inputs/lof-plus-missense-candidates.chr1.bed",
     "annotation_root": "/fsx/loftee-parity/resources/targeted-annotation/ensembl-115",
     "loftee_root": "/fsx/loftee-parity/resources",
     "genebayes": "/fsx/loftee-parity/resources/targeted-annotation/GeneBayes.Supplementary_Table_1.tsv",
