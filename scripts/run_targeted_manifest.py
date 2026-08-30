@@ -184,6 +184,8 @@ def main() -> None:
     if args.run_root:
         bindings["run_root"] = str(args.run_root)
     environment, observations = resolve(manifest, bindings)
+    if "TARGET_BED" not in environment:
+        environment["ALL_OBSERVED"] = "1"
     if args.lof_only:
         environment.pop("MISSENSE_CANDIDATES", None)
     preflight_run_root(Path(environment["RUN_ROOT"]))

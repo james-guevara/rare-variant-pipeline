@@ -13,6 +13,10 @@ from standalone_loftee.resources import LofteeResources
 from standalone_loftee.transcripts import TranscriptStore
 
 
+def transcript_is_absent(value: str) -> bool:
+    return value.strip() in {"", ".", "-"}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True, type=Path)
@@ -35,6 +39,15 @@ def main() -> None:
         writer = csv.DictWriter(target, fieldnames=fields, delimiter="\t", lineterminator="\n")
         writer.writeheader()
         for row in reader:
+            if transcript_is_absent(row.get("Feature", "")):
+                row.update({
+                    "LoF": "",
+                    "LoF_filter": ".",
+                    "LoF_flags": ".",
+                    "LoF_info": ".",
+                })
+                writer.writerow(row)
+                continue
             transcript = transcripts.get(row["Feature"])
             if transcript is None:
                 raise ValueError(f"missing transcript: {row['Feature']}")

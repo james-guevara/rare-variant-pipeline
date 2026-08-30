@@ -51,7 +51,6 @@ ENV PATH="/opt/rvp/.venv/bin:/opt/fastvep:${PATH}" \
     LOFTEE_ROOT="/resources/loftee" \
     GENEBAYES="/resources/GeneBayes.Supplementary_Table_1.tsv" \
     ZARR_STORE="/inputs/chr22.sharded-v3.zarr" \
-    TARGET_BED="/inputs/targets.chr22.bed" \
     RUN_ROOT="/output"
 
 ENTRYPOINT []

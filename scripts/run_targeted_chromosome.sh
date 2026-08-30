@@ -14,6 +14,7 @@ repo=${RVP_REPO:-/opt/rvp}
 run_root=$RUN_ROOT
 zarr_store=$ZARR_STORE
 target_bed=${TARGET_BED:-}
+if test "${ALL_OBSERVED:-0}" = 1; then target_bed=""; fi
 fastvep_root=${FASTVEP_ROOT:-/opt/fastvep}
 annotation_root=$ANNOTATION_ROOT
 loftee_root=$LOFTEE_ROOT
