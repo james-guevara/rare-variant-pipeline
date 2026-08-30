@@ -16,7 +16,9 @@ eligibility filtering.
 `scripts/run_targeted_chromosome.sh` runs these checkpointed stages. The old
 `run_targeted_chr22_aws.sh` name remains only as a compatibility wrapper.
 
-1. Select exact ALT alleles from the sharded Zarr v3 store using target intervals.
+1. Select observed ALT alleles from the sharded Zarr v3 store. The simple default is
+   every observed allele on the chromosome (`ALL_OBSERVED=1`); an optional target BED
+   remains available for deliberately restricted experiments.
 2. Emit a sites-only VCF while retaining `variant_index` and `alt_index` pointers.
 3. Normalize against the Ensembl 115 chromosome FASTA.
 4. Stream FastVEP output directly into the VEP-compatible transcript picker.
@@ -77,7 +79,9 @@ Each submission must use a fresh `RUN_ROOT`. The runner performs a write/delete
 preflight before scientific work, preserves nonempty stage checkpoints for retries,
 and writes `_SUCCESS` only after every enabled branch completes. Resubmitting an
 already successful run root is an idempotent no-op; completed directories are never
-extended with additional branches.
+extended with additional branches. A failed single-output stage deletes its partial
+output before exiting, so file existence cannot turn an interrupted write into a
+valid checkpoint.
 
 ## Container contract
 
@@ -116,6 +120,17 @@ the host.
 On G2MH chr22, the integrated FastVEP/picker/standalone-LOFTEE branch processed
 28,966 targeted alleles. It produced 53 qualifying LoF alleles before region/QC/cohort
 eligibility. The qualifying TSV was byte-identical to the earlier AWS canonical result.
+
+The BED-free regression subsequently processed all `996,414` chr22 records and
+`1,148,541` observed ALT alleles. Extraction took 50 seconds, sites-VCF emission 4
+seconds, normalization 2 seconds, FastVEP plus picking 124 seconds, and standalone
+LOFTEE 157 seconds on the persistent AWS test instance. The downstream joins and
+filters each took 0--1 seconds. It yielded 399 HC pLoF rows, 53 GeneBayes tier-1/2
+alleles, and the same final 38 carrier rows across 19 variants and 26 samples. All
+pinned carrier, variant, coordinate, core-field, gene, consequence, LOFTEE, tier, and
+GeneBayes hashes matched exactly. Therefore cohort-specific target BED construction is
+not required for the default LoF workflow; it is an optional performance experiment,
+not a scientific dependency.
 
 Using the historical G2MH final eligibility rule (`cohort AF < 0.01`) solely as a
 regression test produced 38 carrier rows across 19 variants, matching the August 2026

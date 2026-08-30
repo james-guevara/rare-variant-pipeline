@@ -30,6 +30,19 @@ record transient scientific-result differences here.
 
 ## Incident ledger
 
+### Interrupted output was mistaken for a completed checkpoint (2026-08-29)
+
+- **Symptom:** a resumed BED-free chr22 run skipped standalone LOFTEE, reported zero
+  pLoFs, and later failed when DuckDB read a zero-column Parquet file.
+- **Cause:** the earlier LOFTEE exception had left a 213-byte header-only output. The
+  runner treated every nonempty output path as a completed checkpoint.
+- **Impact:** only downstream seconds were spent; extraction, normalization, and
+  FastVEP checkpoints were preserved and reused.
+- **Avoidable:** yes.
+- **Prevention:** single-output stages now remove the destination before execution and
+  delete it on any command failure or empty result. The FastVEP-to-picker pipe follows
+  the same rule. A retry can no longer accept a partial file merely because it exists.
+
 ### CodeBuild could not fetch the requested commit (2026-08-27)
 
 - **Symptom:** build failed in two seconds at `git fetch --depth 1 origin

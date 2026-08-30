@@ -97,8 +97,16 @@ run_stage() {
     return
   fi
   local start=$SECONDS
-  "$@"
-  test -s "$output"
+  rm -f "$output"
+  if ! "$@"; then
+    rm -f "$output"
+    return 1
+  fi
+  if ! test -s "$output"; then
+    rm -f "$output"
+    echo "ERROR: stage completed without a nonempty output: $output" >&2
+    return 1
+  fi
   printf 'checkpoint\tDONE\t%s\telapsed_seconds=%s\n' "$output" "$((SECONDS-start))"
 }
 
@@ -149,13 +157,21 @@ run_stage "$normalized_vcf" bcftools norm -f "$reference" -m -any -Ov \
 
 if ! test -s "$picked"; then
   start=$SECONDS
-  "$fastvep" annotate --input "$normalized_vcf" --gff3 "$gff3" \
-    --fasta "$reference" --transcript-cache "$transcript_cache" --hgvs \
-    --symbol --canonical --output-format vcf --output - \
-  | "$python" scripts/pick_fastvep_consequences.py --fastvep - \
-      --transcript-priority "$transcript_priority" \
-      --consequence-ranks "$consequence_ranks" --output "$picked"
-  test -s "$picked"
+  rm -f "$picked"
+  if ! "$fastvep" annotate --input "$normalized_vcf" --gff3 "$gff3" \
+      --fasta "$reference" --transcript-cache "$transcript_cache" --hgvs \
+      --symbol --canonical --output-format vcf --output - \
+    | "$python" scripts/pick_fastvep_consequences.py --fastvep - \
+        --transcript-priority "$transcript_priority" \
+        --consequence-ranks "$consequence_ranks" --output "$picked"; then
+    rm -f "$picked"
+    exit 1
+  fi
+  if ! test -s "$picked"; then
+    rm -f "$picked"
+    echo "ERROR: FastVEP/picker completed without a nonempty output: $picked" >&2
+    exit 1
+  fi
   printf 'checkpoint\tDONE\t%s\telapsed_seconds=%s\n' "$picked" "$((SECONDS-start))"
 else
   printf 'checkpoint\tSKIP\t%s\n' "$picked"
