@@ -67,7 +67,7 @@ def main() -> None:
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--chromosomes", default=DEFAULT_CHROMOSOMES)
     parser.add_argument("--queue", default="rare-variant-vcz-fsx")
-    parser.add_argument("--job-definition", default="rare-variant-targeted-portable:11")
+    parser.add_argument("--job-definition", default="rare-variant-targeted-portable:12")
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
