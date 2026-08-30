@@ -11,6 +11,12 @@ from pathlib import Path
 
 
 CSQ_FORMAT = re.compile(r'Format: ([^"]+)')
+LOF_CONSEQUENCES = {
+    "frameshift_variant",
+    "splice_acceptor_variant",
+    "splice_donor_variant",
+    "stop_gained",
+}
 
 
 def open_text(path):
@@ -99,12 +105,35 @@ def picker_key(row, priority, ranks):
     )
 
 
+def consequence_terms(row):
+    return set(filter(None, row.get("Consequence", "").split("&")))
+
+
+def alternate_lof_rows(rows, selected):
+    """Return protein-coding LoF consequences when the picked row is missense."""
+    if "missense_variant" not in consequence_terms(selected):
+        return []
+    selected_transcript = bare_transcript(selected.get("Feature", ""))
+    return [
+        row for row in rows
+        if bare_transcript(row.get("Feature", "")) != selected_transcript
+        and row.get("BIOTYPE", "") == "protein_coding"
+        and consequence_terms(row) & LOF_CONSEQUENCES
+    ]
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--fastvep", required=True, type=Path)
     parser.add_argument("--transcript-priority", required=True, type=Path)
     parser.add_argument("--consequence-ranks", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument(
+        "--alternate-lof-output",
+        type=Path,
+        help=("Audit-only table of alternate-transcript LoF consequences for "
+              "alleles whose picked consequence is missense"),
+    )
     parser.add_argument("--vep-oracle", type=Path)
     args = parser.parse_args()
 
@@ -126,21 +155,45 @@ def main():
         }
 
     record_count = 0
+    alternate_lof_count = 0
     differences = []
+    alternate_handle = (
+        args.alternate_lof_output.open("w", newline="")
+        if args.alternate_lof_output else None
+    )
     with args.output.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields, delimiter="\t", lineterminator="\n")
         writer.writeheader()
+        alternate_fields = fields + ["selected_Feature", "selected_Consequence"]
+        alternate_writer = None
+        if alternate_handle:
+            alternate_writer = csv.DictWriter(
+                alternate_handle, fieldnames=alternate_fields,
+                delimiter="\t", lineterminator="\n",
+            )
+            alternate_writer.writeheader()
         for record_id, rows in iter_csq_records(args.fastvep):
             row = min(rows, key=lambda candidate: picker_key(candidate, priority, ranks))
             writer.writerow({field: row.get(field, "") for field in fields})
             record_count += 1
+            if alternate_writer:
+                for alternate in alternate_lof_rows(rows, row):
+                    output_row = {field: alternate.get(field, "") for field in fields}
+                    output_row["selected_Feature"] = row.get("Feature", "")
+                    output_row["selected_Consequence"] = row.get("Consequence", "")
+                    alternate_writer.writerow(output_row)
+                    alternate_lof_count += 1
             if oracle is not None:
                 expected_transcript = oracle.get(record_id, "")
                 actual_transcript = bare_transcript(row.get("Feature", ""))
                 if actual_transcript != expected_transcript:
                     differences.append((record_id, expected_transcript, actual_transcript))
 
+    if alternate_handle:
+        alternate_handle.close()
     print("records={:,}".format(record_count))
+    if args.alternate_lof_output:
+        print("alternate_lof_rows={:,}".format(alternate_lof_count))
     if args.vep_oracle:
         print(
             "transcript_match={:,}/{:,} ({:.1%})".format(
