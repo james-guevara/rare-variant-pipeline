@@ -27,7 +27,9 @@ The processed release contains:
 For sharing, `share/2026-08-29/all_gene_sets.csv` is a denormalized CSV containing every gene-set
 membership together with its set size, definition, release, source URL, and usage note.
 `share/2026-08-29/gene_sets_wide.csv` is the compact companion table: one column per gene set,
-with its actual gene symbols beneath it. Regenerate both with
+with its actual gene symbols beneath it. `share/2026-08-29/gene_set_summary.csv` has one row per
+gene set with its phenotype, size, definition, source, release, URL, and usage note. Regenerate all
+three with
 `python3 scripts/export_gene_set_catalog_csv.py`.
 
 Current alternatives include current SFARI score strata, broad and green PanelApp ID/epilepsy
