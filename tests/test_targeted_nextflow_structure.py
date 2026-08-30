@@ -65,7 +65,7 @@ def test_cohort_wrapper_compiles_with_scatter_and_gather(tmp_path: Path):
     assert "TARGETED_MANIFEST_WORKFLOW(manifest_bindings)" in source
     assert "RARE_BURDEN_GATHER_WORKFLOW(" in source
     assert "rare_burdens = RARE_BURDEN_GATHER_WORKFLOW.out.rare_burdens" in source
-    assert "params.lof_only = true" in (REPO / "cohort.nf").read_text()
+    assert "params.lof_only = false" in (REPO / "cohort.nf").read_text()
 
 
 def test_integrated_analysis_named_workflow_is_composable():

@@ -7,7 +7,7 @@
     "run_root": "/fsx/loftee-parity/workflows/g2mh/portable-default"
   },
   "containerProperties": {
-    "image": "640838474376.dkr.ecr.us-east-1.amazonaws.com/rare-variant-pipeline-targeted@sha256:fc501151b89a7623649a76a886b5bb5548ff3ffd91f764bf182e90687d2400c3",
+    "image": "640838474376.dkr.ecr.us-east-1.amazonaws.com/rare-variant-pipeline-targeted@sha256:c4840b98ed4e328f2838261c8a2b99782f9d26cc4d4124b0ee39f136adc7c155",
     "command": [
       "python",
       "/opt/rvp/scripts/run_targeted_manifest.py",
