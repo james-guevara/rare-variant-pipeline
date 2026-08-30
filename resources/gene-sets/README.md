@@ -24,6 +24,12 @@ The processed release contains:
 - `schema_release_comparison.tsv`: gene-level shared/gained/lost calls for published-versus-current
   and consecutive Phase II Bonferroni sets.
 
+For sharing, `share/2026-08-29/all_gene_sets.csv` is a denormalized CSV containing every gene-set
+membership together with its set size, definition, release, source URL, and usage note.
+`share/2026-08-29/gene_sets_wide.csv` is the compact companion table: one column per gene set,
+with its actual gene symbols beneath it. Regenerate both with
+`python3 scripts/export_gene_set_catalog_csv.py`.
+
 Current alternatives include current SFARI score strata, broad and green PanelApp ID/epilepsy
 panels, the published SCHEMA-10, six Phase II SCHEMA snapshots at both Bonferroni and 5% FDR,
 Epi25 consequence/phenotype/significance strata, the 207-gene Kosmicki height set and signed
