@@ -23,6 +23,16 @@ def candidate_path(chromosome: str) -> str:
     return f"{FSX}/resources/targeted-annotation/inputs/{name}"
 
 
+def dbnsfp_path(chromosome: str) -> str | None:
+    if chromosome in {"chr1", "chr21"}:
+        root = "/fsx/rare-variant-pilot/resources"
+    elif chromosome != "chr22":
+        root = f"{FSX}/resources"
+    else:
+        return None
+    return f"{root}/dbNSFP/5.3.1a/parquet_expanded_mane_select/{chromosome}.parquet"
+
+
 def postprocess_path(chromosome: str) -> str:
     if chromosome in {"chrX", "chrY"}:
         return f"{FSX}/resources/postprocess/g2mh-{chromosome}/missense-config.json"
@@ -45,11 +55,9 @@ def environment(chromosome: str, run_id: str) -> list[dict[str, str]]:
         "RUN_ROOT": f"{FSX}/workflows/g2mh/{run_id}/{chromosome}",
         "ZARR_STORE": f"{VCZ}/{chromosome}.sharded-v3.zarr",
     }
-    if chromosome.removeprefix("chr").isdigit() and 2 <= int(chromosome[3:]) <= 20:
-        values["MISSENSE_DBNSFP"] = (
-            f"{FSX}/resources/dbNSFP/5.3.1a/"
-            f"parquet_expanded_mane_select/{chromosome}.parquet"
-        )
+    dbnsfp = dbnsfp_path(chromosome)
+    if dbnsfp:
+        values["MISSENSE_DBNSFP"] = dbnsfp
     else:
         values["MISSENSE_CANDIDATES"] = candidate_path(chromosome)
     if chromosome in {"chrX", "chrY"}:
@@ -67,7 +75,7 @@ def main() -> None:
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--chromosomes", default=DEFAULT_CHROMOSOMES)
     parser.add_argument("--queue", default="rare-variant-vcz-fsx")
-    parser.add_argument("--job-definition", default="rare-variant-targeted-portable:12")
+    parser.add_argument("--job-definition", default="rare-variant-targeted-portable:13")
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
