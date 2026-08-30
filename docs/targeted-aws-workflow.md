@@ -142,6 +142,22 @@ pinned count and carrier/variant/coordinate/core content hash. The all-observed
 chromosome annotation is therefore reusable for both LoF and missense; candidate
 tables are fast join inputs, not annotation target generators.
 
+The portable all-observed default was independently validated on G2MH chr21 with
+container digest `sha256:82eb18bba577251771e987769cb02f7c15207d2994f95b266a1bc0a4fadff0ac`.
+It processed 964,322 records and 1,108,724 ALT alleles: extraction took 85 seconds,
+VCF emission 5 seconds, normalization 2 seconds, FastVEP plus picking 151 seconds,
+and standalone LOFTEE 188 seconds. It reproduced all 30 qualifying LoF alleles, all
+510 selected missense alleles, and all 2,835 raw missense carriers from the targeted
+run.
+
+The comparison also confirmed the later allele-specific genotype projection fix.
+For 59 carriers of ALT 2 at multiallelic sites, the lossless source call remains in
+`source_GT` (for example `0/2`) while `GT` and `genotype` correctly become `0/1` for
+the extracted biallelic allele. The older representation caused genotype QC to reject
+12 valid calls; three survived all subsequent filters. The corrected chr21 result is
+420 final missense carrier rows across 342 variants and 341 samples, with exact hashes
+pinned in `resources/g2mh-chr21-targeted-regression.json`.
+
 Using the historical G2MH final eligibility rule (`cohort AF < 0.01`) solely as a
 regression test produced 38 carrier rows across 19 variants, matching the August 2026
 Expanse production run exactly for coordinates, samples, genotypes, genes, LOFTEE,
