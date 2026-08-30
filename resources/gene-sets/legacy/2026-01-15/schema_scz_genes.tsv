@@ -1,0 +1,19 @@
+gene_symbol	tier	p_value	OR	description
+SETD1A	exome_wide_sig	<2.5e-6	20.1	Histone methyltransferase
+CUL1	exome_wide_sig	<2.5e-6	24.1	Cullin 1, ubiquitin ligase
+XPO7	exome_wide_sig	<2.5e-6	32.4	Exportin 7
+HERC1	exome_wide_sig	<2.5e-6	7.5	HECT domain E3 ligase
+RB1CC1	exome_wide_sig	<2.5e-6	11.4	RB1 coiled coil 1
+GRIA3	exome_wide_sig	<2.5e-6	16.9	Glutamate receptor
+GRIN2A	exome_wide_sig	<2.5e-6	24.3	NMDA receptor subunit
+SP4	exome_wide_sig	<2.5e-6	10.6	Transcription factor
+TRIO	exome_wide_sig	<2.5e-6	11.4	Rho GEF
+CACNA1G	exome_wide_sig	<2.5e-6	8.8	T-type calcium channel
+STAG1	fdr_05	<0.05	.	Cohesin subunit
+ZNF136	fdr_05	<0.05	.	Zinc finger protein
+SLC6A1	fdr_05	<0.05	.	GABA transporter
+PCLO	fdr_05	<0.05	.	Piccolo presynaptic
+ZMYND11	fdr_05	<0.05	.	Zinc finger MYND
+BSCL2	fdr_05	<0.05	.	Seipin lipodystrophy
+KLC1	fdr_05	<0.05	.	Kinesin light chain
+CGREF1	fdr_05	<0.05	.	Cell growth regulator

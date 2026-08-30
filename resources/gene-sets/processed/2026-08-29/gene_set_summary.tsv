@@ -19,6 +19,21 @@ height_207_gene_p	Height	207	207 discovery-significant gene-P genes
 height_singleton_plof	Height	17	17 significant singleton-pLoF burden genes
 height_singleton_plof_negative	Height	11	Singleton-pLoF genes with negative beta
 height_singleton_plof_positive	Height	6	Singleton-pLoF genes with positive beta
+legacy_ddg2p_all	Developmental disorder	2530	Exact legacy DDG2P all-gene list
+legacy_ddg2p_confident	Developmental disorder	1706	Exact legacy DDG2P confident list
+legacy_fu_asd185	ASD	185	Fu TADA-ASD FDR <= 0.05
+legacy_fu_asd72	ASD	72	Fu TADA-ASD FDR <= 0.001
+legacy_fu_dd309	Developmental delay	309	Fu TADA-DD FDR <= 0.001
+legacy_fu_dd477	Developmental delay	477	Fu TADA-DD FDR <= 0.05
+legacy_fu_ndd373	Neurodevelopmental disorder	373	Fu TADA-NDD FDR <= 0.001
+legacy_fu_ndd664	Neurodevelopmental disorder	664	Fu TADA-NDD FDR <= 0.05
+legacy_satterstrom102	ASD	102	Satterstrom et al. 102 ASD genes
+legacy_schema_fdr05	Schizophrenia	18	Exact legacy SCHEMA significant plus FDR<5% list
+legacy_schema_sig	Schizophrenia	10	Exact legacy SCHEMA exome-wide list
+legacy_sfari_all	ASD	1267	Exact legacy SFARI all-gene list
+legacy_sfari_hc	ASD	315	Exact legacy SFARI high-confidence list
+legacy_sfari_score1	ASD	244	Exact legacy SFARI score-1 list
+legacy_sfari_score12	ASD	952	Exact legacy SFARI score-1-or-2 list
 panelapp_epilepsy_all	Epilepsy	914	All genes in the versioned PanelApp panel
 panelapp_epilepsy_green	Epilepsy	632	PanelApp green/high-evidence genes
 panelapp_intellectual_disability_all	Intellectual disability	2853	All genes in the versioned PanelApp panel

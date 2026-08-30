@@ -53,9 +53,10 @@ def write_tsv(path, rows, fields):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--raw", type=Path, default=Path("resources/gene-sets/raw/2026-08-29"))
+    parser.add_argument("--legacy", type=Path, default=Path("resources/gene-sets/legacy/2026-01-15"))
     parser.add_argument("--output", type=Path, default=Path("resources/gene-sets/processed/2026-08-29"))
     args = parser.parse_args()
-    raw, output = args.raw, args.output
+    raw, legacy, output = args.raw, args.legacy, args.output
     members = []
     sources = []
 
@@ -88,6 +89,43 @@ def main():
             if row["syndromic"] == "1":
                 add("sfari_syndromic", "ASD", "SFARI syndromic flag", symbol,
                     row["ensembl-id"], score, source_id="sfari_2026q2")
+
+    # Exact historical lists used by the previous pipeline, kept separate from current releases.
+    legacy_sources = {
+        "fu_2022_legacy": ("Fu et al. TADA results used by the legacy pipeline", "2022",
+                           "https://pmc.ncbi.nlm.nih.gov/articles/PMC9653013/"),
+        "satterstrom_2020_legacy": ("Satterstrom et al. ASD-102 used by the legacy pipeline", "2020",
+                                    "https://doi.org/10.1016/j.cell.2019.12.036"),
+        "ddg2p_2025_12_28_legacy": ("DDG2P export used by the legacy pipeline", "2025-12-28",
+                                    "https://www.ebi.ac.uk/gene2phenotype/"),
+        "sfari_2026_01_legacy": ("SFARI export used by the legacy pipeline", "retrieved 2026-01-15",
+                                 "https://gene.sfari.org/tools/"),
+        "schema_2022_legacy": ("SCHEMA lists used by the legacy pipeline", "2022",
+                               "https://pmc.ncbi.nlm.nih.gov/articles/PMC9805802/"),
+    }
+    for sid, (title, release, url) in legacy_sources.items():
+        source(sid, title, release, url)
+    legacy_specs = [
+        ("legacy_fu_asd72", "ASD", "Fu TADA-ASD FDR <= 0.001", "fu_asd72.txt", "fu_2022_legacy"),
+        ("legacy_fu_asd185", "ASD", "Fu TADA-ASD FDR <= 0.05", "fu_asd185.txt", "fu_2022_legacy"),
+        ("legacy_fu_dd309", "Developmental delay", "Fu TADA-DD FDR <= 0.001", "fu_dd309.txt", "fu_2022_legacy"),
+        ("legacy_fu_dd477", "Developmental delay", "Fu TADA-DD FDR <= 0.05", "fu_dd477.txt", "fu_2022_legacy"),
+        ("legacy_fu_ndd373", "Neurodevelopmental disorder", "Fu TADA-NDD FDR <= 0.001", "fu_ndd373.txt", "fu_2022_legacy"),
+        ("legacy_fu_ndd664", "Neurodevelopmental disorder", "Fu TADA-NDD FDR <= 0.05", "fu_ndd664.txt", "fu_2022_legacy"),
+        ("legacy_satterstrom102", "ASD", "Satterstrom et al. 102 ASD genes", "fu_satterstrom102.txt", "satterstrom_2020_legacy"),
+        ("legacy_ddg2p_confident", "Developmental disorder", "Exact legacy DDG2P confident list", "ddg2p_confident.txt", "ddg2p_2025_12_28_legacy"),
+        ("legacy_ddg2p_all", "Developmental disorder", "Exact legacy DDG2P all-gene list", "ddg2p_all.txt", "ddg2p_2025_12_28_legacy"),
+        ("legacy_sfari_all", "ASD", "Exact legacy SFARI all-gene list", "sfari_all.txt", "sfari_2026_01_legacy"),
+        ("legacy_sfari_hc", "ASD", "Exact legacy SFARI high-confidence list", "sfari_hc.txt", "sfari_2026_01_legacy"),
+        ("legacy_sfari_score1", "ASD", "Exact legacy SFARI score-1 list", "sfari_s1.txt", "sfari_2026_01_legacy"),
+        ("legacy_sfari_score12", "ASD", "Exact legacy SFARI score-1-or-2 list", "sfari_s12.txt", "sfari_2026_01_legacy"),
+        ("legacy_schema_sig", "Schizophrenia", "Exact legacy SCHEMA exome-wide list", "schema_sig.txt", "schema_2022_legacy"),
+        ("legacy_schema_fdr05", "Schizophrenia", "Exact legacy SCHEMA significant plus FDR<5% list", "schema_all.txt", "schema_2022_legacy"),
+    ]
+    for set_id, phenotype, definition, filename, sid in legacy_specs:
+        for symbol in (legacy / filename).read_text().splitlines():
+            add(set_id, phenotype, definition, symbol, source_id=sid,
+                notes="Exact historical pipeline artifact")
 
     # PanelApp: retain broad panel membership and high-evidence (green) definitions.
     panel_specs = [

@@ -3,6 +3,7 @@
 This directory deliberately preserves multiple defensible gene-set definitions rather than
 selecting one prematurely. Raw, version-pinned sources live under `raw/<retrieval-date>/`;
 derived flat tables live under `processed/<retrieval-date>/`.
+Exact historical pipeline lists are retained under `legacy/2026-01-15/`.
 
 Rebuild with:
 
@@ -10,6 +11,9 @@ Rebuild with:
 bash scripts/download_gene_set_sources.sh
 uv run --script scripts/build_gene_set_catalog.py
 ```
+
+The ignored raw historical bundle can be recovered from Expanse, together with the primary
+Fu and Satterstrom publication supplements, using `scripts/recover_legacy_gene_set_sources.sh`.
 
 The processed release contains:
 
