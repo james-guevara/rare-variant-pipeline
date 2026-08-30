@@ -30,6 +30,7 @@ def test_initializes_from_joint_vcf_and_psam_without_claiming_derived_data(tmp_p
     assert all(row["preparation_state"] == "PENDING_DERIVED_RESOURCES" for row in plan)
     assert plan[0]["input_vcf"] == "s3://bucket/cohort.vcf.gz"
     assert plan[1]["zarr_store"] == "/cohorts/demo/zarr/chrX.sharded-v3.zarr"
+    assert plan[1]["vcz_work_root"] == "/cohorts/demo/vcz-work/chrX"
     qc = json.loads((output / "initialization_qc.json").read_text())
     assert qc["derived_resources_ready"] is False
     assert qc["sex_counts"] == {"F": 1, "M": 1}

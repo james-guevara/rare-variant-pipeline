@@ -184,9 +184,43 @@ python scripts/inspect_cohort_vcfs.py \
 ```
 
 It reads VCF headers only, resolves `1` versus `chr1`, checks GRCh38 contig lengths,
-requires exact PSAM/VCF sample-set concordance, and verifies `GT`, `GQ`, `DP`, and
-`AD` are declared. Passing rows advance to `READY_FOR_ZARR`; no variant records are
+requires exact PSAM/VCF sample-set concordance, and verifies `GT`, `GQ`, `DP`, plus
+either `AD` or localized `LAD+LAA` are declared. Passing rows advance to `READY_FOR_ZARR`; no variant records are
 converted or annotated by this stage.
+
+On AWS, submit the inspected rows to the FSx-enabled Batch queue. The command is a
+dry run unless `--submit` is present:
+
+```bash
+python scripts/submit_vcz_plan.py \
+  --preparation-plan setup/new_cohort/chromosome_preparation.inspected.tsv \
+  --cohort new_cohort \
+  --queue rare-variant-vcz-fsx \
+  --job-definition rare-variant-vcz-plan:1 \
+  --workers 32 \
+  --memory 96G \
+  --validation sampled \
+  --submit \
+  --output setup/new_cohort/vcz_submission.json
+```
+
+The adapter resolves prefixed and unprefixed contigs from each VCF index. Conversion
+checkpoints are tied to the staged VCF checksum: an unchanged source resumes safely,
+while a changed source invalidates only that chromosome's conversion state.
+
+After Batch succeeds, validate the stores and advance passing rows:
+
+```bash
+python scripts/validate_vcz_plan.py \
+  --preparation-plan setup/new_cohort/chromosome_preparation.inspected.tsv \
+  --sample-manifest setup/new_cohort/sample_manifest.tsv \
+  --output-plan setup/new_cohort/chromosome_preparation.vcz-validated.tsv \
+  --report setup/new_cohort/vcz_validation.json
+```
+
+Validation requires the completion marker and sharded Zarr v3 metadata, checks exact
+sample order, required genotype arrays and their dimensions, and verifies sorted
+variant positions. Passing rows advance to `READY_FOR_DERIVED_RESOURCES`.
 
 ### Reusable targeted workflow
 

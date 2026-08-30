@@ -48,6 +48,11 @@ output "vcz_batch_conversion_32_job_definition" {
   value       = aws_batch_job_definition.vcz_conversion_32.arn
 }
 
+output "vcz_batch_plan_job_definition" {
+  description = "Generic plan-driven VCZ conversion job definition ARN."
+  value       = aws_batch_job_definition.vcz_plan.arn
+}
+
 output "targeted_chr22_job_definition" {
   description = "Fork-pinned FastVEP/LOFTEE chr22 job definition ARN."
   value       = aws_batch_job_definition.targeted_chr22.arn

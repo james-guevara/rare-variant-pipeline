@@ -11,7 +11,7 @@ from pathlib import Path
 
 CONTIG_RE = re.compile(r"^##contig=<ID=([^,>]+)(?:,length=([0-9]+))?")
 FORMAT_RE = re.compile(r"^##FORMAT=<ID=([^,>]+)")
-REQUIRED_FORMATS = {"GT", "GQ", "DP", "AD"}
+REQUIRED_FORMATS = {"GT", "GQ", "DP"}
 
 
 def read_tsv(path):
@@ -88,6 +88,14 @@ def main():
         missing_formats = sorted(REQUIRED_FORMATS - formats)
         if missing_formats:
             raise ValueError(f"VCF {location} is missing FORMAT fields {missing_formats}")
+        if "AD" in formats:
+            allele_depth_format = "AD"
+        elif {"LAD", "LAA"}.issubset(formats):
+            allele_depth_format = "LAD+LAA"
+        else:
+            raise ValueError(
+                f"VCF {location} requires FORMAT AD or the localized pair LAD+LAA"
+            )
         missing_samples = sorted(set(expected_samples) - set(samples))
         extra_samples = sorted(set(samples) - set(expected_samples))
         if missing_samples or extra_samples:
@@ -115,6 +123,7 @@ def main():
             "header_length": observed_length,
             "samples": len(samples),
             "required_formats": sorted(REQUIRED_FORMATS),
+            "allele_depth_format": allele_depth_format,
             "status": "PASS",
         })
 

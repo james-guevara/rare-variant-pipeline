@@ -55,3 +55,21 @@ def test_rejects_vcf_psam_sample_mismatch(tmp_path):
     ], capture_output=True, text=True)
     assert result.returncode != 0
     assert "VCF/PSAM sample mismatch" in result.stderr
+
+
+def test_accepts_localized_allele_depth_fields(tmp_path):
+    plan, samples = fixture(tmp_path)
+    vcf = Path(next(csv.DictReader(plan.open(), delimiter="\t"))["input_vcf"])
+    text = vcf.read_text().replace(
+        '##FORMAT=<ID=AD,Number=R,Type=Integer,Description="AD">',
+        '##FORMAT=<ID=LAD,Number=.,Type=Integer,Description="LAD">\n'
+        '##FORMAT=<ID=LAA,Number=.,Type=Integer,Description="LAA">',
+    )
+    vcf.write_text(text)
+    inspected, report = tmp_path / "inspected.tsv", tmp_path / "report.json"
+    subprocess.run([
+        sys.executable, str(SCRIPT), "--preparation-plan", str(plan),
+        "--sample-manifest", str(samples), "--output-plan", str(inspected),
+        "--report", str(report),
+    ], check=True)
+    assert json.loads(report.read_text())["chromosomes"][0]["allele_depth_format"] == "LAD+LAA"

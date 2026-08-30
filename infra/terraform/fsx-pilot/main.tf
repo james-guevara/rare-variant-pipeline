@@ -187,6 +187,35 @@ resource "aws_batch_job_definition" "vcz_conversion_32" {
   }
 }
 
+resource "aws_batch_job_definition" "vcz_plan" {
+  name                  = "rare-variant-vcz-plan"
+  type                  = "container"
+  platform_capabilities = ["EC2"]
+
+  parameters = {
+    adapter_command = "true"
+  }
+
+  container_properties = jsonencode({
+    image      = var.vcz_batch_image
+    command    = ["bash", "-lc", "Ref::adapter_command"]
+    jobRoleArn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/ecsInstanceRole"
+    resourceRequirements = [
+      { type = "VCPU", value = "32" },
+      { type = "MEMORY", value = "114688" }
+    ]
+    volumes = [{
+      name = "fsx"
+      host = { sourcePath = "/fsx" }
+    }]
+    mountPoints = [{
+      sourceVolume  = "fsx"
+      containerPath = "/fsx"
+      readOnly      = false
+    }]
+  })
+}
+
 resource "aws_batch_job_definition" "targeted_chr22" {
   name                  = "rare-variant-targeted-chr22"
   type                  = "container"
