@@ -23,3 +23,24 @@ def test_gathers_and_zero_fills_only_complete_tiers(tmp_path):
     assert rows[0]["lof_t1"] == "1" and rows[1]["lof_t2"] == "1"
     assert rows[1]["lof_t1"] == "0"
     assert rows[0]["miss_t1"] == ""
+
+def test_gathers_completed_run_directly_with_sex_qc_roster(tmp_path):
+    qc = tmp_path / "sex-qc.tsv"
+    qc.write_text("sample_id\tinferred_karyotype\nS1\tXX-like\nS2\tambiguous\n")
+    run = tmp_path / "run"; chrom = run / "chr1"; chrom.mkdir(parents=True)
+    (chrom / "_SUCCESS").touch()
+    (chrom / "12.plof-per-sample-counts.tsv").write_text(
+        "SAMPLE\tlof_t1\tlof_t2\nS1\t1\t0\n"
+    )
+    (chrom / "12.missense-per-sample-counts.tsv").write_text(
+        "SAMPLE\tmiss_t1\tmiss_t2\tmiss_t3\tmiss_t4\nS1\t0\t1\t0\t2\n"
+    )
+    out, strata = tmp_path / "rare.tsv", tmp_path / "strata.tsv"
+    subprocess.run([
+        sys.executable, str(SCRIPT), "--sex-qc", str(qc), "--run-base", str(run),
+        "--expected-chromosomes", "chr1", "--output", str(out),
+        "--strata-output", str(strata),
+    ], check=True)
+    rows = list(csv.DictReader(out.open(), delimiter="\t"))
+    assert rows[0]["SEX"] == "F" and rows[0]["lof_t1"] == "1"
+    assert rows[1]["SEX"] == "" and rows[1]["miss_t4"] == "0"

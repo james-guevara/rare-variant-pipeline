@@ -26,7 +26,7 @@ def candidate_path(chromosome: str) -> str:
 def postprocess_path(chromosome: str) -> str:
     if chromosome in {"chrX", "chrY"}:
         return f"{FSX}/resources/postprocess/g2mh-{chromosome}/missense-config.json"
-    return "/opt/rvp/config/postprocess/aws-g2mh-autosomes.json"
+    return f"{FSX}/resources/postprocess/g2mh-autosomes/config.json"
 
 
 def environment(chromosome: str, run_id: str) -> list[dict[str, str]]:

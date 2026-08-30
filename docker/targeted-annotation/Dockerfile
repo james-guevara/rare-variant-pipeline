@@ -41,6 +41,7 @@ RUN uv sync --frozen --no-dev \
 COPY scripts ./scripts
 COPY manifests ./manifests
 COPY config/bindings ./config/bindings
+COPY config/postprocess ./config/postprocess
 COPY resources ./resources
 
 ENV PATH="/opt/rvp/.venv/bin:/opt/fastvep:${PATH}" \

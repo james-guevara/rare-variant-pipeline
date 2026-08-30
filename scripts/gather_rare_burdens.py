@@ -39,32 +39,65 @@ def write_tsv(path, fields, rows):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--sample-manifest", required=True, type=Path)
-    parser.add_argument("--package", action="append", required=True, type=Path)
+    sample_source = parser.add_mutually_exclusive_group(required=True)
+    sample_source.add_argument("--sample-manifest", type=Path)
+    sample_source.add_argument("--sex-qc", type=Path)
+    chromosome_source = parser.add_mutually_exclusive_group(required=True)
+    chromosome_source.add_argument("--package", action="append", type=Path)
+    chromosome_source.add_argument("--run-base", type=Path)
     parser.add_argument("--expected-chromosomes", default=",".join([f"chr{i}" for i in range(1, 23)] + ["chrX", "chrY"]))
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--strata-output", required=True, type=Path)
     args = parser.parse_args()
 
-    samples = read_tsv(args.sample_manifest)
-    if not samples or "IID" not in samples[0]:
-        raise ValueError("sample manifest must contain IID")
+    if args.sample_manifest:
+        samples = read_tsv(args.sample_manifest)
+        if not samples or "IID" not in samples[0]:
+            raise ValueError("sample manifest must contain IID")
+    else:
+        qc_rows = read_tsv(args.sex_qc)
+        if not qc_rows or "sample_id" not in qc_rows[0]:
+            raise ValueError("sex QC must contain sample_id")
+        sex = {"XX-like": "F", "XY-like": "M"}
+        samples = [
+            {"FID": "", "IID": row["sample_id"], "SEX": sex.get(row.get("inferred_karyotype"), "")}
+            for row in qc_rows
+        ]
     ids = [row["IID"] for row in samples]
     if len(ids) != len(set(ids)):
         raise ValueError("sample manifest contains duplicate IID values")
 
     expected = set(filter(None, args.expected_chromosomes.split(",")))
     packages = {}
-    for root in args.package:
-        document = json.loads((root / "targeted-output-manifest.json").read_text())
-        chrom = document["chromosome"]
-        if document["status"] != "SUCCEEDED" or chrom in packages:
-            raise ValueError(f"invalid or duplicate chromosome package: {chrom}")
-        for entry in document["files"].values():
-            path = root / entry["file"]
-            if not path.is_file() or digest(path) != entry["sha256"]:
-                raise ValueError(f"package checksum failure: {path}")
-        packages[chrom] = (root, document)
+    if args.package:
+        for root in args.package:
+            document = json.loads((root / "targeted-output-manifest.json").read_text())
+            chrom = document["chromosome"]
+            if document["status"] != "SUCCEEDED" or chrom in packages:
+                raise ValueError(f"invalid or duplicate chromosome package: {chrom}")
+            for entry in document["files"].values():
+                path = root / entry["file"]
+                if not path.is_file() or digest(path) != entry["sha256"]:
+                    raise ValueError(f"package checksum failure: {path}")
+            packages[chrom] = (root, document)
+    else:
+        filenames = {
+            "plof_counts": "12.plof-per-sample-counts.tsv",
+            "missense_counts": "12.missense-per-sample-counts.tsv",
+            "plof_sensitivity_burden": "12.plof-sensitivity-sample-burden.tsv",
+        }
+        for chrom in expected:
+            root = args.run_base / chrom
+            if not (root / "_SUCCESS").is_file():
+                raise ValueError(f"completed run is missing _SUCCESS: {root}")
+            files = {
+                logical: {"file": filename}
+                for logical, filename in filenames.items()
+                if (root / filename).is_file()
+            }
+            if "plof_counts" not in files:
+                raise ValueError(f"completed run is missing LoF counts: {root}")
+            packages[chrom] = (root, {"files": files})
     if set(packages) != expected:
         raise ValueError(f"chromosome packages differ from expected: missing={sorted(expected-set(packages))} extra={sorted(set(packages)-expected)}")
 
