@@ -20,6 +20,7 @@ annotation_root=$ANNOTATION_ROOT
 loftee_root=$LOFTEE_ROOT
 genebayes=$GENEBAYES
 missense_candidates=${MISSENSE_CANDIDATES:-}
+missense_dbnsfp=${MISSENSE_DBNSFP:-}
 postprocess_config=${POSTPROCESS_CONFIG:-}
 sample_sex_qc=${SAMPLE_SEX_QC:-}
 sex_chromosome_regions=${SEX_CHROMOSOME_REGIONS:-}
@@ -76,6 +77,7 @@ required=(
   "$consequence_ranks" "$genebayes"
 )
 if test -n "$target_bed"; then required+=("$target_bed"); fi
+if test -n "$missense_dbnsfp"; then required+=("$missense_dbnsfp"); fi
 for path in "${required[@]}"; do
   test -r "$path" || { echo "ERROR: missing input: $path" >&2; exit 1; }
 done
@@ -133,6 +135,7 @@ plof_sample_burden=$run_root/12.plof-primary-sample-burden.tsv
 plof_sensitivity_gene=$run_root/12.plof-sensitivity-sample-gene.tsv
 plof_sensitivity_burden=$run_root/12.plof-sensitivity-sample-burden.tsv
 missense_tiered=$run_root/06.missense-tiered.parquet
+generated_missense_candidates=$run_root/01.observed-missense-candidates.parquet
 missense_carriers=$run_root/07.missense-tiered.carriers.parquet
 missense_carriers_raw=$run_root/07.missense-tiered.carriers.raw.parquet
 missense_summary=$run_root/07.missense-tiered.genotype-summary.parquet
@@ -149,6 +152,20 @@ target_args=()
 if test -n "$target_bed"; then target_args=(--bed "$target_bed"); fi
 run_stage "$alleles" "$python" scripts/extract_zarr_target_alleles.py \
   --zarr "$zarr_store" "${target_args[@]}" --chrom "$chromosome" --output "$alleles"
+if test -z "$missense_candidates" && test -n "$missense_dbnsfp"; then
+  if ! test -s "$generated_missense_candidates"; then
+    rm -f "$generated_missense_candidates"
+    if ! "$python" scripts/build_missense_candidate_alleles.py \
+        --dbnsfp "$missense_dbnsfp" --all-genes --chrom "$chromosome" \
+        --observed-alleles "$alleles" \
+        --observed-output "$generated_missense_candidates"; then
+      rm -f "$generated_missense_candidates"
+      exit 1
+    fi
+  fi
+  test -s "$generated_missense_candidates"
+  missense_candidates=$generated_missense_candidates
+fi
 run_stage "$raw_vcf" "$python" scripts/allele_parquet_to_sites_vcf.py \
   --input "$alleles" --output "$raw_vcf" --output-contig "$contig" \
   --contig-length "$contig_length"

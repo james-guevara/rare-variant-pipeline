@@ -1,10 +1,10 @@
 {
-  "regions_dir": "/fsx/rare-variant-pilot/resources/regions/chr6",
+  "regions_dir": "/fsx/rare-variant-pilot/resources/regions/{chrom}",
   "filter_beds": [
-    "genomicSuperDups.chr6.bed",
-    "simpleRepeat.chr6.bed"
+    "genomicSuperDups.{chrom}.bed",
+    "simpleRepeat.{chrom}.bed"
   ],
-  "rmsk_bed": "rmsk.chr6.bed",
+  "rmsk_bed": "rmsk.{chrom}.bed",
   "rmsk_drop_classes": [
     "Simple_repeat",
     "Low_complexity"

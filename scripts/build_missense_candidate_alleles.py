@@ -22,7 +22,7 @@ def main():
     parser.add_argument("--all-genes", action="store_true")
     parser.add_argument("--chrom", required=True)
     parser.add_argument("--min-post-mean", default=0.03, type=float)
-    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--observed-alleles", type=Path)
     parser.add_argument("--observed-output", type=Path)
     args = parser.parse_args()
@@ -89,10 +89,11 @@ def main():
                    score_values=score_values, flags=flags, score_max=score_max),
         parameters,
     )
-    con.execute(
-        "COPY candidates TO ? (FORMAT PARQUET, COMPRESSION ZSTD)",
-        [str(args.output)],
-    )
+    if args.output:
+        con.execute(
+            "COPY candidates TO ? (FORMAT PARQUET, COMPRESSION ZSTD)",
+            [str(args.output)],
+        )
     count = con.execute("SELECT COUNT(*) FROM candidates").fetchone()[0]
     print("candidate_alleles={:,}".format(count))
     for tier, n in con.execute(

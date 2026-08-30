@@ -24,8 +24,9 @@ def candidate_path(chromosome: str) -> str:
 
 
 def postprocess_path(chromosome: str) -> str:
-    name = "missense-config.json" if chromosome in {"chrX", "chrY"} else "config.json"
-    return f"{FSX}/resources/postprocess/g2mh-{chromosome}/{name}"
+    if chromosome in {"chrX", "chrY"}:
+        return f"{FSX}/resources/postprocess/g2mh-{chromosome}/missense-config.json"
+    return "/opt/rvp/config/postprocess/aws-g2mh-autosomes.json"
 
 
 def environment(chromosome: str, run_id: str) -> list[dict[str, str]]:
@@ -39,12 +40,18 @@ def environment(chromosome: str, run_id: str) -> list[dict[str, str]]:
         "CONTIG_LENGTH": str(GRCH38_LENGTHS[chromosome]),
         "GENEBAYES": f"{FSX}/resources/targeted-annotation/GeneBayes.Supplementary_Table_1.tsv",
         "LOFTEE_ROOT": f"{FSX}/resources",
-        "MISSENSE_CANDIDATES": candidate_path(chromosome),
         "POPULATION_AF_MAX": "0.01",
         "POSTPROCESS_CONFIG": postprocess_path(chromosome),
         "RUN_ROOT": f"{FSX}/workflows/g2mh/{run_id}/{chromosome}",
         "ZARR_STORE": f"{VCZ}/{chromosome}.sharded-v3.zarr",
     }
+    if chromosome.removeprefix("chr").isdigit() and 2 <= int(chromosome[3:]) <= 20:
+        values["MISSENSE_DBNSFP"] = (
+            f"{FSX}/resources/dbNSFP/5.3.1a/"
+            f"parquet_expanded_mane_select/{chromosome}.parquet"
+        )
+    else:
+        values["MISSENSE_CANDIDATES"] = candidate_path(chromosome)
     if chromosome in {"chrX", "chrY"}:
         values.update({
             "SAMPLE_SEX_QC": f"{FSX}/resources/sample-qc/g2mh.sex-chromosome-qc.tsv",
