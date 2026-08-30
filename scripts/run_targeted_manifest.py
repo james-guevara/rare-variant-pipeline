@@ -24,7 +24,7 @@ ENVIRONMENT_KEYS = {
     "sex_chromosome_regions": "SEX_CHROMOSOME_REGIONS",
 }
 REQUIRED_RESOURCES = {
-    "zarr_store", "target_bed", "annotation_root", "loftee_root", "genebayes"
+    "zarr_store", "annotation_root", "loftee_root", "genebayes"
 }
 
 

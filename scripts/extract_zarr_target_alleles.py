@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extract one row per ALT allele from a VCZ store within target BED intervals.
+"""Extract one row per ALT allele from a VCZ store, optionally within BED intervals.
 
 The output retains ``variant_index`` and ``alt_index`` so normalized and
 annotated alleles can be mapped back to the unchanged genotype arrays.
@@ -123,7 +123,10 @@ def selected_chunk_rows(
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--zarr", required=True, type=Path)
-    parser.add_argument("--bed", required=True, type=Path)
+    parser.add_argument(
+        "--bed", type=Path,
+        help="optional BED restriction; omit to extract every record on the chromosome",
+    )
     parser.add_argument("--chrom", default="chr22")
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument(
@@ -144,9 +147,14 @@ def main() -> None:
     positions = root["variant_position"][:]
     lengths = root["variant_length"][:]
     contigs = root["variant_contig"][:]
-    intervals = load_intervals(args.bed, args.chrom)
-    indexes = overlapping_indexes(positions, lengths, intervals)
-    indexes = indexes[contigs[indexes] == contig_index]
+    if args.bed:
+        intervals = load_intervals(args.bed, args.chrom)
+        indexes = overlapping_indexes(positions, lengths, intervals)
+        indexes = indexes[contigs[indexes] == contig_index]
+        scope = f"intervals={len(intervals):,}"
+    else:
+        indexes = np.flatnonzero(contigs == contig_index).astype(np.int64, copy=False)
+        scope = "scope=all-observed"
 
     allele_array = root["variant_allele"]
     id_array = root["variant_id"]
@@ -195,7 +203,7 @@ def main() -> None:
     table = pa.Table.from_pydict(rows, schema=schema)
     pq.write_table(table, args.output, compression="zstd")
     print(
-        f"intervals={len(intervals):,} records={len(indexes):,} "
+        f"{scope} records={len(indexes):,} "
         f"alleles={table.num_rows:,} output={args.output}"
     )
 

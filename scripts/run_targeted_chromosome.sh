@@ -8,13 +8,12 @@ export PATH="${HOME}/.local/bin:${PATH}"
 repo=${RVP_REPO:-/opt/rvp}
 : "${RUN_ROOT:?RUN_ROOT is required; use run_targeted_manifest.py}"
 : "${ZARR_STORE:?ZARR_STORE is required; use run_targeted_manifest.py}"
-: "${TARGET_BED:?TARGET_BED is required; use run_targeted_manifest.py}"
 : "${ANNOTATION_ROOT:?ANNOTATION_ROOT is required; use run_targeted_manifest.py}"
 : "${LOFTEE_ROOT:?LOFTEE_ROOT is required; use run_targeted_manifest.py}"
 : "${GENEBAYES:?GENEBAYES is required; use run_targeted_manifest.py}"
 run_root=$RUN_ROOT
 zarr_store=$ZARR_STORE
-target_bed=$TARGET_BED
+target_bed=${TARGET_BED:-}
 fastvep_root=${FASTVEP_ROOT:-/opt/fastvep}
 annotation_root=$ANNOTATION_ROOT
 loftee_root=$LOFTEE_ROOT
@@ -70,11 +69,12 @@ fi
 exec > >(tee -a "$run_root/workflow.log") 2>&1
 
 required=(
-  "$zarr_store/zarr.json" "$target_bed" "$fastvep" "$reference" "$reference.fai"
+  "$zarr_store/zarr.json" "$fastvep" "$reference" "$reference.fai"
   "$ancestor" "$ancestor.fai" "$ancestor.gzi" "$gerp" "$conservation"
   "$transcripts" "$gff3" "$transcript_cache" "$transcript_priority"
   "$consequence_ranks" "$genebayes"
 )
+if test -n "$target_bed"; then required+=("$target_bed"); fi
 for path in "${required[@]}"; do
   test -r "$path" || { echo "ERROR: missing input: $path" >&2; exit 1; }
 done
@@ -136,8 +136,10 @@ missense_burden_eligible=$run_root/11.missense-burden-eligible.parquet
 missense_counts=$run_root/12.missense-per-sample-counts.tsv
 missense_totals=$run_root/12.missense-tier-totals.tsv
 
+target_args=()
+if test -n "$target_bed"; then target_args=(--bed "$target_bed"); fi
 run_stage "$alleles" "$python" scripts/extract_zarr_target_alleles.py \
-  --zarr "$zarr_store" --bed "$target_bed" --chrom "$chromosome" --output "$alleles"
+  --zarr "$zarr_store" "${target_args[@]}" --chrom "$chromosome" --output "$alleles"
 run_stage "$raw_vcf" "$python" scripts/allele_parquet_to_sites_vcf.py \
   --input "$alleles" --output "$raw_vcf" --output-contig "$contig" \
   --contig-length "$contig_length"

@@ -36,6 +36,12 @@ def test_vectorized_overlap_handles_empty_inputs():
         module.overlapping_indexes(positions, lengths, [(0, 10)]),
         np.asarray([], dtype=np.int64),
     )
+
+
+def test_bed_free_selection_is_every_record_on_requested_contig():
+    contigs = np.asarray([0, 1, 0, 0, 1], dtype=np.int8)
+    observed = np.flatnonzero(contigs == 0).astype(np.int64, copy=False)
+    np.testing.assert_array_equal(observed, np.asarray([0, 2, 3], dtype=np.int64))
     np.testing.assert_array_equal(
         module.overlapping_indexes(
             np.asarray([1], dtype=np.int32),
