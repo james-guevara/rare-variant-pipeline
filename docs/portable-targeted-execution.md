@@ -24,11 +24,12 @@ different purposes:
   registry. Missing FSx files should first be recovered or derived from Expanse,
   then checksum-staged to AWS.
 
-As of 2026-08-28, chr1, chr21, chr22, chrX, and chrY had validated portable
-annotation bundles. For chr2–20, the genome-wide source resources already existed
-on Expanse; only the chromosome-specific portable derivatives remained to be
-built. This distinction avoids unnecessary source downloads and prevents
-AWS-only resources from becoming the accidental source of truth.
+As of 2026-08-29, all 24 chromosomes have portable Ensembl 115/FastVEP/standalone-
+LOFTEE annotation derivatives. The chr2–20 bundle is pinned by
+`resources/ensembl115-autosomes-chr2-20-bundle.json`; Expanse remains authoritative,
+S3 stores the checksum-verified transfer archive, and AWS FSx is an installed working
+copy. Target BEDs, problematic-region/AF configurations, and cohort bindings remain
+separate inputs and must not be inferred merely from annotation-bundle availability.
 
 Threshold-specific dbNSFP/GeneBayes candidate bundles are optional caches, not a
 required workflow layer. The default multi-cohort path should broadly extract
