@@ -157,6 +157,10 @@ def main() -> None:
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--bindings", required=True, type=Path)
     parser.add_argument("--run-root", type=Path, help="override the binding's unique run root")
+    parser.add_argument(
+        "--lof-only", action="store_true",
+        help="run only the LoF branch even when missense resources are declared",
+    )
     default_root = Path(os.environ.get("RVP_REPO", Path(__file__).resolve().parents[1]))
     parser.add_argument(
         "--worker", type=Path,
@@ -172,12 +176,16 @@ def main() -> None:
 
     manifest = read_json(args.manifest)
     bindings = read_json(args.bindings)
+    if args.lof_only:
+        manifest.get("resources", {}).pop("missense_candidates", None)
     regression = args.regression
-    if regression is None and bindings.get("regression"):
+    if regression is None and not args.lof_only and bindings.get("regression"):
         regression = Path(require_string(bindings, "regression", "bindings"))
     if args.run_root:
         bindings["run_root"] = str(args.run_root)
     environment, observations = resolve(manifest, bindings)
+    if args.lof_only:
+        environment.pop("MISSENSE_CANDIDATES", None)
     preflight_run_root(Path(environment["RUN_ROOT"]))
     if not args.skip_runtime_checks:
         for command in ("bcftools", "fastvep"):

@@ -5,6 +5,7 @@ params.run_sheet = null
 params.sample_manifest = null
 params.expected_chromosomes = null
 params.targeted_container = null
+params.lof_only = true
 params.run_root = null
 params.outdir = 'results'
 

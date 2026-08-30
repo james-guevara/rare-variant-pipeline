@@ -30,6 +30,7 @@ def test_targeted_wrapper_compiles_and_exposes_receipt(tmp_path: Path):
     assert "TARGETED_CHROMOSOME(manifest_bindings)" in workflow
     assert "execution_receipt = TARGETED_CHROMOSOME.out[0]" in workflow
     assert "chromosome_outputs = TARGETED_CHROMOSOME.out[1]" in workflow
+    assert "--lof-only" in workflow
 
 
 def test_cohort_wrapper_compiles_with_scatter_and_gather(tmp_path: Path):
@@ -64,6 +65,7 @@ def test_cohort_wrapper_compiles_with_scatter_and_gather(tmp_path: Path):
     assert "TARGETED_MANIFEST_WORKFLOW(manifest_bindings)" in source
     assert "RARE_BURDEN_GATHER_WORKFLOW(" in source
     assert "rare_burdens = RARE_BURDEN_GATHER_WORKFLOW.out.rare_burdens" in source
+    assert "params.lof_only = true" in (REPO / "cohort.nf").read_text()
 
 
 def test_integrated_analysis_named_workflow_is_composable():

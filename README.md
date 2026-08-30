@@ -272,6 +272,10 @@ Each binding must name a unique chromosome run root. The wrapper scatters all ro
 passes the resulting checksummed chromosome packages directly to the gather workflow,
 and publishes `rare_burdens.tsv` plus
 `rare_burdens_by_chromosome_stratum.tsv` under `${params.outdir}/rare_burdens`.
+The cohort entrypoint defaults to `--lof_only true`; missense resources declared in a
+manifest are ignored in that mode. Set `--lof_only false` explicitly when the
+missense branch is ready for a cohort-wide run. The single-chromosome `targeted.nf`
+entrypoint retains its combined-branch default.
 `--expected_chromosomes` is required and must match the packages exactly, preventing
 an incomplete cohort from silently producing zero-filled burdens.
 

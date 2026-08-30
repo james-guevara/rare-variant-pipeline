@@ -101,3 +101,18 @@ def test_sex_chromosome_manifest_requires_qc_and_par_resources(tmp_path: Path):
     )
     assert result.returncode != 0
     assert "sex-chromosome manifest requires resources" in result.stderr
+
+
+def test_lof_only_does_not_require_declared_missense_binding(tmp_path: Path):
+    manifest, bindings = _fixture(tmp_path)
+    science = json.loads(manifest.read_text())
+    science["resources"]["missense_candidates"] = {"kind": "file"}
+    manifest.write_text(json.dumps(science))
+    result = subprocess.run(
+        [sys.executable, str(SCRIPT), "--manifest", str(manifest),
+         "--bindings", str(bindings), "--lof-only", "--preflight-only",
+         "--skip-runtime-checks"],
+        capture_output=True, text=True,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "preflight=PASS" in result.stdout

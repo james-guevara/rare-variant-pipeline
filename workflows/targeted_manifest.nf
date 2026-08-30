@@ -16,12 +16,14 @@ process TARGETED_CHROMOSOME {
     script:
     def preflight = params.preflight_only ? '--preflight-only' : ''
     def runRoot = params.run_root ? "--run-root ${params.run_root}" : ''
+    def lofOnly = params.lof_only ? '--lof-only' : ''
     """
     set -euo pipefail
     python /opt/rvp/scripts/run_targeted_manifest.py \
       --manifest ${science_manifest} \
       --bindings ${environment_bindings} \
       ${runRoot} \
+      ${lofOnly} \
       ${preflight}
     python /opt/rvp/scripts/package_targeted_outputs.py \
       --science-manifest ${science_manifest} \
@@ -35,6 +37,7 @@ process TARGETED_CHROMOSOME {
         "manifest": "${science_manifest.name}",
         "bindings": "${environment_bindings.name}",
         "preflight_only": "${params.preflight_only}" == "true",
+        "lof_only": "${params.lof_only}" == "true",
         "status": "SUCCEEDED",
     }, sort_keys=True))
     PY
