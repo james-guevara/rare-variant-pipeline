@@ -1,0 +1,43 @@
+gene_set_id	phenotype	n_genes	definition
+bmi_exomewide_16	BMI	16	Sixteen exome-wide significant BMI burden genes
+bmi_exomewide_negative	BMI	6	Exome-wide BMI genes with negative beta
+bmi_exomewide_positive	BMI	10	Exome-wide BMI genes with positive beta
+epi25_dee_damaging_missense_bonferroni	Epilepsy	1	Epi25 DEE damaging_missense; Bonferroni
+epi25_dee_damaging_missense_fdr05	Epilepsy	3	Epi25 DEE damaging_missense; BH FDR <= 5%
+epi25_dee_ptv_bonferroni	Epilepsy	6	Epi25 DEE ptv; Bonferroni
+epi25_dee_ptv_fdr05	Epilepsy	11	Epi25 DEE ptv; BH FDR <= 5%
+epi25_epi_damaging_missense_bonferroni	Epilepsy	1	Epi25 EPI damaging_missense; Bonferroni
+epi25_epi_damaging_missense_fdr05	Epilepsy	1	Epi25 EPI damaging_missense; BH FDR <= 5%
+epi25_epi_ptv_bonferroni	Epilepsy	3	Epi25 EPI ptv; Bonferroni
+epi25_epi_ptv_fdr05	Epilepsy	4	Epi25 EPI ptv; BH FDR <= 5%
+epi25_gge_damaging_missense_bonferroni	Epilepsy	1	Epi25 GGE damaging_missense; Bonferroni
+epi25_gge_damaging_missense_fdr05	Epilepsy	1	Epi25 GGE damaging_missense; BH FDR <= 5%
+epi25_gge_ptv_fdr05	Epilepsy	3	Epi25 GGE ptv; BH FDR <= 5%
+epi25_nafe_ptv_bonferroni	Epilepsy	2	Epi25 NAFE ptv; Bonferroni
+epi25_nafe_ptv_fdr05	Epilepsy	2	Epi25 NAFE ptv; BH FDR <= 5%
+height_207_gene_p	Height	207	207 discovery-significant gene-P genes
+height_singleton_plof	Height	17	17 significant singleton-pLoF burden genes
+height_singleton_plof_negative	Height	11	Singleton-pLoF genes with negative beta
+height_singleton_plof_positive	Height	6	Singleton-pLoF genes with positive beta
+panelapp_epilepsy_all	Epilepsy	914	All genes in the versioned PanelApp panel
+panelapp_epilepsy_green	Epilepsy	632	PanelApp green/high-evidence genes
+panelapp_intellectual_disability_all	Intellectual disability	2853	All genes in the versioned PanelApp panel
+panelapp_intellectual_disability_green	Intellectual disability	1513	PanelApp green/high-evidence genes
+schema_2022_exomewide_10	Schizophrenia	10	Ten published exome-wide significant SCHEMA genes
+schema_phase2_2026-04-23_bonferroni	Schizophrenia	19	Phase II meta-analysis P <= 0.05/18018
+schema_phase2_2026-04-23_fdr05	Schizophrenia	51	Phase II meta-analysis Benjamini-Hochberg FDR <= 5%
+schema_phase2_2026-05-07_bonferroni	Schizophrenia	19	Phase II meta-analysis P <= 0.05/18018
+schema_phase2_2026-05-07_fdr05	Schizophrenia	51	Phase II meta-analysis Benjamini-Hochberg FDR <= 5%
+schema_phase2_2026-05-26_bonferroni	Schizophrenia	19	Phase II meta-analysis P <= 0.05/18569
+schema_phase2_2026-05-26_fdr05	Schizophrenia	50	Phase II meta-analysis Benjamini-Hochberg FDR <= 5%
+schema_phase2_2026-07-15_bonferroni	Schizophrenia	19	Phase II meta-analysis P <= 0.05/18574
+schema_phase2_2026-07-15_fdr05	Schizophrenia	50	Phase II meta-analysis Benjamini-Hochberg FDR <= 5%
+schema_phase2_2026-08-07_bonferroni	Schizophrenia	19	Phase II meta-analysis P <= 0.05/18571
+schema_phase2_2026-08-07_fdr05	Schizophrenia	50	Phase II meta-analysis Benjamini-Hochberg FDR <= 5%
+schema_phase2_2026-08-21_bonferroni	Schizophrenia	19	Phase II meta-analysis P <= 0.05/18573
+schema_phase2_2026-08-21_fdr05	Schizophrenia	50	Phase II meta-analysis Benjamini-Hochberg FDR <= 5%
+sfari_all_scored	ASD	1195	All genes assigned a SFARI score
+sfari_score_1	ASD	245	SFARI score 1
+sfari_score_2	ASD	712	SFARI score 2
+sfari_score_3	ASD	238	SFARI score 3
+sfari_syndromic	ASD	312	SFARI syndromic flag
