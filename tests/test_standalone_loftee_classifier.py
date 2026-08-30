@@ -57,6 +57,16 @@ class ClassifierTest(unittest.TestCase):
         )
         self.assertEqual(result.lof_flags, "NON_CAN_SPLICE")
 
+    def test_explicit_utr_splice_consequence_is_low_confidence(self):
+        result = classify(
+            TranscriptContext(
+                consequences=("splice_donor_variant", "5_prime_UTR_variant"),
+                five_prime_utr=False,
+            )
+        )
+        self.assertEqual(result.lof, "LC")
+        self.assertEqual(result.lof_filter, "5UTR_SPLICE")
+
     def test_non_candidate_is_unannotated(self):
         result = classify(TranscriptContext(consequences=("missense_variant",)))
         self.assertEqual(result.lof, "")

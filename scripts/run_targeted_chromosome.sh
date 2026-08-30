@@ -152,12 +152,18 @@ target_args=()
 if test -n "$target_bed"; then target_args=(--bed "$target_bed"); fi
 run_stage "$alleles" "$python" scripts/extract_zarr_target_alleles.py \
   --zarr "$zarr_store" "${target_args[@]}" --chrom "$chromosome" --output "$alleles"
+run_stage "$raw_vcf" "$python" scripts/allele_parquet_to_sites_vcf.py \
+  --input "$alleles" --output "$raw_vcf" --output-contig "$contig" \
+  --contig-length "$contig_length"
+run_stage "$normalized_vcf" bcftools norm -f "$reference" -m -any -Ov \
+  -o "$normalized_vcf" "$raw_vcf"
+
 if test -z "$missense_candidates" && test -n "$missense_dbnsfp"; then
   if ! test -s "$generated_missense_candidates"; then
     rm -f "$generated_missense_candidates"
     if ! "$python" scripts/build_missense_candidate_alleles.py \
         --dbnsfp "$missense_dbnsfp" --all-genes --chrom "$chromosome" \
-        --observed-alleles "$alleles" \
+        --observed-vcf "$normalized_vcf" \
         --observed-output "$generated_missense_candidates"; then
       rm -f "$generated_missense_candidates"
       exit 1
@@ -166,11 +172,6 @@ if test -z "$missense_candidates" && test -n "$missense_dbnsfp"; then
   test -s "$generated_missense_candidates"
   missense_candidates=$generated_missense_candidates
 fi
-run_stage "$raw_vcf" "$python" scripts/allele_parquet_to_sites_vcf.py \
-  --input "$alleles" --output "$raw_vcf" --output-contig "$contig" \
-  --contig-length "$contig_length"
-run_stage "$normalized_vcf" bcftools norm -f "$reference" -m -any -Ov \
-  -o "$normalized_vcf" "$raw_vcf"
 
 if ! test -s "$picked"; then
   start=$SECONDS

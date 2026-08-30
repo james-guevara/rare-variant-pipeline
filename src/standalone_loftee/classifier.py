@@ -122,12 +122,22 @@ def classify(
                     filters.append("GC_TO_GT_DONOR")
                 if context.noncanonical_intron:
                     flags.append("NON_CAN_SPLICE")
-                if context.five_prime_utr:
+                # VEP's explicit consequence is authoritative for indels that
+                # span a CDS boundary; coordinate-only inference can place the
+                # event inside the CDS even though its splice consequence is UTR.
+                if context.five_prime_utr or "5_prime_UTR_variant" in consequences:
                     filters.append("5UTR_SPLICE")
-                if context.three_prime_utr:
+                if context.three_prime_utr or "3_prime_UTR_variant" in consequences:
                     filters.append("3UTR_SPLICE")
             if "splice_acceptor_variant" in consequences and context.nagnag_site:
                 flags.append("NAGNAG_SITE")
+
+    # Some VEP splice/UTR consequences do not carry an INTRON value. Preserve
+    # LOFTEE's UTR filter even when structural intron context is unavailable.
+    if splice_lof and "5_prime_UTR_variant" in consequences and "5UTR_SPLICE" not in filters:
+        filters.append("5UTR_SPLICE")
+    if splice_lof and "3_prime_UTR_variant" in consequences and "3UTR_SPLICE" not in filters:
+        filters.append("3UTR_SPLICE")
 
     if use_human_ancestor and context.ancestral_allele:
         filters.append("ANC_ALLELE")

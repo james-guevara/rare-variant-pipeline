@@ -24,10 +24,12 @@ def main():
     parser.add_argument("--min-post-mean", default=0.03, type=float)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--observed-alleles", type=Path)
+    parser.add_argument("--observed-vcf", type=Path)
     parser.add_argument("--observed-output", type=Path)
     args = parser.parse_args()
-    if bool(args.observed_alleles) != bool(args.observed_output):
-        parser.error("--observed-alleles and --observed-output must be used together")
+    observed_inputs = sum(bool(value) for value in (args.observed_alleles, args.observed_vcf))
+    if bool(observed_inputs) != bool(args.observed_output) or observed_inputs > 1:
+        parser.error("use --observed-output with exactly one of --observed-alleles or --observed-vcf")
     if args.all_genes == bool(args.genebayes):
         parser.error("use exactly one of --all-genes or --genebayes")
 
@@ -114,6 +116,43 @@ def main():
                  AND o.ref = c.REF AND o.alt = c.ALT
             ) TO '{observed_output}' (FORMAT PARQUET, COMPRESSION ZSTD)
             """
+        )
+        observed = con.execute(
+            "SELECT COUNT(*) FROM read_parquet(?)", [str(args.observed_output)]
+        ).fetchone()[0]
+        print("observed_candidate_alleles={:,}".format(observed))
+    elif args.observed_vcf:
+        metadata_lines = 0
+        with args.observed_vcf.open() as handle:
+            for line in handle:
+                if line.startswith("##"):
+                    metadata_lines += 1
+                elif line.startswith("#CHROM"):
+                    break
+                else:
+                    raise ValueError("VCF header is missing #CHROM")
+        vcf_path = str(args.observed_vcf).replace("'", "''")
+        con.execute(
+            f"""
+            CREATE VIEW normalized_observed AS
+            SELECT regexp_replace("#CHROM", '^chr', '') AS chrom,
+                   CAST(POS AS BIGINT) AS pos, REF AS ref, ALT AS alt
+            FROM read_csv('{vcf_path}', delim='\t', header=true,
+                          skip={metadata_lines}, all_varchar=true)
+            """
+        )
+        con.execute(
+            """
+            COPY (
+                SELECT o.chrom, o.pos, o.ref, o.alt,
+                       c.* EXCLUDE (CHROM, POS, REF, ALT)
+                FROM normalized_observed o
+                JOIN candidates c
+                  ON o.chrom = regexp_replace(c.CHROM, '^chr', '')
+                 AND o.pos = c.POS AND o.ref = c.REF AND o.alt = c.ALT
+            ) TO ? (FORMAT PARQUET, COMPRESSION ZSTD)
+            """,
+            [str(args.observed_output)],
         )
         observed = con.execute(
             "SELECT COUNT(*) FROM read_parquet(?)", [str(args.observed_output)]
