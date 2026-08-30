@@ -132,6 +132,16 @@ GeneBayes hashes matched exactly. Therefore cohort-specific target BED construct
 not required for the default LoF workflow; it is an optional performance experiment,
 not a scientific dependency.
 
+The same all-observed FastVEP checkpoint was then reused for the combined missense
+branch without rerunning annotation. Joining the pinned 1,443 cohort-observed dbNSFP
+candidates took less than one second and retained the expected 1,330 selected-
+transcript missense variants: 6 `miss_t1`, 21 `miss_t2`, 203 `miss_t3`, and 1,100
+`miss_t4`. Genotype recovery and all downstream processing completed in under one
+minute. The final 1,111 carrier rows across 845 variants and 699 samples matched every
+pinned count and carrier/variant/coordinate/core content hash. The all-observed
+chromosome annotation is therefore reusable for both LoF and missense; candidate
+tables are fast join inputs, not annotation target generators.
+
 Using the historical G2MH final eligibility rule (`cohort AF < 0.01`) solely as a
 regression test produced 38 carrier rows across 19 variants, matching the August 2026
 Expanse production run exactly for coordinates, samples, genotypes, genes, LOFTEE,
