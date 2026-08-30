@@ -279,6 +279,11 @@ entrypoint retains its combined-branch default.
 `--expected_chromosomes` is required and must match the packages exactly, preventing
 an incomplete cohort from silently producing zero-filled burdens.
 
+`config/run-sheets/g2mh-prepared-five.tsv` is the explicit validation subset for the
+five G2MH chromosomes whose shared Ensembl/FastVEP/LOFTEE bundles are currently
+complete (`chr1`, `chr21`, `chr22`, `chrX`, and `chrY`). It is not a whole-genome
+completion claim; a 24-chromosome gather must name and receive all 24 packages.
+
 ### PGS and rare-burden integration
 
 `INTEGRATED_ANALYSIS_WORKFLOW` in `workflows/integrated_analysis.nf` is the narrow
