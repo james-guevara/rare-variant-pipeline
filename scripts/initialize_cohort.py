@@ -42,7 +42,12 @@ def normalize_sex(value):
     return value.strip()
 
 
-def read_psam(path):
+def normalize_parent(value):
+    text = value.strip()
+    return "" if text.upper() in {"", "0", ".", "NA", "N/A", "-9"} else text
+
+
+def read_psam(path, allow_external_parents=False):
     lines = [line.strip() for line in path.read_text().splitlines() if line.strip()]
     if not lines:
         raise ValueError(f"empty PSAM: {path}")
@@ -63,10 +68,27 @@ def read_psam(path):
         rows.append({
             "FID": "" if row.get("FID", "") in {"0", "."} else row.get("FID", ""),
             "IID": iid,
+            "PAT": normalize_parent(row.get("PAT", "")),
+            "MAT": normalize_parent(row.get("MAT", "")),
             "SEX": normalize_sex(row.get("SEX", "")),
         })
     if not rows:
         raise ValueError("PSAM contains no samples")
+    if not allow_external_parents:
+        sample_ids = {row["IID"] for row in rows}
+        missing = sorted({
+            parent
+            for row in rows
+            for parent in (row["PAT"], row["MAT"])
+            if parent and parent not in sample_ids
+        })
+        if missing:
+            preview = ", ".join(missing[:10])
+            suffix = "..." if len(missing) > 10 else ""
+            raise ValueError(
+                f"PSAM references {len(missing)} parent(s) absent from the cohort: "
+                f"{preview}{suffix}; use --allow-external-parents to retain them"
+            )
     return rows
 
 
@@ -90,6 +112,10 @@ def main():
     parser.add_argument("--cohort-root", required=True)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument(
+        "--allow-external-parents", action="store_true",
+        help="retain nonzero PAT/MAT IDs that are not sequenced members of this cohort",
+    )
+    parser.add_argument(
         "--pass-policy", choices=("auto", "required", "ignore"), default="auto",
         help="whether the eventual genotype pipeline requires VCF FILTER=PASS",
     )
@@ -98,11 +124,11 @@ def main():
         raise ValueError("--vcf-template must contain {chrom}")
 
     chromosomes = parse_chromosomes(args.chromosomes)
-    samples = read_psam(args.psam)
+    samples = read_psam(args.psam, allow_external_parents=args.allow_external_parents)
     output = args.output_dir
     output.mkdir(parents=True, exist_ok=True)
     sample_manifest = output / "sample_manifest.tsv"
-    write_tsv(sample_manifest, ["FID", "IID", "SEX"], samples)
+    write_tsv(sample_manifest, ["FID", "IID", "PAT", "MAT", "SEX"], samples)
 
     shared = args.shared_resources_root.rstrip("/")
     cohort_root = args.cohort_root.rstrip("/")
@@ -142,6 +168,7 @@ def main():
         "shared_resources_root": args.shared_resources_root,
         "cohort_root": args.cohort_root,
         "pass_policy": args.pass_policy,
+        "allow_external_parents": args.allow_external_parents,
         "generated": {
             "sample_manifest": str(sample_manifest),
             "chromosome_preparation": str(plan),
@@ -154,6 +181,9 @@ def main():
         "cohort": args.cohort,
         "samples": len(samples),
         "family_ids_nonempty": sum(bool(row["FID"]) for row in samples),
+        "paternal_ids_nonempty": sum(bool(row["PAT"]) for row in samples),
+        "maternal_ids_nonempty": sum(bool(row["MAT"]) for row in samples),
+        "external_parent_ids_allowed": args.allow_external_parents,
         "sex_counts": dict(sorted(sex_counts.items())),
         "chromosomes_requested": len(chromosomes),
         "derived_resources_ready": False,

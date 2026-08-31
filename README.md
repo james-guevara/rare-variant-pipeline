@@ -161,7 +161,7 @@ Initialization performs no annotation and does not pretend cohort-derived resour
 already exist. It emits:
 
 - `cohort.json`: the small user declaration;
-- `sample_manifest.tsv`: normalized `FID`, `IID`, and `SEX` from the PSAM;
+- `sample_manifest.tsv`: normalized `FID`, `IID`, `PAT`, `MAT`, and `SEX` from the PSAM;
 - `chromosome_preparation.tsv`: paths for VCF inspection, Zarr conversion, observed
   candidate derivation, postprocessing configuration, and eventual manifests/bindings;
 - `initialization_qc.json`: sample/sex counts and
@@ -172,6 +172,10 @@ inspect VCF headers and sample concordance, create the Zarr stores and cohort-de
 candidate/QC resources, and only then materialize ready-to-run manifests and bindings.
 Shared Ensembl, LOFTEE, GeneBayes, dbNSFP, and problematic-region resources remain
 pipeline-owned rather than user inputs.
+
+By default, every nonzero `PAT` and `MAT` must also occur as an `IID` in the PSAM.
+Use `--allow-external-parents` when a cohort intentionally records unsequenced parents;
+their IDs are preserved, not treated as genotyped samples.
 
 The first read-only preparation stage is:
 
