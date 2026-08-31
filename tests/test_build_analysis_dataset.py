@@ -33,7 +33,7 @@ def run(tmp_path, extra):
 
 def test_manifest_universe_combines_optional_components(tmp_path):
     (tmp_path / "samples.tsv").write_text(
-        "#FID\tIID\tSEX\nF1\tS1\tF\nF1\tS2\tM\nF2\tS3\tF\n"
+        "#FID\tIID\tSEX\nF1\tS1\t2\nF1\tS2\t1\nF2\tS3\t2\n"
     )
     (tmp_path / "pgs.tsv").write_text("IID\tANCESTRY\tPGS_trait\nS1\tEUR\t0.5\nS2\tAFR\t-0.2\n")
     (tmp_path / "pgs.dict.tsv").write_text(
@@ -63,6 +63,7 @@ def test_manifest_universe_combines_optional_components(tmp_path):
     ])
     rows = read_rows(result["output"])
     assert [row["IID"] for row in rows] == ["S1", "S2", "S3"]
+    assert [row["SEX"] for row in rows] == ["F", "M", "F"]
     assert rows[1]["CNV_DEL_GENE_COUNT"] == ""
     assert rows[2]["PGS_trait"] == ""
     assert [row["variable"] for row in read_rows(result["dictionary"])] == list(rows[0])

@@ -15,6 +15,17 @@ DICTIONARY_FIELDS = (
 )
 
 
+def normalize_sex(value):
+    normalized = value.strip().upper()
+    if normalized in {"1", "M", "MALE"}:
+        return "M"
+    if normalized in {"2", "F", "FEMALE"}:
+        return "F"
+    if normalized in {"", "0", "NA", "N/A", ".", "UNKNOWN"}:
+        return ""
+    return value
+
+
 def read_tsv(path):
     with path.open(newline="") as handle:
         reader = csv.DictReader(handle, delimiter="\t")
@@ -99,6 +110,8 @@ def main():
     manifest_fields, manifest_rows, manifest = index_unique(args.participant_manifest)
     if not set(IDENTIFIERS).issubset(manifest_fields):
         raise ValueError("participant manifest must contain FID, IID, and SEX")
+    for row in manifest_rows:
+        row["SEX"] = normalize_sex(row.get("SEX", ""))
 
     template = read_dictionary(args.variable_template)
     components = []
