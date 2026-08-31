@@ -22,6 +22,7 @@ ENVIRONMENT_KEYS = {
     "postprocess_config": "POSTPROCESS_CONFIG",
     "sample_sex_qc": "SAMPLE_SEX_QC",
     "sex_chromosome_regions": "SEX_CHROMOSOME_REGIONS",
+    "sample_manifest": "SAMPLE_MANIFEST",
 }
 REQUIRED_RESOURCES = {
     "zarr_store", "annotation_root", "loftee_root", "genebayes"
@@ -129,6 +130,12 @@ def resolve(manifest: dict, bindings: dict) -> tuple[dict[str, str], list[str]]:
     if not isinstance(synonymous, bool):
         raise ValueError("manifest.optional_outputs.synonymous_tiered_controls must be boolean")
     environment["SYNONYMOUS_TIERED_CONTROLS"] = "1" if synonymous else "0"
+    family_genotypes = optional_outputs.get("family_genotypes", False)
+    if not isinstance(family_genotypes, bool):
+        raise ValueError("manifest.optional_outputs.family_genotypes must be boolean")
+    if family_genotypes and "SAMPLE_MANIFEST" not in environment:
+        raise ValueError("family_genotypes requires the sample_manifest resource")
+    environment["FAMILY_GENOTYPES"] = "1" if family_genotypes else "0"
     expected_qc = manifest.get("qc")
     if expected_qc is not None:
         if "POSTPROCESS_CONFIG" not in environment:

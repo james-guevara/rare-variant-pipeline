@@ -185,6 +185,15 @@ cohort-AF eligibility stages as the LoF branch. Set
 to disable it. Its allele, carrier, gene, and count outputs are named
 `*.synonymous-*` and never enter `lof_t1`/`lof_t2` burden totals.
 
+Family genotype expansion is independently optional and defaults off. Enable
+`optional_outputs.family_genotypes: true` and declare a `sample_manifest` resource
+containing `FID` and `IID`. For every allele with a carrier, the
+extractor retains calls for sequenced members of the carrier families during the
+same Zarr read. Reference, missing, and carrier calls are distinguished, while a
+boolean marks the index carrier versus other samples sharing its `FID`. Outputs
+are separate `*.family-genotypes.parquet` files
+and do not change compact carrier tables or burden counts.
+
 The first read-only preparation stage is:
 
 ```bash

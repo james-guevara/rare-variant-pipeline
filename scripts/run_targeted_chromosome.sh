@@ -27,6 +27,8 @@ sex_chromosome_regions=${SEX_CHROMOSOME_REGIONS:-}
 population_af_max=${POPULATION_AF_MAX:-0.01}
 cohort_af_max=${COHORT_AF_MAX:-0.01}
 synonymous_controls=${SYNONYMOUS_TIERED_CONTROLS:-0}
+family_genotypes=${FAMILY_GENOTYPES:-0}
+sample_manifest=${SAMPLE_MANIFEST:-}
 cohort=${COHORT:-g2mh}
 chromosome=${CHROMOSOME:-chr22}
 contig=${CONTIG:-${chromosome#chr}}
@@ -140,6 +142,7 @@ generated_missense_candidates=$run_root/01.observed-missense-candidates.parquet
 missense_carriers=$run_root/07.missense-tiered.carriers.parquet
 missense_carriers_raw=$run_root/07.missense-tiered.carriers.raw.parquet
 missense_summary=$run_root/07.missense-tiered.genotype-summary.parquet
+missense_family=$run_root/07.missense-tiered.family-genotypes.parquet
 missense_regions=$run_root/08.missense-region-filtered.parquet
 missense_qc=$run_root/09.missense-genotype-qc.parquet
 missense_pop_annotated=$run_root/10.missense-population-af-annotated.parquet
@@ -152,6 +155,7 @@ synonymous_tiered=$run_root/06.synonymous-tiered.tsv
 synonymous_carriers=$run_root/07.synonymous-tiered.carriers.parquet
 synonymous_carriers_raw=$run_root/07.synonymous-tiered.carriers.raw.parquet
 synonymous_summary=$run_root/07.synonymous-tiered.genotype-summary.parquet
+synonymous_family=$run_root/07.synonymous-tiered.family-genotypes.parquet
 synonymous_regions=$run_root/08.synonymous-region-filtered.parquet
 synonymous_qc=$run_root/09.synonymous-genotype-qc.parquet
 synonymous_pop_annotated=$run_root/10.synonymous-population-af-annotated.parquet
@@ -162,6 +166,14 @@ synonymous_counts=$run_root/12.synonymous-per-sample-counts.tsv
 synonymous_totals=$run_root/12.synonymous-tier-totals.tsv
 synonymous_sample_gene=$run_root/12.synonymous-sample-gene.tsv
 synonymous_sample_burden=$run_root/12.synonymous-sample-burden.tsv
+plof_family=$run_root/07.plof-tiered.family-genotypes.parquet
+
+if test "$family_genotypes" = 1; then
+  test -r "$sample_manifest" || {
+    echo "ERROR: FAMILY_GENOTYPES requires readable SAMPLE_MANIFEST" >&2
+    exit 1
+  }
+fi
 
 target_args=()
 if test -n "$target_bed"; then target_args=(--bed "$target_bed"); fi
@@ -225,15 +237,21 @@ test -s "$plof_tiered"
 
 extract_carriers=$carriers
 if test "$sex_chromosome" = 1; then extract_carriers=$carriers_raw; fi
-if ! test -s "$extract_carriers" || ! test -s "$summary"; then
+if ! test -s "$extract_carriers" || ! test -s "$summary" || \
+   { test "$family_genotypes" = 1 && ! test -s "$plof_family"; }; then
   sex_extraction_args=()
   if test "$sex_chromosome" = 1; then
     sex_extraction_args=(--sample-sex-qc "$sample_sex_qc" \
       --sex-chromosome-regions "$sex_chromosome_regions")
   fi
+  family_args=()
+  if test "$family_genotypes" = 1; then
+    family_args=(--sample-manifest "$sample_manifest" --family-output "$plof_family")
+  fi
   "$python" scripts/extract_zarr_allele_genotypes.py --zarr "$zarr_store" \
     --alleles "$plof_tiered" --carriers-output "$extract_carriers" \
-    --summary-output "$summary" "${sex_extraction_args[@]}"
+    --summary-output "$summary" "${sex_extraction_args[@]}" \
+    "${family_args[@]}"
 fi
 if test "$sex_chromosome" = 1; then
   run_stage "$carriers" "$python" scripts/annotate_sex_chromosome_carriers.py \
@@ -320,15 +338,21 @@ if test "$synonymous_controls" = 1; then
   if awk 'NR > 1 { found=1; exit } END { exit !found }' "$synonymous_tiered"; then
   extract_synonymous_carriers=$synonymous_carriers
   if test "$sex_chromosome" = 1; then extract_synonymous_carriers=$synonymous_carriers_raw; fi
-  if ! test -s "$extract_synonymous_carriers" || ! test -s "$synonymous_summary"; then
+  if ! test -s "$extract_synonymous_carriers" || ! test -s "$synonymous_summary" || \
+     { test "$family_genotypes" = 1 && ! test -s "$synonymous_family"; }; then
     sex_extraction_args=()
     if test "$sex_chromosome" = 1; then
       sex_extraction_args=(--sample-sex-qc "$sample_sex_qc" \
         --sex-chromosome-regions "$sex_chromosome_regions")
     fi
+    family_args=()
+    if test "$family_genotypes" = 1; then
+      family_args=(--sample-manifest "$sample_manifest" --family-output "$synonymous_family")
+    fi
     "$python" scripts/extract_zarr_allele_genotypes.py --zarr "$zarr_store" \
       --alleles "$synonymous_tiered" --carriers-output "$extract_synonymous_carriers" \
-      --summary-output "$synonymous_summary" "${sex_extraction_args[@]}"
+      --summary-output "$synonymous_summary" "${sex_extraction_args[@]}" \
+      "${family_args[@]}"
   fi
   if test "$sex_chromosome" = 1; then
     run_stage "$synonymous_carriers" "$python" scripts/annotate_sex_chromosome_carriers.py \
@@ -393,15 +417,21 @@ if test -n "$missense_candidates"; then
   if test "$sex_chromosome" = 1; then
     extract_missense_carriers=$missense_carriers_raw
   fi
-  if ! test -s "$extract_missense_carriers" || ! test -s "$missense_summary"; then
+  if ! test -s "$extract_missense_carriers" || ! test -s "$missense_summary" || \
+     { test "$family_genotypes" = 1 && ! test -s "$missense_family"; }; then
     sex_extraction_args=()
     if test "$sex_chromosome" = 1; then
       sex_extraction_args=(--sample-sex-qc "$sample_sex_qc" \
         --sex-chromosome-regions "$sex_chromosome_regions")
     fi
+    family_args=()
+    if test "$family_genotypes" = 1; then
+      family_args=(--sample-manifest "$sample_manifest" --family-output "$missense_family")
+    fi
     "$python" scripts/extract_zarr_allele_genotypes.py --zarr "$zarr_store" \
       --alleles "$missense_tiered" --carriers-output "$extract_missense_carriers" \
-      --summary-output "$missense_summary" "${sex_extraction_args[@]}"
+      --summary-output "$missense_summary" "${sex_extraction_args[@]}" \
+      "${family_args[@]}"
   fi
   if test "$sex_chromosome" = 1; then
     run_stage "$missense_carriers" "$python" scripts/annotate_sex_chromosome_carriers.py \

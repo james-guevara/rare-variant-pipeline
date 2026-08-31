@@ -32,7 +32,7 @@ distinct synonymous output names.
 Expected cost: modest once all-observed annotation exists. Annotation is reused; extra work is
 a gene/consequence filter, sparse Zarr genotype extraction, and additional Parquet output.
 
-## 3. Emit genotypes for relatives of carriers
+## 3. Emit genotypes for relatives of carriers (implemented; validation pending)
 
 For every qualifying allele with at least one carrier:
 
@@ -47,8 +47,8 @@ The existing Zarr extractor already reads each selected variant chunk across all
 discarding noncarriers. Family expansion therefore requires little additional Zarr I/O or
 computation. Output size should grow roughly with the number of sequenced family members per
 carrier family (often approximately 3--5 times the carrier-only row count), rather than with the
-entire cohort. Implement this as an optional family-genotype output, not as a replacement for the
-compact carrier table.
+entire cohort. It is implemented as an optional, default-off family-genotype output, not as a
+replacement for the compact carrier table. It still requires chr22 cohort-level validation.
 
 ## 4. Reuse cohort Zarr stores for CNV SNP-signal extraction (autosomes complete)
 

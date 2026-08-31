@@ -147,3 +147,23 @@ def test_synonymous_controls_default_on_and_can_be_disabled(tmp_path: Path):
     science["optional_outputs"] = {"synonymous_tiered_controls": False}
     environment, _ = resolve(science, deployment)
     assert environment["SYNONYMOUS_TIERED_CONTROLS"] == "0"
+
+
+def test_family_genotypes_are_optional_and_require_sample_manifest(tmp_path: Path):
+    manifest, bindings = _fixture(tmp_path)
+    science = json.loads(manifest.read_text())
+    deployment = json.loads(bindings.read_text())
+    science["optional_outputs"] = {"family_genotypes": True}
+    try:
+        resolve(science, deployment)
+        assert False, "missing sample manifest should fail"
+    except ValueError as error:
+        assert "sample_manifest" in str(error)
+
+    sample_manifest = tmp_path / "samples.tsv"
+    sample_manifest.write_text("FID\tIID\tSEX\nF1\tS1\tF\n")
+    science["resources"]["sample_manifest"] = {"kind": "file"}
+    deployment["resources"]["sample_manifest"] = str(sample_manifest)
+    environment, _ = resolve(science, deployment)
+    assert environment["FAMILY_GENOTYPES"] == "1"
+    assert environment["SAMPLE_MANIFEST"] == str(sample_manifest)

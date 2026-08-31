@@ -58,9 +58,13 @@ def main():
     parser.add_argument("--summary-output", required=True, type=Path)
     parser.add_argument("--sample-sex-qc", type=Path)
     parser.add_argument("--sex-chromosome-regions", type=Path)
+    parser.add_argument("--sample-manifest", type=Path)
+    parser.add_argument("--family-output", type=Path)
     args = parser.parse_args()
     if bool(args.sample_sex_qc) != bool(args.sex_chromosome_regions):
         parser.error("--sample-sex-qc and --sex-chromosome-regions must be supplied together")
+    if bool(args.sample_manifest) != bool(args.family_output):
+        parser.error("--sample-manifest and --family-output must be supplied together")
 
     if args.alleles.suffix == ".parquet":
         alleles = pq.read_table(args.alleles).to_pylist()
@@ -80,6 +84,29 @@ def main():
     genotypes = root["call_genotype"]
     masks = root["call_genotype_mask"]
     sample_ids = [str(value) for value in root["sample_id"][:]]
+    sample_index_by_id = {sample: index for index, sample in enumerate(sample_ids)}
+    pedigree = None
+    family_members = None
+    if args.sample_manifest:
+        with args.sample_manifest.open(newline="") as handle:
+            pedigree_rows = list(csv.DictReader(handle, delimiter="\t"))
+        for row in pedigree_rows:
+            if "#FID" in row and "FID" not in row:
+                row["FID"] = row.pop("#FID")
+        required = {"FID", "IID"}
+        missing_columns = required - set(pedigree_rows[0] if pedigree_rows else {})
+        if missing_columns:
+            raise ValueError(f"sample manifest lacks pedigree columns: {sorted(missing_columns)}")
+        pedigree = {row["IID"]: row for row in pedigree_rows}
+        if len(pedigree) != len(pedigree_rows):
+            raise ValueError("sample manifest contains duplicate IID values")
+        missing_samples = sorted(set(sample_ids) - pedigree.keys())
+        if missing_samples:
+            raise ValueError(f"VCZ samples absent from sample manifest: {missing_samples[:5]}")
+        family_members = {}
+        for row in pedigree_rows:
+            if row["FID"]:
+                family_members.setdefault(row["FID"], []).append(row)
     sex_qc = None
     sex_regions = None
     if args.sample_sex_qc:
@@ -103,6 +130,7 @@ def main():
     chunk_size = genotypes.chunks[0]
 
     carrier_rows = []
+    family_rows = []
     summaries = []
     rows_by_chunk = {}
     for row_number, (variant_index, alt_index) in enumerate(pointers):
@@ -177,7 +205,7 @@ def main():
                     if present
                 ) or "."
 
-            for sample_index in carrier_indexes.tolist():
+            def genotype_row(sample_index):
                 genotype = gt[sample_index]
                 genotype_called = called[sample_index]
                 called_ploidy = int(genotype_called.sum())
@@ -208,7 +236,7 @@ def main():
                     "{},{}".format(ad_ref, ad_alt)
                     if ad_ref is not None and ad_alt is not None else ""
                 )
-                carrier_rows.append({
+                return {
                     "record_id": allele["record_id"],
                     "#CHROM": "chr" + allele.get("CHROM", "").removeprefix("chr"),
                     "CHROM": allele.get("CHROM", ""),
@@ -260,15 +288,58 @@ def main():
                     ),
                     "GQ": int(gq_chunk[local_index, sample_index]) if gq_chunk is not None else None,
                     "DP": int(dp_chunk[local_index, sample_index]) if dp_chunk is not None else None,
-                })
+                }
+
+            allele_carrier_rows = [
+                genotype_row(sample_index) for sample_index in carrier_indexes.tolist()
+            ]
+            carrier_rows.extend(allele_carrier_rows)
+
+            if pedigree is not None and len(carrier_indexes):
+                relatives = {}
+                for carrier_index in carrier_indexes.tolist():
+                    carrier_id = sample_ids[carrier_index]
+                    carrier = pedigree[carrier_id]
+                    candidates = (
+                        family_members.get(carrier["FID"], [])
+                        if carrier["FID"] else [carrier]
+                    )
+                    for relative in candidates:
+                        entry = relatives.setdefault(relative["IID"], {
+                            "pedigree": relative, "carriers": set(),
+                        })
+                        entry["carriers"].add(carrier_id)
+
+                for relative_id, entry in sorted(relatives.items()):
+                    sample_index = sample_index_by_id[relative_id]
+                    output_row = genotype_row(sample_index)
+                    if output_row["called_ploidy"] == 0:
+                        call_state = "missing_genotype"
+                    elif output_row["alt_dosage"] > 0:
+                        call_state = "carrier"
+                    else:
+                        call_state = "reference_or_other_alt"
+                    output_row.update({
+                        "FID": entry["pedigree"].get("FID", ""),
+                        "is_index_carrier": relative_id in entry["carriers"],
+                        "index_carrier_ids": ",".join(sorted(entry["carriers"])),
+                        "present_in_callset": True,
+                        "family_call_state": call_state,
+                    })
+                    family_rows.append(output_row)
 
     args.carriers_output.parent.mkdir(parents=True, exist_ok=True)
     args.summary_output.parent.mkdir(parents=True, exist_ok=True)
     pq.write_table(pa.Table.from_pylist(carrier_rows), args.carriers_output, compression="zstd")
     pq.write_table(pa.Table.from_pylist(summaries), args.summary_output, compression="zstd")
+    if args.family_output:
+        args.family_output.parent.mkdir(parents=True, exist_ok=True)
+        pq.write_table(pa.Table.from_pylist(family_rows), args.family_output, compression="zstd")
     print("alleles={:,}".format(len(alleles)))
     print("carriers={:,}".format(len(carrier_rows)))
     print("carrier_samples={:,}".format(len({row["sample_id"] for row in carrier_rows})))
+    if args.family_output:
+        print("family_genotypes={:,}".format(len(family_rows)))
 
 
 if __name__ == "__main__":
