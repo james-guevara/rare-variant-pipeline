@@ -50,7 +50,7 @@ carrier family (often approximately 3--5 times the carrier-only row count), rath
 entire cohort. Implement this as an optional family-genotype output, not as a replacement for the
 compact carrier table.
 
-## 4. Reuse cohort Zarr stores for CNV SNP-signal extraction
+## 4. Reuse cohort Zarr stores for CNV SNP-signal extraction (autosomes complete)
 
 The current CNV preparation path uses `bcftools query` to extract selected SNP-marker rows with
 `CHROM`, `POS`, `REF`, `ALT`, `SAMPLE`, `GT`, `AD`, `DP`, and `GQ`. The cohort Zarr stores retain
@@ -94,7 +94,26 @@ marker-by-marker reads; scan `variant_position` chunks and read genotype/depth a
 matched rows. Keep the existing grouped-v2 Parquet as the single checkpoint because the CNV
 workflow already validates and consumes it.
 
-Initial validation should use chr22 and pinned samples, comparing Zarr-derived grouped rows with
-the existing bcftools-derived grouped rows for exact marker, sample, DP, BAC, and derived BAF
-parity. Then run the existing signal/call regression gate. Only after parity should the Zarr
-producer replace bcftools as the default pVCF extraction engine.
+The autosomal implementation and validation are complete in `gVCFToLRRBAF`. Zarr-derived
+grouped rows matched the localized-allele pVCF/bcftools path exactly for the pinned G2MH
+comparison, and both PyPennCNV and PyQuantiSNP now consume the assembled signals.
+
+## 5. Add chrX/chrY CNV signals and aneuploidy QC
+
+The validated CNV signal path currently covers chr1--22. PyPennCNV now emits per-chromosome and
+genome-wide LRR/BAF summaries, but chrX and chrY cannot appear until sex-chromosome marker
+signals are supplied.
+
+Add an optional sex-chromosome signal branch that:
+
+1. extracts chrX and chrY markers from the existing cohort Zarr stores;
+2. separates pseudoautosomal (PAR) and non-PAR regions;
+3. reports X/Y LRR, BAF, marker count, missingness, and depth relative to the autosomal baseline;
+4. preserves reported sex and the independent rare-variant karyotype audit as separate evidence;
+5. flags possible X0, XXY, XYY, mosaic, and ambiguous patterns without forcing a diagnosis;
+6. calibrates thresholds on SPARK and SSC before enabling production classification.
+
+Estimated effort is 2--4 hours for extraction, summaries, and an initial G2MH validation, plus
+approximately one additional day for a calibrated production classifier across SPARK and SSC.
+The all-marker BAF mean is affected by pVCF marker ascertainment, so detection should emphasize
+relative chromosome LRR, depth, and heterozygous BAF structure rather than BAF mean alone.
