@@ -142,5 +142,11 @@ path.
    in the G2MH chr22 validation they took 124 and 122 seconds respectively out of 381 seconds.
 6. Exercise container portability on another Slurm/Singularity or Apptainer environment in
    addition to AWS Batch and Expanse.
-7. Preserve the optional synonymous and family-genotype branches in the output data dictionary
-   and in any future combined rare-variant/PGS analysis workflow.
+7. Validate the participant-manifest-centered analysis assembler on G2MH, then expose it as a
+   reusable parent-workflow boundary. PGS, rare variants, and CNVs must remain optional
+   components with explicit completeness policies.
+8. Define the CNV release step that filters/QCs normalized calls, intersects an approved gene
+   annotation, and counts unique affected genes per participant separately for DEL and DUP.
+   Do not use raw segment counts as the primary CNV burden.
+9. Preserve the optional synonymous and family-genotype branches in the output data dictionary
+   and in future combined analysis workflows.

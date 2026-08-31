@@ -321,6 +321,24 @@ completion claim; a 24-chromosome gather must name and receive all 24 packages.
 
 ### PGS and rare-burden integration
 
+The preferred analysis-table contract is now participant-manifest centered.
+`scripts/build_analysis_dataset.py` takes an explicit `FID`/`IID`/`SEX` cohort
+manifest and any available participant-level PGS, rare-burden, and CNV tables.
+Each component has an independent `error`, `allow`, or `exclude` missing-data
+policy. The manifest determines row order and analysis eligibility; no genomic
+branch implicitly defines the cohort. The output includes a merged dictionary,
+component-level completeness QC, and explicit exclusions.
+
+CNV input is optional and must be an analysis-ready participant table with its
+own dictionary. Raw caller segment counts are not a substitute for CNV burdens.
+The intended primary CNV variables are unique genes affected by filtered,
+QC-passing DEL and DUP calls; that release step remains to be implemented in the
+CNV repository.
+
+The existing `INTEGRATED_ANALYSIS_WORKFLOW` below remains as a validated
+backward-compatible PGS-centered join while the manifest-centered interface is
+tested across cohorts.
+
 `INTEGRATED_ANALYSIS_WORKFLOW` in `workflows/integrated_analysis.nf` is the narrow
 join boundary between this repository and the reusable `PGS_WORKFLOW` from
 `james-guevara/pgs_pipeline`. It consumes the PGS `analysis_dataset` and
