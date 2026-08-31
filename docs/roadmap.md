@@ -18,7 +18,7 @@ Nonzero `PAT` and `MAT` identifiers must exist in the cohort unless
 `--allow-external-parents` is selected. Pedigree-aware outputs should join through this
 normalized manifest; annotation and ordinary burden counting do not require complete pedigrees.
 
-## 2. Synonymous-variant output for tiered LoF genes (implemented; validation pending)
+## 2. Synonymous-variant output for tiered LoF genes (implemented and chr22-validated)
 
 The negative-control branch selects `synonymous_variant` consequences in genes belonging
 to the configured GeneBayes LoF tiers. It supports the analysis tiers currently used for
@@ -32,23 +32,31 @@ distinct synonymous output names.
 Expected cost: modest once all-observed annotation exists. Annotation is reused; extra work is
 a gene/consequence filter, sparse Zarr genotype extraction, and additional Parquet output.
 
-## 3. Emit genotypes for relatives of carriers (implemented; validation pending)
+The G2MH chr22 AWS validation completed successfully at commit `175774c`; the full
+LoF/missense regression remained unchanged.
+
+## 3. Emit genotypes for relatives of carriers (implemented and chr22-validated)
 
 For every qualifying allele with at least one carrier:
 
-1. use the PSAM-derived pedigree table to identify each carrier's family;
+1. use `FID` in the PSAM-derived sample manifest to identify each carrier's family;
 2. select all sequenced members of those families;
 3. emit `GT`, called ploidy, dosage/carrier status, `GQ`, `DP`, and allele depths for every
-   selected relative, including reference and missing calls;
-4. retain `FID`, relationship to the index carrier when derivable, and carrier sample IDs;
-5. distinguish relatives absent from the VCF from relatives with a missing genotype.
+   selected family member, including reference and missing calls;
+4. retain `FID`, an index-carrier flag, and the carrier sample IDs.
 
 The existing Zarr extractor already reads each selected variant chunk across all samples before
 discarding noncarriers. Family expansion therefore requires little additional Zarr I/O or
 computation. Output size should grow roughly with the number of sequenced family members per
-carrier family (often approximately 3--5 times the carrier-only row count), rather than with the
-entire cohort. It is implemented as an optional, default-off family-genotype output, not as a
-replacement for the compact carrier table. It still requires chr22 cohort-level validation.
+carrier family, rather than with the entire cohort. It is implemented as an optional,
+default-off family-genotype output, not as a replacement for the compact carrier table.
+
+The G2MH chr22 AWS validation completed successfully at commit `3907573`. It added 69 LoF,
+1,379 missense, and 5,961 synonymous same-FID rows, while all 32 pinned count checks and ten
+canonical hashes passed. The immutable validation image was
+`rare-variant-pipeline-targeted@sha256:d2f65272e4cbe2e23313b3744fb7a2082eeeaa1e85d0e3f810c353e2428123ad`.
+The FSx run root is
+`/fsx/loftee-parity/workflows/g2mh/family-genotypes-chr22-3907573`.
 
 ## 4. Reuse cohort Zarr stores for CNV SNP-signal extraction (autosomes complete)
 
@@ -117,3 +125,22 @@ Estimated effort is 2--4 hours for extraction, summaries, and an initial G2MH va
 approximately one additional day for a calibrated production classifier across SPARK and SSC.
 The all-marker BAF mean is affected by pVCF marker ascertainment, so detection should emphasize
 relative chromosome LRR, depth, and heterozygous BAF structure rather than BAF mean alone.
+
+## Prioritized remaining work
+
+Keep these optional and avoid adding cohort-specific preparation to the ordinary annotation
+path.
+
+1. Run end-to-end production-style validations on SPARK and SSC, including their differing
+   callset conventions and PSAM/sample manifests.
+2. Finalize chrX/chrY rare-variant counting policy for haploid, diploid, and ambiguous
+   karyotypes; retain flagged burdens rather than silently discarding ambiguous samples.
+3. Add chrX/chrY CNV marker signals and calibrate aneuploidy QC on SPARK and SSC.
+4. Add fine-grained timing around each Zarr genotype extraction, burden aggregation,
+   regression validation, and output packaging stage.
+5. Profile transcript picking/FastVEP and standalone LOFTEE. Optimize only after profiling;
+   in the G2MH chr22 validation they took 124 and 122 seconds respectively out of 381 seconds.
+6. Exercise container portability on another Slurm/Singularity or Apptainer environment in
+   addition to AWS Batch and Expanse.
+7. Preserve the optional synonymous and family-genotype branches in the output data dictionary
+   and in any future combined rare-variant/PGS analysis workflow.
