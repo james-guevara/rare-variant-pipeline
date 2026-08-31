@@ -18,15 +18,15 @@ Nonzero `PAT` and `MAT` identifiers must exist in the cohort unless
 `--allow-external-parents` is selected. Pedigree-aware outputs should join through this
 normalized manifest; annotation and ordinary burden counting do not require complete pedigrees.
 
-## 2. Optional synonymous-variant output for tiered LoF genes
+## 2. Synonymous-variant output for tiered LoF genes (implemented; validation pending)
 
-Add a negative-control/output branch for `synonymous_variant` consequences in genes belonging
-to the configured GeneBayes LoF tiers. Initially support the analysis tiers currently used for
+The negative-control branch selects `synonymous_variant` consequences in genes belonging
+to the configured GeneBayes LoF tiers. It supports the analysis tiers currently used for
 burden counts (`lof_t1`, GeneBayes posterior mean >= 0.18; and `lof_t2`, > 0 and < 0.18).
 
-The branch should reuse all-observed FastVEP output and the existing Zarr genotype extractor.
-It should not run LOFTEE on synonymous consequences or mix synonymous counts into LoF burdens.
-Emit allele-level annotations, carrier-level genotypes, and optional per-sample counts under
+The branch reuses all-observed FastVEP output and the existing Zarr genotype extractor.
+It does not run LOFTEE on synonymous consequences or mix synonymous counts into LoF burdens.
+It emits allele-level annotations, carrier-level genotypes, and per-sample counts under
 distinct synonymous output names.
 
 Expected cost: modest once all-observed annotation exists. Annotation is reused; extra work is

@@ -13,6 +13,11 @@ fields generally use null for unavailable numeric values.
 
 ## Recommended analysis products
 
+Synonymous negative-control outputs use the same tier-gene definitions and QC/AF
+eligibility stack as LoF, but are named `*.synonymous-*` and remain outside the
+primary rare-burden variables. They are intended for calibration and sensitivity
+analyses, not as additional LoF events.
+
 | File pattern | Grain | Natural key | Purpose |
 |---|---|---|---|
 | `11.plof-burden-eligible.parquet` | qualifying allele × carrier sample | `record_id`, `sample_id` | Final carrier-level LoF analysis table after region, genotype, population-AF, and cohort-AF eligibility |

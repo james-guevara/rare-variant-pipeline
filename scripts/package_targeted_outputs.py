@@ -13,6 +13,9 @@ SCIENTIFIC_OUTPUTS = {
     "missense_counts": "12.missense-per-sample-counts.tsv",
     "plof_primary_burden": "12.plof-primary-sample-burden.tsv",
     "plof_sensitivity_burden": "12.plof-sensitivity-sample-burden.tsv",
+    "synonymous_counts": "12.synonymous-per-sample-counts.tsv",
+    "synonymous_sample_gene": "12.synonymous-sample-gene.tsv",
+    "synonymous_sample_burden": "12.synonymous-sample-burden.tsv",
 }
 
 

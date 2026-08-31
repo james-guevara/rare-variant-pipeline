@@ -122,6 +122,13 @@ def resolve(manifest: dict, bindings: dict) -> tuple[dict[str, str], list[str]]:
             if not isinstance(value, (int, float)) or not 0 <= value <= 1:
                 raise ValueError(f"manifest.thresholds.{source_key} must be between 0 and 1")
             environment[env_key] = str(value)
+    optional_outputs = manifest.get("optional_outputs", {})
+    if not isinstance(optional_outputs, dict):
+        raise ValueError("manifest.optional_outputs must be an object")
+    synonymous = optional_outputs.get("synonymous_tiered_controls", True)
+    if not isinstance(synonymous, bool):
+        raise ValueError("manifest.optional_outputs.synonymous_tiered_controls must be boolean")
+    environment["SYNONYMOUS_TIERED_CONTROLS"] = "1" if synonymous else "0"
     expected_qc = manifest.get("qc")
     if expected_qc is not None:
         if "POSTPROCESS_CONFIG" not in environment:

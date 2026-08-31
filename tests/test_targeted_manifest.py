@@ -1,12 +1,16 @@
 import hashlib
+import importlib.util
 import json
 import subprocess
 import sys
 from pathlib import Path
 
-
 REPO = Path(__file__).resolve().parents[1]
 SCRIPT = REPO / "scripts/run_targeted_manifest.py"
+SPEC = importlib.util.spec_from_file_location("run_targeted_manifest", SCRIPT)
+MODULE = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(MODULE)
+resolve = MODULE.resolve
 
 
 def _fixture(tmp_path: Path) -> tuple[Path, Path]:
@@ -132,3 +136,14 @@ def test_lof_only_does_not_require_declared_missense_binding(tmp_path: Path):
     )
     assert result.returncode == 0, result.stderr
     assert "preflight=PASS" in result.stdout
+
+
+def test_synonymous_controls_default_on_and_can_be_disabled(tmp_path: Path):
+    manifest, bindings = _fixture(tmp_path)
+    science = json.loads(manifest.read_text())
+    deployment = json.loads(bindings.read_text())
+    environment, _ = resolve(science, deployment)
+    assert environment["SYNONYMOUS_TIERED_CONTROLS"] == "1"
+    science["optional_outputs"] = {"synonymous_tiered_controls": False}
+    environment, _ = resolve(science, deployment)
+    assert environment["SYNONYMOUS_TIERED_CONTROLS"] == "0"

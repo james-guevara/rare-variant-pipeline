@@ -177,6 +177,14 @@ By default, every nonzero `PAT` and `MAT` must also occur as an `IID` in the PSA
 Use `--allow-external-parents` when a cohort intentionally records unsequenced parents;
 their IDs are preserved, not treated as genotyped samples.
 
+Targeted chromosome runs also emit synonymous negative-control variants in the
+same GeneBayes `lof_t1` and `lof_t2` genes. This branch reuses FastVEP and Zarr,
+does not invoke LOFTEE, and applies the same region, genotype, population-AF, and
+cohort-AF eligibility stages as the LoF branch. Set
+`optional_outputs.synonymous_tiered_controls` to `false` in a scientific manifest
+to disable it. Its allele, carrier, gene, and count outputs are named
+`*.synonymous-*` and never enter `lof_t1`/`lof_t2` burden totals.
+
 The first read-only preparation stage is:
 
 ```bash

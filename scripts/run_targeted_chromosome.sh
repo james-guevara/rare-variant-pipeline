@@ -26,6 +26,7 @@ sample_sex_qc=${SAMPLE_SEX_QC:-}
 sex_chromosome_regions=${SEX_CHROMOSOME_REGIONS:-}
 population_af_max=${POPULATION_AF_MAX:-0.01}
 cohort_af_max=${COHORT_AF_MAX:-0.01}
+synonymous_controls=${SYNONYMOUS_TIERED_CONTROLS:-0}
 cohort=${COHORT:-g2mh}
 chromosome=${CHROMOSOME:-chr22}
 contig=${CONTIG:-${chromosome#chr}}
@@ -147,6 +148,20 @@ missense_cohort_annotated=$run_root/11.missense-cohort-af-annotated.parquet
 missense_burden_eligible=$run_root/11.missense-burden-eligible.parquet
 missense_counts=$run_root/12.missense-per-sample-counts.tsv
 missense_totals=$run_root/12.missense-tier-totals.tsv
+synonymous_tiered=$run_root/06.synonymous-tiered.tsv
+synonymous_carriers=$run_root/07.synonymous-tiered.carriers.parquet
+synonymous_carriers_raw=$run_root/07.synonymous-tiered.carriers.raw.parquet
+synonymous_summary=$run_root/07.synonymous-tiered.genotype-summary.parquet
+synonymous_regions=$run_root/08.synonymous-region-filtered.parquet
+synonymous_qc=$run_root/09.synonymous-genotype-qc.parquet
+synonymous_pop_annotated=$run_root/10.synonymous-population-af-annotated.parquet
+synonymous_pop_eligible=$run_root/10.synonymous-population-af-eligible.parquet
+synonymous_cohort_annotated=$run_root/11.synonymous-cohort-af-annotated.parquet
+synonymous_burden_eligible=$run_root/11.synonymous-burden-eligible.parquet
+synonymous_counts=$run_root/12.synonymous-per-sample-counts.tsv
+synonymous_totals=$run_root/12.synonymous-tier-totals.tsv
+synonymous_sample_gene=$run_root/12.synonymous-sample-gene.tsv
+synonymous_sample_burden=$run_root/12.synonymous-sample-burden.tsv
 
 target_args=()
 if test -n "$target_bed"; then target_args=(--bed "$target_bed"); fi
@@ -296,6 +311,73 @@ if test -n "$postprocess_config"; then
       test -s "$plof_sensitivity_gene"
       test -s "$plof_sensitivity_burden"
     fi
+  fi
+fi
+
+if test "$synonymous_controls" = 1; then
+  run_stage "$synonymous_tiered" "$python" scripts/select_synonymous_tiered.py \
+    --picked "$picked" --genebayes "$genebayes" --output "$synonymous_tiered"
+  if awk 'NR > 1 { found=1; exit } END { exit !found }' "$synonymous_tiered"; then
+  extract_synonymous_carriers=$synonymous_carriers
+  if test "$sex_chromosome" = 1; then extract_synonymous_carriers=$synonymous_carriers_raw; fi
+  if ! test -s "$extract_synonymous_carriers" || ! test -s "$synonymous_summary"; then
+    sex_extraction_args=()
+    if test "$sex_chromosome" = 1; then
+      sex_extraction_args=(--sample-sex-qc "$sample_sex_qc" \
+        --sex-chromosome-regions "$sex_chromosome_regions")
+    fi
+    "$python" scripts/extract_zarr_allele_genotypes.py --zarr "$zarr_store" \
+      --alleles "$synonymous_tiered" --carriers-output "$extract_synonymous_carriers" \
+      --summary-output "$synonymous_summary" "${sex_extraction_args[@]}"
+  fi
+  if test "$sex_chromosome" = 1; then
+    run_stage "$synonymous_carriers" "$python" scripts/annotate_sex_chromosome_carriers.py \
+      --input "$synonymous_carriers_raw" --sample-qc "$sample_sex_qc" \
+      --regions "$sex_chromosome_regions" --output "$synonymous_carriers"
+  fi
+  test -s "$synonymous_carriers"
+  test -s "$synonymous_summary"
+
+  if test -n "$postprocess_config"; then
+    run_stage "$synonymous_regions" "$python" scripts/postprocess/filter_regions.py \
+      --cohort "$cohort" --chrom "$chromosome" --resources "$postprocess_config" \
+      --input "$synonymous_carriers" --output "$synonymous_regions"
+    run_stage "$synonymous_qc" "$python" scripts/postprocess/qc_genotype.py \
+      --cohort "$cohort" --chrom "$chromosome" --resources "$postprocess_config" \
+      --input "$synonymous_regions" --output "$synonymous_qc"
+    run_stage "$synonymous_pop_annotated" "$python" scripts/postprocess/join_pop_af.py \
+      --cohort "$cohort" --chrom "$chromosome" --resources "$postprocess_config" \
+      --input "$synonymous_qc" --output "$synonymous_pop_annotated"
+    run_stage "$synonymous_pop_eligible" "$python" scripts/apply_population_af_filter.py \
+      --input "$synonymous_pop_annotated" --output "$synonymous_pop_eligible" \
+      --column gnomAD4.1_joint_AF --max-af "$population_af_max"
+    if ! test -s "$synonymous_cohort_annotated" || ! test -s "$synonymous_burden_eligible"; then
+      summary_prefix=genotype
+      if test "$sex_chromosome" = 1; then summary_prefix=primary_genotype; fi
+      "$python" scripts/apply_cohort_af_filter.py \
+        --input "$synonymous_pop_eligible" --allele-summary "$synonymous_summary" \
+        --max-af "$cohort_af_max" --summary-prefix "$summary_prefix" \
+        --annotated-output "$synonymous_cohort_annotated" \
+        --eligible-output "$synonymous_burden_eligible"
+    fi
+    count_eligibility=()
+    collapse_args=()
+    if test "$sex_chromosome" = 1; then
+      count_eligibility=(--eligibility-col primary_analysis_eligible)
+      collapse_args=(--eligibility-col primary_analysis_eligible \
+        --burden-available-col burden_count_available)
+    fi
+    "$python" scripts/postprocess/count_carriers.py \
+      --input "$synonymous_burden_eligible" --sample-col sample_id \
+      --group-col lof_tier --out-counts "$synonymous_counts" \
+      --out-totals "$synonymous_totals" "${count_eligibility[@]}"
+    "$python" scripts/collapse_lof_carriers.py \
+      --input "$synonymous_burden_eligible" \
+      --sample-gene-output "$synonymous_sample_gene" \
+      --sample-burden-output "$synonymous_sample_burden" "${collapse_args[@]}"
+  fi
+  else
+    printf 'synonymous\tNO_TIERED_ALLELES\tchromosome=%s\n' "$chromosome"
   fi
 fi
 
