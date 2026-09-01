@@ -391,6 +391,12 @@ run and therefore default to a strict missing-data policy. A future workspace
 workflow can call the same reusable boundary with `PGS_WORKFLOW` output channels
 directly; no changes to the scientific join are required.
 
+For restart, integration testing, or reuse of a versioned rare-variant release,
+replace `--run_sheet` and `--expected_chromosomes` with
+`--rare_burdens /path/to/rare_burdens.tsv`. The two modes are mutually exclusive:
+fresh cohort runs launch rare-variant processing, while release assembly consumes
+the previously validated participant-level burden table without recomputation.
+
 `INTEGRATED_ANALYSIS_WORKFLOW` in `workflows/integrated_analysis.nf` is the narrow
 join boundary between this repository and the reusable `PGS_WORKFLOW` from
 `james-guevara/pgs_pipeline`. It consumes the PGS `analysis_dataset` and
