@@ -367,6 +367,30 @@ were byte-for-byte identical to the direct assembler outputs. The validated
 results are under
 `s3://sebat-genomics-work/results/integrated-analysis/g2mh-manifest-universe-nextflow-v2/analysis/`.
 
+`COHORT_ANALYSIS_WORKFLOW` in `workflows/cohort_analysis.nf` is the parent
+workflow for a new cohort run. It launches the chromosome rare-variant branch,
+gathers the six burden counts, and passes those counts together with optional
+PGS/PCA and CNV participant tables into `ANALYSIS_DATASET_WORKFLOW`. The
+`cohort_analysis.nf` entry point exposes this composition without coupling this
+repository to a particular checkout of the separate PGS or CNV repositories:
+
+```bash
+nextflow -C targeted.config run cohort_analysis.nf -profile aws_batch \
+  --run_sheet config/run-sheets/cohort.tsv \
+  --participant_manifest /path/to/cohort.psam \
+  --expected_chromosomes chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY \
+  --pgs_dataset /path/to/pgs/analysis_dataset.tsv \
+  --pgs_dictionary /path/to/pgs/analysis_dataset_dictionary.tsv \
+  --cohort_id cohort_name \
+  --targeted_container repository/image@sha256:DIGEST \
+  --outdir results/cohort_name
+```
+
+PGS and CNV are optional paired inputs. Rare burdens are generated in the same
+run and therefore default to a strict missing-data policy. A future workspace
+workflow can call the same reusable boundary with `PGS_WORKFLOW` output channels
+directly; no changes to the scientific join are required.
+
 `INTEGRATED_ANALYSIS_WORKFLOW` in `workflows/integrated_analysis.nf` is the narrow
 join boundary between this repository and the reusable `PGS_WORKFLOW` from
 `james-guevara/pgs_pipeline`. It consumes the PGS `analysis_dataset` and
