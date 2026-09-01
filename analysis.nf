@@ -31,20 +31,24 @@ workflow {
         error 'At least one PGS, rare-burden, or CNV dataset is required'
     }
 
-    sentinel = file("${projectDir}/resources/empty-analysis-component.tsv", checkIfExists: true)
     pgs_inputs = params.pgs_dataset \
         ? Channel.value(tuple(true,
             file(params.pgs_dataset, checkIfExists: true),
             file(params.pgs_dictionary, checkIfExists: true))) \
-        : Channel.value(tuple(false, sentinel, sentinel))
+        : Channel.value(tuple(false,
+            file("${projectDir}/resources/empty-analysis-pgs-dataset.tsv", checkIfExists: true),
+            file("${projectDir}/resources/empty-analysis-pgs-dictionary.tsv", checkIfExists: true)))
     rare_input = params.rare_burdens \
         ? Channel.value(tuple(true, file(params.rare_burdens, checkIfExists: true))) \
-        : Channel.value(tuple(false, sentinel))
+        : Channel.value(tuple(false,
+            file("${projectDir}/resources/empty-analysis-rare-burdens.tsv", checkIfExists: true)))
     cnv_inputs = params.cnv_dataset \
         ? Channel.value(tuple(true,
             file(params.cnv_dataset, checkIfExists: true),
             file(params.cnv_dictionary, checkIfExists: true))) \
-        : Channel.value(tuple(false, sentinel, sentinel))
+        : Channel.value(tuple(false,
+            file("${projectDir}/resources/empty-analysis-cnv-dataset.tsv", checkIfExists: true),
+            file("${projectDir}/resources/empty-analysis-cnv-dictionary.tsv", checkIfExists: true)))
 
     ANALYSIS_DATASET_WORKFLOW(
         Channel.value(file(params.participant_manifest, checkIfExists: true)),

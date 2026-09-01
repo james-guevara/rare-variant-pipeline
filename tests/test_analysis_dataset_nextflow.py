@@ -26,4 +26,5 @@ def test_standalone_analysis_wrapper_validates_optional_pairs():
     assert "--pgs_dataset and --pgs_dictionary must be supplied together" in wrapper
     assert "--cnv_dataset and --cnv_dictionary must be supplied together" in wrapper
     assert "At least one PGS, rare-burden, or CNV dataset is required" in wrapper
-    assert "empty-analysis-component.tsv" in wrapper
+    assert "empty-analysis-pgs-dataset.tsv" in wrapper
+    assert "empty-analysis-cnv-dictionary.tsv" in wrapper
