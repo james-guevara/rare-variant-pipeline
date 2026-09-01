@@ -69,6 +69,9 @@ def read_dictionary(path):
 def identity_value(manifest_row, component_row, field, component):
     left = manifest_row.get(field, "")
     right = component_row.get(field, "")
+    if field == "SEX":
+        left = normalize_sex(left)
+        right = normalize_sex(right)
     if left and right and left != right:
         raise ValueError(
             f"{field} differs for IID={manifest_row['IID']}: manifest={left!r} "

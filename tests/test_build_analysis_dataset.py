@@ -87,3 +87,20 @@ def test_exclude_policy_is_component_specific(tmp_path):
     ])
     assert [row["IID"] for row in read_rows(result["output"])] == ["S1"]
     assert read_rows(result["exclusions"]) == [{"IID": "S2", "reason": "missing_from_pgs"}]
+
+
+def test_component_numeric_sex_matches_normalized_manifest_sex(tmp_path):
+    (tmp_path / "samples.tsv").write_text("FID\tIID\tSEX\nF1\tS1\t1\nF2\tS2\t2\n")
+    (tmp_path / "cnv.tsv").write_text(
+        "FID\tIID\tSEX\tcnv_del_gene_count\nF1\tS1\tM\t2\nF2\tS2\t2\t0\n"
+    )
+    (tmp_path / "cnv.dict.tsv").write_text(
+        "variable\trole\tdata_type\tnullable\tdefault_analysis_use\tsource\tdescription\n"
+        "cnv_del_gene_count\tpredictor\tinteger\tfalse\tCNV burden\tCNV\tDeleted genes\n"
+    )
+    result = run(tmp_path, [
+        "--cnv-dataset", str(tmp_path / "cnv.tsv"),
+        "--cnv-dictionary", str(tmp_path / "cnv.dict.tsv"),
+        "--missing-cnv-policy", "error",
+    ])
+    assert [row["SEX"] for row in read_rows(result["output"])] == ["M", "F"]
