@@ -339,6 +339,26 @@ The existing `INTEGRATED_ANALYSIS_WORKFLOW` below remains as a validated
 backward-compatible PGS-centered join while the manifest-centered interface is
 tested across cohorts.
 
+`ANALYSIS_DATASET_WORKFLOW` in `workflows/analysis_dataset.nf` is the reusable
+Nextflow boundary. `analysis.nf` is its standalone wrapper. For example, a
+manifest-centered PGS plus rare-burden assembly is:
+
+```bash
+nextflow -C targeted.config run analysis.nf -profile local_docker \
+  --participant_manifest /path/to/cohort.psam \
+  --pgs_dataset /path/to/analysis_dataset.tsv \
+  --pgs_dictionary /path/to/analysis_dataset_dictionary.tsv \
+  --rare_burdens /path/to/rare_burdens.tsv \
+  --missing_pgs_policy allow \
+  --missing_rare_policy error \
+  --cohort_id cohort_name \
+  --targeted_container repository/image@sha256:DIGEST \
+  --outdir results/cohort_name
+```
+
+Omit both files for a disabled PGS or CNV component; omit `--rare_burdens` to
+disable rare burdens. The four outputs are published under `<outdir>/analysis/`.
+
 `INTEGRATED_ANALYSIS_WORKFLOW` in `workflows/integrated_analysis.nf` is the narrow
 join boundary between this repository and the reusable `PGS_WORKFLOW` from
 `james-guevara/pgs_pipeline`. It consumes the PGS `analysis_dataset` and
