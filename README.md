@@ -359,6 +359,14 @@ nextflow -C targeted.config run analysis.nf -profile local_docker \
 Omit both files for a disabled PGS or CNV component; omit `--rare_burdens` to
 disable rare burdens. The four outputs are published under `<outdir>/analysis/`.
 
+The reusable boundary was validated through Nextflow 26.04.6 and AWS Batch on
+the G2MH participant-manifest universe. It retained all 1,065 participants and
+63 variables, allowed the expected 22 participants without PGS/PCA values, and
+required complete rare burdens. Its dataset, dictionary, QC, and exclusions
+were byte-for-byte identical to the direct assembler outputs. The validated
+results are under
+`s3://sebat-genomics-work/results/integrated-analysis/g2mh-manifest-universe-nextflow-v2/analysis/`.
+
 `INTEGRATED_ANALYSIS_WORKFLOW` in `workflows/integrated_analysis.nf` is the narrow
 join boundary between this repository and the reusable `PGS_WORKFLOW` from
 `james-guevara/pgs_pipeline`. It consumes the PGS `analysis_dataset` and

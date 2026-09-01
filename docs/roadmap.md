@@ -142,10 +142,10 @@ path.
    in the G2MH chr22 validation they took 124 and 122 seconds respectively out of 381 seconds.
 6. Exercise container portability on another Slurm/Singularity or Apptainer environment in
    addition to AWS Batch and Expanse.
-7. Validate the participant-manifest-centered analysis assembler on G2MH, then expose it as a
-   reusable parent-workflow boundary. PGS, rare variants, and CNVs must remain optional
-   components with explicit completeness policies.
-8. Define the CNV release step that filters/QCs normalized calls, intersects an approved gene
+7. Connect the validated `ANALYSIS_DATASET_WORKFLOW` to a parent workflow that launches or
+   accepts PGS, rare-variant, and CNV participant outputs. The boundary itself is validated on
+   the 1,065-participant G2MH manifest; all four outputs matched the direct assembler exactly.
+8. Define the CNV release step that filters/QCs normalized calls, intersects a versioned gene
    annotation, and counts unique affected genes per participant separately for DEL and DUP.
    Do not use raw segment counts as the primary CNV burden.
 9. Preserve the optional synonymous and family-genotype branches in the output data dictionary
