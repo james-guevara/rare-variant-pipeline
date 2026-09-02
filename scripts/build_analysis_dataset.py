@@ -135,6 +135,7 @@ def main():
 
     used_fields = set(IDENTIFIERS)
     component_fields = {}
+    nullable_component_fields = set()
     dictionary_sources = {}
     component_qc = {}
     excluded = {}
@@ -167,6 +168,8 @@ def main():
             "missing_policy": policy,
             "variables": data_fields,
         }
+        if missing_ids and policy == "allow":
+            nullable_component_fields.update(data_fields)
 
     output_fields = [*IDENTIFIERS]
     for name, *_ in components:
@@ -208,7 +211,10 @@ def main():
         source = template.get(variable) or dictionary_sources.get(variable)
         if source is None:
             raise ValueError(f"no dictionary definition for output variable {variable}")
-        dictionary_rows.append(normalize_dictionary(source))
+        definition = normalize_dictionary(source)
+        if variable in nullable_component_fields:
+            definition["nullable"] = "true"
+        dictionary_rows.append(definition)
     with args.dictionary.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, DICTIONARY_FIELDS, delimiter="\t", lineterminator="\n")
         writer.writeheader(); writer.writerows(dictionary_rows)

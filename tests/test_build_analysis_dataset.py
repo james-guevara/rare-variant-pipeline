@@ -38,8 +38,8 @@ def test_manifest_universe_combines_optional_components(tmp_path):
     (tmp_path / "pgs.tsv").write_text("IID\tANCESTRY\tPGS_trait\nS1\tEUR\t0.5\nS2\tAFR\t-0.2\n")
     (tmp_path / "pgs.dict.tsv").write_text(
         "variable\tdata_type\tnullable\tdescription\tsource\n"
-        "ANCESTRY\tcategorical\ttrue\tAncestry\tPGS\n"
-        "PGS_trait\tfloat\ttrue\tTrait score\tPGS\n"
+        "ANCESTRY\tcategorical\tfalse\tAncestry\tPGS\n"
+        "PGS_trait\tfloat\tfalse\tTrait score\tPGS\n"
     )
     (tmp_path / "rare.tsv").write_text(
         "FID\tIID\tSEX\tlof_t1\tlof_t2\tmiss_t1\tmiss_t2\tmiss_t3\tmiss_t4\n"
@@ -66,7 +66,10 @@ def test_manifest_universe_combines_optional_components(tmp_path):
     assert [row["SEX"] for row in rows] == ["F", "M", "F"]
     assert rows[1]["CNV_DEL_GENE_COUNT"] == ""
     assert rows[2]["PGS_trait"] == ""
-    assert [row["variable"] for row in read_rows(result["dictionary"])] == list(rows[0])
+    dictionary = read_rows(result["dictionary"])
+    assert [row["variable"] for row in dictionary] == list(rows[0])
+    definitions = {row["variable"]: row for row in dictionary}
+    assert definitions["PGS_trait"]["nullable"] == "true"
     qc = json.loads(result["qc"].read_text())
     assert qc["analysis_universe"] == "participant_manifest"
     assert qc["components"]["pgs"]["manifest_participants_missing"] == 1
