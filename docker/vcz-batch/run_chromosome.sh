@@ -12,19 +12,21 @@ source_root=${VCZ_SOURCE_ROOT:-/fsx/rare-variant-pilot/g2mh}
 work_root=${VCZ_WORK_ROOT:-/fsx/vcz-work}
 output_root=${VCZ_OUTPUT_ROOT:-/fsx/vcz-output}
 
-source_vcf="$source_root/g2mh_1065_chr${chromosome}.vcf.gz"
+source_vcf=${VCZ_SOURCE_VCF:-"$source_root/g2mh_1065_chr${chromosome}.vcf.gz"}
 chrom_work="$work_root/chr${chromosome}"
 icf="$chrom_work/chr${chromosome}.icf"
 unsharded_v3="$chrom_work/chr${chromosome}.unsharded-v3.zarr"
 schema="$chrom_work/schema.json"
-v3="$output_root/chr${chromosome}.sharded-v3.zarr"
-metrics="$output_root/chr${chromosome}.metrics.tsv"
+v3=${VCZ_OUTPUT_STORE:-"$output_root/chr${chromosome}.sharded-v3.zarr"}
+metrics=${VCZ_METRICS_FILE:-"$output_root/chr${chromosome}.metrics.tsv"}
 index_checkpoint="$chrom_work/index.complete"
 explode_checkpoint="$chrom_work/explode.complete"
 encode_checkpoint="$chrom_work/encode.complete"
 shard_checkpoint="${v3}.complete"
 
-mountpoint -q /fsx || { echo "ERROR: /fsx is not a mounted filesystem" >&2; exit 1; }
+if [[ "$source_vcf $work_root $output_root $v3" == *"/fsx/"* ]]; then
+    mountpoint -q /fsx || { echo "ERROR: /fsx is not a mounted filesystem" >&2; exit 1; }
+fi
 test -r "$source_vcf" || { echo "ERROR: source VCF is not readable: $source_vcf" >&2; exit 1; }
 for command in bcftools vcf2zarr python; do
     command -v "$command" >/dev/null || { echo "ERROR: missing command: $command" >&2; exit 1; }
@@ -33,8 +35,8 @@ case "$validation" in
     full|sampled) ;;
     *) echo "ERROR: VCZ_VALIDATION must be full or sampled" >&2; exit 1 ;;
 esac
-mkdir -p "$chrom_work" "$output_root"
-test -w "$chrom_work" -a -w "$output_root" || {
+mkdir -p "$chrom_work" "$output_root" "$(dirname "$v3")" "$(dirname "$metrics")"
+test -w "$chrom_work" -a -w "$(dirname "$v3")" || {
     echo "ERROR: work/output paths are not writable" >&2
     exit 1
 }
