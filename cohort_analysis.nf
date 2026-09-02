@@ -70,7 +70,12 @@ workflow {
             pgs_inputs,
             rare_input,
             cnv_inputs,
-            variable_template
+            variable_template,
+            Channel.value(file("${projectDir}/scripts/build_analysis_dataset.py", checkIfExists: true)),
+            Channel.value(file("${projectDir}/scripts/build_analysis_reports.py", checkIfExists: true)),
+            params.pgs_dataset ? 'precomputed' : 'disabled',
+            'precomputed',
+            params.cnv_dataset ? 'precomputed' : 'disabled'
         )
     } else {
         manifest_bindings = Channel.fromPath(params.run_sheet, checkIfExists: true)

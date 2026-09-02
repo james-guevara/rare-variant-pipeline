@@ -55,6 +55,11 @@ workflow {
         pgs_inputs,
         rare_input,
         cnv_inputs,
-        Channel.value(file(params.variable_template, checkIfExists: true))
+        Channel.value(file(params.variable_template, checkIfExists: true)),
+        Channel.value(file("${projectDir}/scripts/build_analysis_dataset.py", checkIfExists: true)),
+        Channel.value(file("${projectDir}/scripts/build_analysis_reports.py", checkIfExists: true)),
+        params.pgs_dataset ? 'precomputed' : 'disabled',
+        params.rare_burdens ? 'precomputed' : 'disabled',
+        params.cnv_dataset ? 'precomputed' : 'disabled'
     )
 }

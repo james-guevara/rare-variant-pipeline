@@ -1,6 +1,6 @@
 process BUILD_ANALYSIS_DATASET {
     tag params.cohort_id
-    container params.targeted_container
+    container params.targeted_container ?: params.python_container
     publishDir "${params.outdir}/analysis", mode: 'copy'
     cpus 1
     memory '2 GB'
@@ -12,10 +12,11 @@ process BUILD_ANALYSIS_DATASET {
     tuple val(rare_enabled), path(rare_burdens)
     tuple val(cnv_enabled), path(cnv_dataset), path(cnv_dictionary)
     path variable_template
+    path analysis_builder
 
     output:
     path 'analysis_dataset.tsv', emit: dataset
-    path 'analysis_dictionary.tsv', emit: dictionary
+    path 'analysis_dataset_dictionary.tsv', emit: dictionary
     path 'analysis_qc.json', emit: qc
     path 'analysis_exclusions.tsv', emit: exclusions
 
@@ -24,7 +25,7 @@ process BUILD_ANALYSIS_DATASET {
     def rareArgs = rare_enabled ? "--rare-burdens ${rare_burdens}" : ''
     def cnvArgs = cnv_enabled ? "--cnv-dataset ${cnv_dataset} --cnv-dictionary ${cnv_dictionary}" : ''
     """
-    python /opt/rvp/scripts/build_analysis_dataset.py \
+    python3 ${analysis_builder} \
       --participant-manifest ${participant_manifest} \
       ${pgsArgs} \
       ${rareArgs} \
@@ -35,9 +36,45 @@ process BUILD_ANALYSIS_DATASET {
       --missing-rare-policy '${params.missing_rare_policy}' \
       --missing-cnv-policy '${params.missing_cnv_policy}' \
       --output analysis_dataset.tsv \
-      --dictionary analysis_dictionary.tsv \
+      --dictionary analysis_dataset_dictionary.tsv \
       --qc analysis_qc.json \
       --exclusions analysis_exclusions.tsv
+    """
+}
+
+process BUILD_ANALYSIS_REPORTS {
+    tag params.cohort_id
+    container params.targeted_container ?: params.python_container
+    publishDir "${params.outdir}/analysis", mode: 'copy'
+    cpus 1
+    memory '1 GB'
+    time '15m'
+
+    input:
+    path dataset
+    path dictionary
+    path qc
+    path report_builder
+    val pgs_mode
+    val rare_mode
+    val cnv_mode
+
+    output:
+    path 'missingness_report.tsv', emit: missingness
+    path 'run_manifest.json', emit: run_manifest
+
+    script:
+    """
+    python3 ${report_builder} \
+      --dataset ${dataset} \
+      --dictionary ${dictionary} \
+      --qc ${qc} \
+      --cohort-id '${params.cohort_id}' \
+      --pgs-mode '${pgs_mode}' \
+      --rare-mode '${rare_mode}' \
+      --cnv-mode '${cnv_mode}' \
+      --missingness missingness_report.tsv \
+      --run-manifest run_manifest.json
     """
 }
 
@@ -48,10 +85,22 @@ workflow ANALYSIS_DATASET_WORKFLOW {
     rare_input
     cnv_inputs
     variable_template
+    analysis_builder
+    report_builder
+    pgs_mode
+    rare_mode
+    cnv_mode
 
     main:
     BUILD_ANALYSIS_DATASET(
-        participant_manifest, pgs_inputs, rare_input, cnv_inputs, variable_template
+        participant_manifest, pgs_inputs, rare_input, cnv_inputs, variable_template,
+        analysis_builder
+    )
+    BUILD_ANALYSIS_REPORTS(
+        BUILD_ANALYSIS_DATASET.out.dataset,
+        BUILD_ANALYSIS_DATASET.out.dictionary,
+        BUILD_ANALYSIS_DATASET.out.qc,
+        report_builder, pgs_mode, rare_mode, cnv_mode
     )
 
     emit:
@@ -59,4 +108,6 @@ workflow ANALYSIS_DATASET_WORKFLOW {
     dictionary = BUILD_ANALYSIS_DATASET.out.dictionary
     qc = BUILD_ANALYSIS_DATASET.out.qc
     exclusions = BUILD_ANALYSIS_DATASET.out.exclusions
+    missingness = BUILD_ANALYSIS_REPORTS.out.missingness
+    run_manifest = BUILD_ANALYSIS_REPORTS.out.run_manifest
 }
