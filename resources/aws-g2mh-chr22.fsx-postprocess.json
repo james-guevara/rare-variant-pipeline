@@ -1,7 +1,7 @@
 {
-  "regions_dir": "/fsx/rare-variant-resources/v1/problematic-regions/chr22",
-  "filter_beds": ["genomicSuperDups.chr22.bed", "simpleRepeat.chr22.bed"],
-  "rmsk_bed": "rmsk.chr22.bed",
+  "regions_dir": "/fsx/rare-variant-resources/v1/problematic-regions",
+  "filter_beds": ["genomicSuperDups.bed", "simpleRepeat.bed"],
+  "rmsk_bed": "rmsk.bed",
   "rmsk_drop_classes": ["Simple_repeat", "Low_complexity"],
   "cohorts": {
     "g2mh": {

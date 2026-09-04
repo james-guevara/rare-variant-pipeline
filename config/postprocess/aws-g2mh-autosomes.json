@@ -1,10 +1,10 @@
 {
-  "regions_dir": "/fsx/rare-variant-resources/v1/problematic-regions/{chrom}",
+  "regions_dir": "/fsx/rare-variant-resources/v1/problematic-regions",
   "filter_beds": [
-    "genomicSuperDups.{chrom}.bed",
-    "simpleRepeat.{chrom}.bed"
+    "genomicSuperDups.bed",
+    "simpleRepeat.bed"
   ],
-  "rmsk_bed": "rmsk.{chrom}.bed",
+  "rmsk_bed": "rmsk.bed",
   "rmsk_drop_classes": [
     "Simple_repeat",
     "Low_complexity"
