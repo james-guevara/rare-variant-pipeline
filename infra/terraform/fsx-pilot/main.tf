@@ -33,7 +33,20 @@ resource "aws_launch_template" "vcz_batch" {
 
     #!/bin/bash
     set -euxo pipefail
-    dnf install -y lustre-client
+    # ECS AL2023 includes curl-minimal. Installing full curl conflicts with it.
+    dnf install -y lustre-client unzip
+    if [[ ! -x /opt/nxf-aws-cli/bin/aws ]]; then
+      tmp_dir=$(mktemp -d)
+      curl --fail --location --silent --show-error \
+        https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip \
+        --output "$tmp_dir/awscliv2.zip"
+      unzip -q "$tmp_dir/awscliv2.zip" -d "$tmp_dir"
+      "$tmp_dir/aws/install" \
+        --install-dir /opt/nxf-aws-cli/lib \
+        --bin-dir /opt/nxf-aws-cli/bin
+      rm -rf "$tmp_dir"
+    fi
+    /opt/nxf-aws-cli/bin/aws --version
     mkdir -p /fsx
     echo '${aws_fsx_lustre_file_system.pilot.dns_name}@tcp:/${aws_fsx_lustre_file_system.pilot.mount_name} /fsx lustre defaults,noatime,flock,_netdev 0 0' >> /etc/fstab
     for attempt in $(seq 1 30); do
