@@ -185,8 +185,11 @@ validated run roots to be mounted in the same environment:
 python scripts/validate_targeted_workflow_regression.py \
   --new /path/to/new-run \
   --reference /path/to/validated-run \
-  --expectations resources/g2mh-chr22-lof-regression.json
+  --expectations resources/g2mh-chr22-all-observed-lof-regression.json
 ```
+
+The older `g2mh-chr22-lof-regression.json` fixture remains specific to the
+targeted-BED pilot and must not be used to assert the all-observed input count.
 
 The check requires exact schemas and row multisets for the tiered-variant TSV,
 carrier Parquet, and genotype-summary Parquet. It also enforces the recorded allele,
