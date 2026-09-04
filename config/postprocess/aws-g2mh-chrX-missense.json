@@ -1,5 +1,5 @@
 {
-  "regions_dir": "/fsx/rare-variant-resources/v1/postprocess/g2mh-chrX/regions",
+  "regions_dir": "/fsx/rare-variant-resources/v1/problematic-regions/chrX",
   "filter_beds": [
     "genomicSuperDups.chrX.bed",
     "simpleRepeat.chrX.bed"
