@@ -41,3 +41,27 @@ def test_rust_picker_is_byte_identical_to_python_oracle(tmp_path):
     )
 
     assert rust_output.read_bytes() == python_output.read_bytes()
+
+
+def test_rust_picker_accepts_streamed_vcf(tmp_path):
+    subprocess.run(
+        ["cargo", "build", "--quiet", "--release", "--manifest-path", str(CRATE)],
+        check=True,
+    )
+    output = tmp_path / "streamed.tsv"
+    rust_picker = CRATE.parent / "target" / "release" / "fastvep-picker"
+    command = picker_command(rust_picker, output)
+    command[2] = "-"
+
+    subprocess.run(command, input=(FIXTURE / "input.vcf").read_bytes(), check=True)
+
+    oracle = tmp_path / "oracle.tsv"
+    subprocess.run(
+        [
+            "python3",
+            str(ROOT / "scripts" / "pick_fastvep_consequences.py"),
+            *picker_command("unused", oracle)[1:],
+        ],
+        check=True,
+    )
+    assert output.read_bytes() == oracle.read_bytes()

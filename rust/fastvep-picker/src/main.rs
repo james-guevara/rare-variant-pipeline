@@ -104,7 +104,7 @@ impl PartialOrd for PickKey {
 }
 
 fn usage() -> &'static str {
-    "Usage: fastvep-picker --fastvep <VCF|-> --transcript-priority <TSV> \\\n+     --consequence-ranks <TSV> --output <TSV>"
+    "Usage: fastvep-picker --fastvep <VCF|-> --transcript-priority <TSV> --consequence-ranks <TSV> --output <TSV>"
 }
 
 fn parse_args() -> Result<Args, String> {
