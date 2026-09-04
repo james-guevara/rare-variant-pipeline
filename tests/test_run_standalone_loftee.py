@@ -13,3 +13,17 @@ def test_recognizes_rows_without_transcript_annotations():
     assert MODULE.transcript_is_absent("-")
     assert MODULE.transcript_is_absent(".")
     assert not MODULE.transcript_is_absent("ENST00000335137.4")
+
+
+def test_prefilters_to_protein_coding_lof_consequences():
+    base = {"BIOTYPE": "protein_coding"}
+    assert MODULE.is_lof_candidate({**base, "Consequence": "stop_gained"})
+    assert MODULE.is_lof_candidate({
+        **base,
+        "Consequence": "missense_variant&splice_donor_variant",
+    })
+    assert not MODULE.is_lof_candidate({**base, "Consequence": "missense_variant"})
+    assert not MODULE.is_lof_candidate({
+        "BIOTYPE": "lncRNA",
+        "Consequence": "splice_acceptor_variant",
+    })
