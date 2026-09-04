@@ -49,20 +49,15 @@ def main() -> int:
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.resources).read_text())
-    cohort_cfg = cfg["cohorts"][args.cohort]
-    base = Path(cfg["output_base"]) / args.cohort
-    in_parquet = base / "region_filtered" / f"{args.chrom}.parquet"
-    out_dir = base / "qc_filtered"
-    if not args.output:
-        out_dir.mkdir(parents=True, exist_ok=True)
-    out_parquet = out_dir / f"{args.chrom}.parquet"
-
-    # Explicit-path overrides (used by the Nextflow POSTPROCESS subworkflow).
-    if args.input:
-        in_parquet = Path(args.input)
+    base = Path(cfg.get("output_base", ".")) / args.cohort
+    in_parquet = Path(args.input) if args.input else base / "region_filtered" / f"{args.chrom}.parquet"
     if args.output:
         out_parquet = Path(args.output)
         out_parquet.parent.mkdir(parents=True, exist_ok=True)
+    else:
+        out_dir = base / "qc_filtered"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_parquet = out_dir / f"{args.chrom}.parquet"
 
     passthrough = {c.strip() for c in args.passthrough_chroms.split(",") if c.strip()}
     if args.chrom in passthrough:

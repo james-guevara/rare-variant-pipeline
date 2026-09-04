@@ -32,20 +32,20 @@ def main() -> int:
 
     cfg = json.loads(Path(args.resources).read_text())
     regions_dir = Path(cfg["regions_dir"].format(chrom=args.chrom))
-    in_dir = Path(cfg["cohorts"][args.cohort]["input_dir"])
-    out_dir = Path(cfg["output_base"]) / args.cohort / "region_filtered"
-    if not args.output:
-        out_dir.mkdir(parents=True, exist_ok=True)
-
-    in_parquet = in_dir / f"{args.chrom}.merged.parquet"
-    out_parquet = out_dir / f"{args.chrom}.parquet"
-
-    # Explicit-path overrides (used by the Nextflow POSTPROCESS subworkflow).
+    if not regions_dir.is_absolute():
+        regions_dir = Path(args.resources).resolve().parent / regions_dir
     if args.input:
         in_parquet = Path(args.input)
+    else:
+        in_dir = Path(cfg["cohorts"][args.cohort]["input_dir"])
+        in_parquet = in_dir / f"{args.chrom}.merged.parquet"
     if args.output:
         out_parquet = Path(args.output)
         out_parquet.parent.mkdir(parents=True, exist_ok=True)
+    else:
+        out_dir = Path(cfg["output_base"]) / args.cohort / "region_filtered"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_parquet = out_dir / f"{args.chrom}.parquet"
 
     rmsk_bed = regions_dir / cfg["rmsk_bed"].format(chrom=args.chrom)
     rmsk_classes = "(" + ", ".join(repr(c) for c in cfg["rmsk_drop_classes"]) + ")"

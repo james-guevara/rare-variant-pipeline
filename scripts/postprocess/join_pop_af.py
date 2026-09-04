@@ -51,20 +51,18 @@ def main() -> int:
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.resources).read_text())
-    dbnsfp_dir = cfg["dbnsfp_af_dir"]
-    base = Path(cfg["output_base"]) / args.cohort
-    in_parquet = base / "qc_filtered" / f"{args.chrom}.parquet"
-    out_dir = base / "with_pop_af"
-    if not args.output:
-        out_dir.mkdir(parents=True, exist_ok=True)
-    out_parquet = out_dir / f"{args.chrom}.parquet"
-
-    # Explicit-path overrides (used by the Nextflow POSTPROCESS subworkflow).
-    if args.input:
-        in_parquet = Path(args.input)
+    dbnsfp_dir = Path(cfg["dbnsfp_af_dir"])
+    if not dbnsfp_dir.is_absolute():
+        dbnsfp_dir = Path(args.resources).resolve().parent / dbnsfp_dir
+    base = Path(cfg.get("output_base", ".")) / args.cohort
+    in_parquet = Path(args.input) if args.input else base / "qc_filtered" / f"{args.chrom}.parquet"
     if args.output:
         out_parquet = Path(args.output)
         out_parquet.parent.mkdir(parents=True, exist_ok=True)
+    else:
+        out_dir = base / "with_pop_af"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_parquet = out_dir / f"{args.chrom}.parquet"
     dbnsfp_parquet = Path(dbnsfp_dir) / f"{args.chrom}.parquet"
 
     print(f"[{args.cohort} {args.chrom}] join_pop_af: {in_parquet} -> {out_parquet}", file=sys.stderr)

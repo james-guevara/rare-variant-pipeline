@@ -1,5 +1,5 @@
 {
-  "regions_dir": "/fsx/rare-variant-pilot/resources/regions/chr21",
+  "regions_dir": "/fsx/rare-variant-resources/v1/problematic-regions/chr21",
   "filter_beds": [
     "genomicSuperDups.chr21.bed",
     "simpleRepeat.chr21.bed"
@@ -15,7 +15,7 @@
     }
   },
   "output_base": ".",
-  "dbnsfp_af_dir": "/fsx/rare-variant-pilot/resources/dbNSFP/5.3.1a/parquet_scores_af",
+  "dbnsfp_af_dir": "/fsx/rare-variant-resources/v1/dbNSFP/5.3.1a/parquet_scores_af",
   "qc": {
     "min_gq": 20,
     "min_dp": 10,

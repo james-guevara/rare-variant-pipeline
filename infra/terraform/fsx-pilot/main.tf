@@ -239,12 +239,12 @@ resource "aws_batch_job_definition" "targeted_chr22" {
     jobRoleArn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/ecsInstanceRole"
     environment = [
       { name = "ZARR_STORE", value = "/fsx/rare-variant-pilot/g2mh-vcz-v3/v1/chr22.sharded-v3.zarr" },
-      { name = "TARGET_BED", value = "/fsx/loftee-parity/resources/targeted-annotation/inputs/lof-plus-missense-candidates.chr22.bed" },
-      { name = "ANNOTATION_ROOT", value = "/fsx/loftee-parity/resources/targeted-annotation/ensembl-115" },
-      { name = "LOFTEE_ROOT", value = "/fsx/loftee-parity/resources" },
-      { name = "GENEBAYES", value = "/fsx/loftee-parity/resources/targeted-annotation/GeneBayes.Supplementary_Table_1.tsv" },
-      { name = "MISSENSE_CANDIDATES", value = "/fsx/loftee-parity/resources/targeted-annotation/inputs/g2mh.chr22.observed-missense-candidates.parquet" },
-      { name = "POSTPROCESS_CONFIG", value = "/fsx/loftee-parity/resources/postprocess/g2mh-chr22/config.json" },
+      { name = "TARGET_BED", value = "/fsx/rare-variant-resources/v1/targeted-annotation/inputs/lof-plus-missense-candidates.chr22.bed" },
+      { name = "ANNOTATION_ROOT", value = "/fsx/rare-variant-resources/v1/targeted-annotation/ensembl-115" },
+      { name = "LOFTEE_ROOT", value = "/fsx/rare-variant-resources/v1" },
+      { name = "GENEBAYES", value = "/fsx/rare-variant-resources/v1/targeted-annotation/GeneBayes.Supplementary_Table_1.tsv" },
+      { name = "MISSENSE_CANDIDATES", value = "/fsx/rare-variant-resources/v1/targeted-annotation/inputs/g2mh.chr22.observed-missense-candidates.parquet" },
+      { name = "POSTPROCESS_CONFIG", value = "/fsx/rare-variant-resources/v1/postprocess/g2mh-chr22/config.json" },
       { name = "POPULATION_AF_MAX", value = "0.01" },
       { name = "COHORT_AF_MAX", value = "0.01" },
       { name = "RUN_ROOT", value = "/fsx/loftee-parity/workflows/g2mh/chr22-lof-full-fastvep-3bdb862" },
@@ -271,8 +271,8 @@ resource "aws_batch_job_definition" "targeted_portable" {
   platform_capabilities = ["EC2"]
 
   parameters = {
-    manifest = "/fsx/loftee-parity/resources/manifests/g2mh-chr22.json"
-    bindings = "/fsx/loftee-parity/resources/manifests/aws-g2mh-chr22.json"
+    manifest = "/fsx/rare-variant-resources/v1/manifests/g2mh-chr22.json"
+    bindings = "/fsx/rare-variant-resources/v1/manifests/aws-g2mh-chr22.json"
     run_root = "/fsx/loftee-parity/workflows/g2mh/portable-default"
   }
 

@@ -12,6 +12,7 @@ from initialize_cohort import GRCH38_LENGTHS, parse_chromosomes
 DEFAULT_CHROMOSOMES = ",".join([*(f"chr{i}" for i in range(1, 23)), "chrX", "chrY"])
 FSX = "/fsx/loftee-parity"
 VCZ = "/fsx/rare-variant-pilot/g2mh-vcz-v3/v1"
+RESOURCE_ROOT = "/fsx/rare-variant-resources/v1"
 
 
 def candidate_path(chromosome: str) -> str:
@@ -20,51 +21,45 @@ def candidate_path(chromosome: str) -> str:
         if chromosome == "chr22"
         else f"{chromosome}.observed-missense-candidates.parquet"
     )
-    return f"{FSX}/resources/targeted-annotation/inputs/{name}"
+    return f"{RESOURCE_ROOT}/targeted-annotation/inputs/{name}"
 
 
-def dbnsfp_path(chromosome: str) -> str | None:
-    if chromosome in {"chr1", "chr21"}:
-        root = "/fsx/rare-variant-pilot/resources"
-    elif chromosome != "chr22":
-        root = f"{FSX}/resources"
-    else:
-        return None
-    return f"{root}/dbNSFP/5.3.1a/parquet_expanded_mane_select/{chromosome}.parquet"
+def dbnsfp_path(chromosome: str) -> str:
+    return (
+        f"{RESOURCE_ROOT}/dbNSFP/5.3.1a/"
+        f"parquet_expanded_mane_select/{chromosome}.parquet"
+    )
 
 
 def postprocess_path(chromosome: str) -> str:
     if chromosome in {"chrX", "chrY"}:
-        return f"{FSX}/resources/postprocess/g2mh-{chromosome}/missense-config.json"
-    return f"{FSX}/resources/postprocess/g2mh-autosomes/config.json"
+        return f"{RESOURCE_ROOT}/postprocess/g2mh-{chromosome}/missense-config.json"
+    return f"{RESOURCE_ROOT}/postprocess/g2mh-autosomes/config.json"
 
 
 def environment(chromosome: str, run_id: str) -> list[dict[str, str]]:
     values = {
         "ALL_OBSERVED": "1",
-        "ANNOTATION_ROOT": f"{FSX}/resources/targeted-annotation/ensembl-115",
+        "ANNOTATION_ROOT": f"{RESOURCE_ROOT}/targeted-annotation/ensembl-115",
         "CHROMOSOME": chromosome,
         "COHORT": "g2mh",
         "COHORT_AF_MAX": "0.01",
         "CONTIG": chromosome.removeprefix("chr"),
         "CONTIG_LENGTH": str(GRCH38_LENGTHS[chromosome]),
-        "GENEBAYES": f"{FSX}/resources/targeted-annotation/GeneBayes.Supplementary_Table_1.tsv",
-        "LOFTEE_ROOT": f"{FSX}/resources",
+        "GENEBAYES": f"{RESOURCE_ROOT}/targeted-annotation/GeneBayes.Supplementary_Table_1.tsv",
+        "LOFTEE_ROOT": RESOURCE_ROOT,
         "POPULATION_AF_MAX": "0.01",
         "POSTPROCESS_CONFIG": postprocess_path(chromosome),
         "RUN_ROOT": f"{FSX}/workflows/g2mh/{run_id}/{chromosome}",
         "ZARR_STORE": f"{VCZ}/{chromosome}.sharded-v3.zarr",
     }
     dbnsfp = dbnsfp_path(chromosome)
-    if dbnsfp:
-        values["MISSENSE_DBNSFP"] = dbnsfp
-    else:
-        values["MISSENSE_CANDIDATES"] = candidate_path(chromosome)
+    values["MISSENSE_DBNSFP"] = dbnsfp_path(chromosome)
     if chromosome in {"chrX", "chrY"}:
         values.update({
-            "SAMPLE_SEX_QC": f"{FSX}/resources/sample-qc/g2mh.sex-chromosome-qc.tsv",
+            "SAMPLE_SEX_QC": f"{RESOURCE_ROOT}/sample-qc/g2mh.sex-chromosome-qc.tsv",
             "SEX_CHROMOSOME_REGIONS": (
-                f"{FSX}/resources/sample-qc/grch38-sex-chromosome-regions.json"
+                f"{RESOURCE_ROOT}/sample-qc/grch38-sex-chromosome-regions.json"
             ),
         })
     return [{"name": name, "value": value} for name, value in sorted(values.items())]

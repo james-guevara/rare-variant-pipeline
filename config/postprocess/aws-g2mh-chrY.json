@@ -1,5 +1,5 @@
 {
-  "regions_dir": "/fsx/loftee-parity/resources/postprocess/g2mh-chrY/regions",
+  "regions_dir": "/fsx/rare-variant-resources/v1/postprocess/g2mh-chrY/regions",
   "filter_beds": [
     "genomicSuperDups.chrY.bed",
     "simpleRepeat.chrY.bed"

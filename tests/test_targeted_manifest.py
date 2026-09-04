@@ -127,6 +127,7 @@ def test_lof_only_does_not_require_declared_missense_binding(tmp_path: Path):
     manifest, bindings = _fixture(tmp_path)
     science = json.loads(manifest.read_text())
     science["resources"]["missense_candidates"] = {"kind": "file"}
+    science["resources"]["missense_dbnsfp"] = {"kind": "file"}
     manifest.write_text(json.dumps(science))
     result = subprocess.run(
         [sys.executable, str(SCRIPT), "--manifest", str(manifest),
@@ -147,6 +148,34 @@ def test_synonymous_controls_default_on_and_can_be_disabled(tmp_path: Path):
     science["optional_outputs"] = {"synonymous_tiered_controls": False}
     environment, _ = resolve(science, deployment)
     assert environment["SYNONYMOUS_TIERED_CONTROLS"] == "0"
+
+
+def test_tier_configuration_is_validated_and_exported(tmp_path: Path):
+    manifest, bindings = _fixture(tmp_path)
+    science = json.loads(manifest.read_text())
+    deployment = json.loads(bindings.read_text())
+    science["tiers"] = {
+        "lof": {
+            "lof_t1_min_genebayes_post_mean": 0.2,
+            "lof_t2_min_genebayes_post_mean": 0.04,
+        },
+        "missense": {
+            "score_thresholds": {
+                "ClinPred_rankscore": 0.5,
+                "AlphaMissense_rankscore": 0.9,
+                "popEVE_converted_rankscore": 0.8,
+                "MPC_rankscore": 0.7,
+            },
+            "tier_pass_counts": {
+                "miss_t1": 4, "miss_t2": 3, "miss_t3": 2, "miss_t4": 1,
+            },
+        },
+    }
+    environment, _ = resolve(science, deployment)
+    assert environment["LOF_T1_MIN_GENEBAYES_POST_MEAN"] == "0.2"
+    assert environment["LOF_T2_MIN_GENEBAYES_POST_MEAN"] == "0.04"
+    assert environment["MISSENSE_MPC_RANKSCORE_MIN"] == "0.7"
+    assert environment["MISS_T1_PASS_COUNT"] == "4"
 
 
 def test_family_genotypes_are_optional_and_require_sample_manifest(tmp_path: Path):

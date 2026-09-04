@@ -26,6 +26,16 @@ sample_sex_qc=${SAMPLE_SEX_QC:-}
 sex_chromosome_regions=${SEX_CHROMOSOME_REGIONS:-}
 population_af_max=${POPULATION_AF_MAX:-0.01}
 cohort_af_max=${COHORT_AF_MAX:-0.01}
+lof_t1_min=${LOF_T1_MIN_GENEBAYES_POST_MEAN:-0.18}
+lof_t2_min=${LOF_T2_MIN_GENEBAYES_POST_MEAN:-0.03}
+missense_clinpred_min=${MISSENSE_CLINPRED_RANKSCORE_MIN:-0.4298}
+missense_alphamissense_min=${MISSENSE_ALPHAMISSENSE_RANKSCORE_MIN:-0.9603}
+missense_popeve_min=${MISSENSE_POPEVE_CONVERTED_RANKSCORE_MIN:-0.9209}
+missense_mpc_min=${MISSENSE_MPC_RANKSCORE_MIN:-0.8947}
+miss_t1_pass_count=${MISS_T1_PASS_COUNT:-4}
+miss_t2_pass_count=${MISS_T2_PASS_COUNT:-3}
+miss_t3_pass_count=${MISS_T3_PASS_COUNT:-2}
+miss_t4_pass_count=${MISS_T4_PASS_COUNT:-1}
 synonymous_controls=${SYNONYMOUS_TIERED_CONTROLS:-0}
 family_genotypes=${FAMILY_GENOTYPES:-0}
 sample_manifest=${SAMPLE_MANIFEST:-}
@@ -191,6 +201,14 @@ if test -z "$missense_candidates" && test -n "$missense_dbnsfp"; then
     rm -f "$generated_missense_candidates"
     if ! "$python" scripts/build_missense_candidate_alleles.py \
         --dbnsfp "$missense_dbnsfp" --all-genes --chrom "$chromosome" \
+        --clinpred-rankscore-min "$missense_clinpred_min" \
+        --alphamissense-rankscore-min "$missense_alphamissense_min" \
+        --popeve-converted-rankscore-min "$missense_popeve_min" \
+        --mpc-rankscore-min "$missense_mpc_min" \
+        --miss-t1-pass-count "$miss_t1_pass_count" \
+        --miss-t2-pass-count "$miss_t2_pass_count" \
+        --miss-t3-pass-count "$miss_t3_pass_count" \
+        --miss-t4-pass-count "$miss_t4_pass_count" \
         --observed-vcf "$normalized_vcf" \
         --observed-output "$generated_missense_candidates"; then
       rm -f "$generated_missense_candidates"
@@ -231,7 +249,8 @@ run_stage "$loftee" "$python" scripts/run_standalone_loftee.py \
 if ! test -s "$plof_all" || ! test -s "$plof_tiered"; then
   "$python" scripts/join_genebayes_lof_tiers.py --input "$loftee" \
     --genebayes "$genebayes" --output "$plof_all" \
-    --qualifying-output "$plof_tiered"
+    --qualifying-output "$plof_tiered" \
+    --lof-t1-min "$lof_t1_min" --lof-t2-min "$lof_t2_min"
 fi
 test -s "$plof_all"
 test -s "$plof_tiered"

@@ -1,7 +1,7 @@
 {
   "dbnsfp_version": "5.3.1a",
   "source_root": "/expanse/projects/sebat1/s3/data/sebat/resources/dbNSFP/5.3.1a",
-  "aws_root": "/fsx/loftee-parity/resources/dbNSFP/5.3.1a",
+  "aws_root": "/fsx/rare-variant-resources/v1/dbNSFP/5.3.1a",
   "files": {
     "parquet_expanded_mane_select/chrX.parquet": "878aff0ffddd51a623efb6c3928378a0254047d8605a90a085d84806cad2519b",
     "parquet_expanded_mane_select/chrY.parquet": "aa461f6e62276c0490291bdcc21ac6805f62bc60ac996bb7ed8823d67a78a72c",

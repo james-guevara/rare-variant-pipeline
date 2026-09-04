@@ -25,13 +25,13 @@ def load_genebayes(path):
         }
 
 
-def assign_tier(lof, post_mean):
+def assign_tier(lof, post_mean, t1_min=0.18, t2_min=0.03):
     if lof != "HC" or post_mean == "":
         return ""
     value = float(post_mean)
-    if value >= 0.18:
+    if value >= t1_min:
         return "lof_t1"
-    if value >= 0.03:
+    if value >= t2_min:
         return "lof_t2"
     return ""
 
@@ -44,7 +44,11 @@ def main():
                         help="All input pLoFs with GeneBayes annotations")
     parser.add_argument("--qualifying-output", required=True, type=Path,
                         help="HC pLoFs in either GeneBayes tier")
+    parser.add_argument("--lof-t1-min", default=0.18, type=float)
+    parser.add_argument("--lof-t2-min", default=0.03, type=float)
     args = parser.parse_args()
+    if not 0 <= args.lof_t2_min < args.lof_t1_min <= 1:
+        parser.error("thresholds must satisfy 0 <= lof-t2-min < lof-t1-min <= 1")
 
     genebayes = load_genebayes(args.genebayes)
     counts = Counter()
@@ -84,7 +88,8 @@ def main():
                     constraint.get(field, "") if constraint is not None else ""
                 )
             tier = assign_tier(
-                row.get("LoF", ""), row["genebayes_post_mean"]
+                row.get("LoF", ""), row["genebayes_post_mean"],
+                args.lof_t1_min, args.lof_t2_min,
             )
             row["lof_tier"] = tier
             all_writer.writerow(row)

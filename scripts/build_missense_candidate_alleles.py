@@ -26,7 +26,24 @@ def main():
     parser.add_argument("--observed-alleles", type=Path)
     parser.add_argument("--observed-vcf", type=Path)
     parser.add_argument("--observed-output", type=Path)
+    for column, default in THRESHOLDS.items():
+        parser.add_argument(
+            "--" + column.replace("_", "-").lower() + "-min",
+            dest=column,
+            type=float,
+            default=default,
+        )
+    for tier, default in (("miss_t1", 4), ("miss_t2", 3), ("miss_t3", 2), ("miss_t4", 1)):
+        parser.add_argument("--" + tier.replace("_", "-") + "-pass-count", type=int, default=default)
     args = parser.parse_args()
+    thresholds = {column: getattr(args, column) for column in THRESHOLDS}
+    if not all(0 <= value <= 1 for value in thresholds.values()):
+        parser.error("missense score thresholds must be between 0 and 1")
+    tier_pass_counts = {tier: getattr(args, tier + "_pass_count") for tier in (
+        "miss_t1", "miss_t2", "miss_t3", "miss_t4"
+    )}
+    if set(tier_pass_counts.values()) != {1, 2, 3, 4}:
+        parser.error("missense tier pass counts must use each count from 1 through 4 once")
     observed_inputs = sum(bool(value) for value in (args.observed_alleles, args.observed_vcf))
     if bool(observed_inputs) != bool(args.observed_output) or observed_inputs > 1:
         parser.error("use --observed-output with exactly one of --observed-alleles or --observed-vcf")
@@ -35,14 +52,14 @@ def main():
 
     score_values = ", ".join(
         'TRY_CAST("{}" AS DOUBLE) AS "{}"'.format(column, column)
-        for column in THRESHOLDS
+        for column in thresholds
     )
     flags = " + ".join(
         'CAST(COALESCE("{}" >= {}, FALSE) AS INTEGER)'.format(column, threshold)
-        for column, threshold in THRESHOLDS.items()
+        for column, threshold in thresholds.items()
     )
     score_max = ", ".join(
-        'MAX("{0}") AS "{0}"'.format(column) for column in THRESHOLDS
+        'MAX("{0}") AS "{0}"'.format(column) for column in thresholds
     )
     chrom_without_prefix = args.chrom.removeprefix("chr")
     con = duckdb.connect()
@@ -78,17 +95,18 @@ def main():
                string_agg(DISTINCT Gene, ',' ORDER BY Gene) AS candidate_genes,
                MAX(miss_n_flag) AS miss_n_flag,
                CASE MAX(miss_n_flag)
-                   WHEN 4 THEN 'miss_t1'
-                   WHEN 3 THEN 'miss_t2'
-                   WHEN 2 THEN 'miss_t3'
-                   WHEN 1 THEN 'miss_t4'
+                   WHEN {miss_t1} THEN 'miss_t1'
+                   WHEN {miss_t2} THEN 'miss_t2'
+                   WHEN {miss_t3} THEN 'miss_t3'
+                   WHEN {miss_t4} THEN 'miss_t4'
                END AS miss_tier,
                {score_max}
         FROM scored {target_join}
         WHERE miss_n_flag >= 1
         GROUP BY POS, REF, ALT
         """.format(target_cte=target_cte, target_join=target_join,
-                   score_values=score_values, flags=flags, score_max=score_max),
+                   score_values=score_values, flags=flags, score_max=score_max,
+                   **tier_pass_counts),
         parameters,
     )
     if args.output:

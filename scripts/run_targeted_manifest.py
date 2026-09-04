@@ -19,6 +19,7 @@ ENVIRONMENT_KEYS = {
     "loftee_root": "LOFTEE_ROOT",
     "genebayes": "GENEBAYES",
     "missense_candidates": "MISSENSE_CANDIDATES",
+    "missense_dbnsfp": "MISSENSE_DBNSFP",
     "postprocess_config": "POSTPROCESS_CONFIG",
     "sample_sex_qc": "SAMPLE_SEX_QC",
     "sex_chromosome_regions": "SEX_CHROMOSOME_REGIONS",
@@ -26,6 +27,24 @@ ENVIRONMENT_KEYS = {
 }
 REQUIRED_RESOURCES = {
     "zarr_store", "annotation_root", "loftee_root", "genebayes"
+}
+
+DEFAULT_TIERS = {
+    "lof": {
+        "lof_t1_min_genebayes_post_mean": 0.18,
+        "lof_t2_min_genebayes_post_mean": 0.03,
+    },
+    "missense": {
+        "score_thresholds": {
+            "ClinPred_rankscore": 0.4298,
+            "AlphaMissense_rankscore": 0.9603,
+            "popEVE_converted_rankscore": 0.9209,
+            "MPC_rankscore": 0.8947,
+        },
+        "tier_pass_counts": {
+            "miss_t1": 4, "miss_t2": 3, "miss_t3": 2, "miss_t4": 1,
+        },
+    },
 }
 
 
@@ -123,6 +142,40 @@ def resolve(manifest: dict, bindings: dict) -> tuple[dict[str, str], list[str]]:
             if not isinstance(value, (int, float)) or not 0 <= value <= 1:
                 raise ValueError(f"manifest.thresholds.{source_key} must be between 0 and 1")
             environment[env_key] = str(value)
+    tiers = manifest.get("tiers") or DEFAULT_TIERS
+    if not isinstance(tiers, dict):
+        raise ValueError("manifest.tiers must be an object")
+    lof = tiers.get("lof")
+    missense = tiers.get("missense")
+    if not isinstance(lof, dict) or not isinstance(missense, dict):
+        raise ValueError("manifest.tiers requires lof and missense objects")
+    t1 = lof.get("lof_t1_min_genebayes_post_mean")
+    t2 = lof.get("lof_t2_min_genebayes_post_mean")
+    if not all(isinstance(value, (int, float)) for value in (t1, t2)) or not 0 <= t2 < t1 <= 1:
+        raise ValueError("LoF thresholds must satisfy 0 <= lof_t2 < lof_t1 <= 1")
+    environment["LOF_T1_MIN_GENEBAYES_POST_MEAN"] = str(t1)
+    environment["LOF_T2_MIN_GENEBAYES_POST_MEAN"] = str(t2)
+    scores = missense.get("score_thresholds")
+    score_environment = {
+        "ClinPred_rankscore": "MISSENSE_CLINPRED_RANKSCORE_MIN",
+        "AlphaMissense_rankscore": "MISSENSE_ALPHAMISSENSE_RANKSCORE_MIN",
+        "popEVE_converted_rankscore": "MISSENSE_POPEVE_CONVERTED_RANKSCORE_MIN",
+        "MPC_rankscore": "MISSENSE_MPC_RANKSCORE_MIN",
+    }
+    if not isinstance(scores, dict) or set(scores) != set(score_environment):
+        raise ValueError("missense score_thresholds must define the four supported rankscores")
+    for name, env_key in score_environment.items():
+        value = scores[name]
+        if not isinstance(value, (int, float)) or not 0 <= value <= 1:
+            raise ValueError(f"invalid missense threshold: {name}")
+        environment[env_key] = str(value)
+    passes = missense.get("tier_pass_counts")
+    if not isinstance(passes, dict) or set(passes) != {f"miss_t{i}" for i in range(1, 5)}:
+        raise ValueError("missense tier_pass_counts must define miss_t1 through miss_t4")
+    if set(passes.values()) != {1, 2, 3, 4}:
+        raise ValueError("missense tier pass counts must use each count from 1 through 4 once")
+    for tier, count in passes.items():
+        environment[f"{tier.upper()}_PASS_COUNT"] = str(count)
     optional_outputs = manifest.get("optional_outputs", {})
     if not isinstance(optional_outputs, dict):
         raise ValueError("manifest.optional_outputs must be an object")
@@ -192,6 +245,7 @@ def main() -> None:
     bindings = read_json(args.bindings)
     if args.lof_only:
         manifest.get("resources", {}).pop("missense_candidates", None)
+        manifest.get("resources", {}).pop("missense_dbnsfp", None)
     regression = args.regression
     if regression is None and not args.lof_only and bindings.get("regression"):
         regression = Path(require_string(bindings, "regression", "bindings"))
@@ -202,6 +256,7 @@ def main() -> None:
         environment["ALL_OBSERVED"] = "1"
     if args.lof_only:
         environment.pop("MISSENSE_CANDIDATES", None)
+        environment.pop("MISSENSE_DBNSFP", None)
     preflight_run_root(Path(environment["RUN_ROOT"]))
     if not args.skip_runtime_checks:
         for command in ("bcftools", "fastvep"):
