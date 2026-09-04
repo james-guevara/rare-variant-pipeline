@@ -44,6 +44,7 @@ transcript_cache=$gff3.fastvep.cache
 transcript_priority=$annotation_root/vep115.$chromosome.transcript-priority.tsv
 consequence_ranks=$annotation_root/vep115.consequence-ranks.tsv
 fastvep=$fastvep_root/fastvep
+fastvep_picker=${FASTVEP_PICKER:-fastvep-picker}
 sex_chromosome=0
 if test "$chromosome" = chrX || test "$chromosome" = chrY; then
   sex_chromosome=1
@@ -206,7 +207,7 @@ if ! test -s "$picked"; then
   if ! "$fastvep" annotate --input "$normalized_vcf" --gff3 "$gff3" \
       --fasta "$reference" --transcript-cache "$transcript_cache" --hgvs \
       --symbol --canonical --output-format vcf --output - \
-    | "$python" scripts/pick_fastvep_consequences.py --fastvep - \
+    | "$fastvep_picker" --fastvep - \
         --transcript-priority "$transcript_priority" \
         --consequence-ranks "$consequence_ranks" --output "$picked"; then
     rm -f "$picked"

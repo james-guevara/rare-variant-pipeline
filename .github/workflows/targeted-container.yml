@@ -62,6 +62,7 @@ jobs:
           image=$(echo "${{ steps.meta.outputs.tags }}" | head -1)
           docker run --rm --platform linux/amd64 --entrypoint /bin/bash "$image" -c '
             fastvep --version
+            fastvep-picker --help >/dev/null
             bcftools --version | head -n1
             python -c "import duckdb, pyarrow, pyBigWig, pysam, zarr"
             python scripts/run_standalone_loftee.py --help >/dev/null

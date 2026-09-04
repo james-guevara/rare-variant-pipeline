@@ -10,6 +10,12 @@ RUN apt-get update \
     && cargo build --locked --release --manifest-path /src/fastvep/Cargo.toml \
     && /src/fastvep/target/release/fastvep --version
 
+FROM public.ecr.aws/docker/library/rust:1.89-bookworm AS picker-builder
+
+COPY rust/fastvep-picker /src/fastvep-picker
+RUN cargo build --locked --release --manifest-path /src/fastvep-picker/Cargo.toml \
+    && /src/fastvep-picker/target/release/fastvep-picker --help
+
 FROM ghcr.io/astral-sh/uv:0.12.5 AS uv
 
 FROM public.ecr.aws/docker/library/python:3.12-slim-bookworm
@@ -28,6 +34,7 @@ RUN apt-get update \
 
 COPY --from=uv /uv /uvx /usr/local/bin/
 COPY --from=fastvep-builder /src/fastvep/target/release/fastvep /opt/fastvep/fastvep
+COPY --from=picker-builder /src/fastvep-picker/target/release/fastvep-picker /usr/local/bin/fastvep-picker
 
 WORKDIR /opt/rvp
 COPY pyproject.toml uv.lock ./
@@ -35,6 +42,7 @@ COPY src ./src
 RUN uv sync --frozen --no-dev \
     && .venv/bin/python -c "import duckdb, pyarrow, pyBigWig, pysam, zarr" \
     && /opt/fastvep/fastvep --version \
+    && fastvep-picker --help \
     && aws --version \
     && bcftools --version | head -n 1
 

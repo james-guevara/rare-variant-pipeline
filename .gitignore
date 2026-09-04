@@ -32,3 +32,4 @@ resources/gene-sets/raw/
 *.tfplan
 backend.hcl
 crash.log
+rust/**/target/

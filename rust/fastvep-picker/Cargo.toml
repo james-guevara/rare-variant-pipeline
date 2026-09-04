@@ -1,0 +1,16 @@
+[package]
+name = "fastvep-picker"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "VEP-compatible transcript picker for FastVEP VCF output"
+
+[[bin]]
+name = "fastvep-picker"
+path = "src/main.rs"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
+
