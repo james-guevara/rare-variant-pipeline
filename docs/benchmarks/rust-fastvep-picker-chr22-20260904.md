@@ -10,10 +10,10 @@ standard input, applies the same versioned transcript-priority and consequence-
 rank tables, and emits the same selected-transcript TSV schema. The Python
 implementation remains the development oracle.
 
-Source commit: `052be3393b5b3a83b379311144a616964991858c`
+Source commit: `1671c5a76c369da50c64320d7dc3c719ac2ab95a`
 
 Validated image:
-`640838474376.dkr.ecr.us-east-1.amazonaws.com/rare-variant-pipeline-targeted@sha256:a9b526a7e3c86df183cef33bcfc271f5f3c07d3a0e9309abb4b0af98fe7e18b5`
+`640838474376.dkr.ecr.us-east-1.amazonaws.com/rare-variant-pipeline-targeted@sha256:7d5b76a28e2427ca97af6ebec1d5e38aec63b93609419c0cc77c063e48e2917d`
 
 ## Full-chromosome parity
 
@@ -35,13 +35,14 @@ the split Python benchmark.
 |---|---:|
 | Python picker, materialized FastVEP VCF | 2:47.64 |
 | Rust picker, materialized FastVEP VCF | 19.20 seconds |
-| FastVEP streamed into Rust picker | 43.87 seconds |
+| FastVEP streamed into Rust picker | 43.87--48.62 seconds |
 
 The standalone picker improved by 8.7-fold. The streamed production path also
 avoids the 3.1-GB raw FastVEP intermediate. The previous all-observed chr22
 FastVEP-plus-Python-picker checkpoint took approximately 124 seconds, so the
-measured combined annotation/picking stage improved by approximately 2.8-fold on
-this workload.
+measured combined annotation/picking stage improved by approximately 2.5--2.8-fold
+on this workload. The final immutable image produced the exact expected checksum
+in 48.62 seconds.
 
 Small timing records are retained under:
 
