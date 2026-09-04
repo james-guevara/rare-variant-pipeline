@@ -55,6 +55,15 @@ record transient scientific-result differences here.
 - **Prevention:** obtain the value directly from `git rev-parse HEAD`; never type or
   reconstruct a full SHA. `scripts/start_targeted_codebuild.sh` implements this.
 
+#### Recurrence on 2026-09-04
+
+The documented launcher was not reviewed before submission and an abbreviated SHA
+was passed manually. CodeBuild again failed at `git fetch` before compilation. This
+was an operator-process failure, not a new technical problem. The corrective rule
+is stronger: targeted-image builds must be started through
+`scripts/start_targeted_codebuild.sh`; copying its AWS command by hand is not an
+accepted production procedure.
+
 ### Persistent EC2 user could not extend a completed Batch run (2026-08-27)
 
 - **Symptom:** `tee` and DuckDB reported permission denied under a prior FSx run root.
