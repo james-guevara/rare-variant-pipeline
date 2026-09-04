@@ -16,11 +16,10 @@ process GATHER_RARE_BURDENS {
     path 'rare_burdens_by_chromosome_stratum.tsv', emit: strata
 
     script:
-    def packageArgs = chromosome_packages.collect { "--package ${it}" }.join(' ')
     """
     python /opt/rvp/scripts/gather_rare_burdens.py \
       --sample-manifest ${sample_manifest} \
-      ${packageArgs} \
+      --package-root packages \
       --expected-chromosomes '${expected_chromosomes}' \
       --output rare_burdens.tsv \
       --strata-output rare_burdens_by_chromosome_stratum.tsv

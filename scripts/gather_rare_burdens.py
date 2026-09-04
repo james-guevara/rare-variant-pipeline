@@ -44,6 +44,7 @@ def main():
     sample_source.add_argument("--sex-qc", type=Path)
     chromosome_source = parser.add_mutually_exclusive_group(required=True)
     chromosome_source.add_argument("--package", action="append", type=Path)
+    chromosome_source.add_argument("--package-root", type=Path)
     chromosome_source.add_argument("--run-base", type=Path)
     parser.add_argument("--expected-chromosomes", default=",".join([f"chr{i}" for i in range(1, 23)] + ["chrX", "chrY"]))
     parser.add_argument("--output", required=True, type=Path)
@@ -69,8 +70,14 @@ def main():
 
     expected = set(filter(None, args.expected_chromosomes.split(",")))
     packages = {}
-    if args.package:
-        for root in args.package:
+    if args.package or args.package_root:
+        roots = args.package or sorted(
+            path for path in args.package_root.iterdir()
+            if (path / "targeted-output-manifest.json").is_file()
+        )
+        if not roots:
+            raise ValueError(f"no chromosome packages found under {args.package_root}")
+        for root in roots:
             document = json.loads((root / "targeted-output-manifest.json").read_text())
             chrom = document["chromosome"]
             if document["status"] != "SUCCEEDED" or chrom in packages:

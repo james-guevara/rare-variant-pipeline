@@ -18,3 +18,4 @@ def test_gather_wrapper_compiles(tmp_path: Path):
     workflow = (REPO / "workflows/rare_burden_gather.nf").read_text()
     assert "workflow RARE_BURDEN_GATHER_WORKFLOW" in workflow
     assert "rare_burdens = GATHER_RARE_BURDENS.out.burdens" in workflow
+    assert "--package-root packages" in workflow

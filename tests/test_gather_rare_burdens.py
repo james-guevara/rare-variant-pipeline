@@ -44,3 +44,39 @@ def test_gathers_completed_run_directly_with_sex_qc_roster(tmp_path):
     rows = list(csv.DictReader(out.open(), delimiter="\t"))
     assert rows[0]["SEX"] == "F" and rows[0]["lof_t1"] == "1"
     assert rows[1]["SEX"] == "" and rows[1]["miss_t4"] == "0"
+
+def test_gathers_nextflow_staged_package_root(tmp_path):
+    samples = tmp_path / "samples.tsv"
+    samples.write_text("FID\tIID\tSEX\nF1\tS1\tF\n")
+    staged = tmp_path / "packages"
+    staged.mkdir()
+    package(
+        staged / "package01",
+        "chr22",
+        "SAMPLE\tlof_t1\tlof_t2\nS1\t2\t1\n",
+    )
+    out, strata = tmp_path / "rare.tsv", tmp_path / "strata.tsv"
+    subprocess.run([
+        sys.executable, str(SCRIPT), "--sample-manifest", str(samples),
+        "--package-root", str(staged), "--expected-chromosomes", "chr22",
+        "--output", str(out), "--strata-output", str(strata),
+    ], check=True)
+    rows = list(csv.DictReader(out.open(), delimiter="\t"))
+    assert rows[0]["lof_t1"] == "2" and rows[0]["lof_t2"] == "1"
+
+def test_gathers_symlinked_nextflow_package_root(tmp_path):
+    samples = tmp_path / "samples.tsv"
+    samples.write_text("FID\tIID\tSEX\nF1\tS1\tF\n")
+    source = tmp_path / "chr22"
+    package(source, "chr22", "SAMPLE\tlof_t1\tlof_t2\nS1\t2\t1\n")
+    staged = tmp_path / "packages"
+    staged.mkdir()
+    (staged / "package01").symlink_to(source, target_is_directory=True)
+    out, strata = tmp_path / "rare.tsv", tmp_path / "strata.tsv"
+    subprocess.run([
+        sys.executable, str(SCRIPT), "--sample-manifest", str(samples),
+        "--package-root", str(staged), "--expected-chromosomes", "chr22",
+        "--output", str(out), "--strata-output", str(strata),
+    ], check=True)
+    rows = list(csv.DictReader(out.open(), delimiter="\t"))
+    assert rows[0]["lof_t1"] == "2" and rows[0]["lof_t2"] == "1"
