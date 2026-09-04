@@ -5,6 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import duckdb
+
 REPO = Path(__file__).resolve().parents[1]
 SCRIPT = REPO / "scripts/run_targeted_manifest.py"
 SPEC = importlib.util.spec_from_file_location("run_targeted_manifest", SCRIPT)
@@ -176,6 +178,21 @@ def test_tier_configuration_is_validated_and_exported(tmp_path: Path):
     assert environment["LOF_T2_MIN_GENEBAYES_POST_MEAN"] == "0.04"
     assert environment["MISSENSE_MPC_RANKSCORE_MIN"] == "0.7"
     assert environment["MISS_T1_PASS_COUNT"] == "4"
+
+
+def test_preflight_rejects_missense_file_without_score_columns(tmp_path: Path):
+    manifest, bindings = _fixture(tmp_path)
+    missense = tmp_path / "missense.parquet"
+    duckdb.connect().execute("COPY (SELECT 1 AS position) TO ? (FORMAT PARQUET)", [str(missense)])
+    science = json.loads(manifest.read_text())
+    deployment = json.loads(bindings.read_text())
+    science["resources"]["missense_dbnsfp"] = {"kind": "file"}
+    deployment["resources"]["missense_dbnsfp"] = str(missense)
+    try:
+        resolve(science, deployment)
+        assert False, "missing score columns should fail"
+    except ValueError as error:
+        assert "lacks required score columns" in str(error)
 
 
 def test_family_genotypes_are_optional_and_require_sample_manifest(tmp_path: Path):

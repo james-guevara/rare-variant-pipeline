@@ -11,6 +11,8 @@ import sys
 import tempfile
 from pathlib import Path
 
+import duckdb
+
 
 ENVIRONMENT_KEYS = {
     "zarr_store": "ZARR_STORE",
@@ -27,6 +29,10 @@ ENVIRONMENT_KEYS = {
 }
 REQUIRED_RESOURCES = {
     "zarr_store", "annotation_root", "loftee_root", "genebayes"
+}
+MISSENSE_SCORE_COLUMNS = {
+    "ClinPred_rankscore", "AlphaMissense_rankscore",
+    "popEVE_converted_rankscore", "MPC_rankscore",
 }
 
 DEFAULT_TIERS = {
@@ -129,6 +135,21 @@ def resolve(manifest: dict, bindings: dict) -> tuple[dict[str, str], list[str]]:
                 )
             observations.append(f"checksum.{logical_name}={observed}")
         environment[ENVIRONMENT_KEYS[logical_name]] = str(root)
+
+    missense_path = environment.get("MISSENSE_DBNSFP")
+    if missense_path:
+        columns = {
+            row[0]
+            for row in duckdb.connect().execute(
+                "DESCRIBE SELECT * FROM read_parquet(?)", [missense_path]
+            ).fetchall()
+        }
+        missing_scores = sorted(MISSENSE_SCORE_COLUMNS - columns)
+        if missing_scores:
+            raise ValueError(
+                "missense dbNSFP file lacks required score columns: "
+                + ",".join(missing_scores)
+            )
 
     thresholds = manifest.get("thresholds", {})
     if not isinstance(thresholds, dict):
