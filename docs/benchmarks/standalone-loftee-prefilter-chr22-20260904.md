@@ -5,9 +5,9 @@ Date: 2026-09-04
 ## Change
 
 Standalone LOFTEE now inspects consequence and biotype before transcript lookup
-or resource-dependent context construction. By default it emits only classified
+or resource-dependent context construction. It emits only classified
 protein-coding stop-gained, frameshift, splice-donor, and splice-acceptor rows.
-`--include-non-lof` retains the legacy full-table representation for debugging.
+The FastVEP/picker table remains the complete annotation substrate.
 
 ## Inputs
 

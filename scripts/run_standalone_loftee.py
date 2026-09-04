@@ -43,11 +43,6 @@ def main() -> None:
     parser.add_argument("--gerp", required=True, type=Path)
     parser.add_argument("--conservation", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
-    parser.add_argument(
-        "--include-non-lof",
-        action="store_true",
-        help="Preserve non-LoF rows with blank LOFTEE fields (legacy/debug output)",
-    )
     args = parser.parse_args()
 
     with (
@@ -64,31 +59,15 @@ def main() -> None:
         for row in reader:
             scanned += 1
             if not is_lof_candidate(row):
-                if args.include_non_lof:
-                    row.update({
-                        "LoF": "",
-                        "LoF_filter": ".",
-                        "LoF_flags": ".",
-                        "LoF_info": ".",
-                    })
-                    writer.writerow(row)
                 continue
             candidates += 1
             if transcript_is_absent(row.get("Feature", "")):
-                if args.include_non_lof:
-                    row.update({
-                        "LoF": "",
-                        "LoF_filter": ".",
-                        "LoF_flags": ".",
-                        "LoF_info": ".",
-                    })
-                    writer.writerow(row)
                 continue
             transcript = transcripts.get(row["Feature"])
             if transcript is None:
                 raise ValueError(f"missing transcript: {row['Feature']}")
             result = classify(build_context(row, transcript, resources))
-            if not result.lof and not args.include_non_lof:
+            if not result.lof:
                 continue
             row.update({
                 "LoF": result.lof,
