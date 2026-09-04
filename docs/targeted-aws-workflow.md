@@ -20,7 +20,7 @@ eligibility filtering.
    every observed allele on the chromosome (`ALL_OBSERVED=1`); an optional target BED
    remains available for deliberately restricted experiments.
 2. Emit a sites-only VCF while retaining `variant_index` and `alt_index` pointers.
-3. Normalize against the Ensembl 115 chromosome FASTA.
+3. Normalize against the indexed Ensembl 115 GRCh38 primary-assembly FASTA.
 4. Stream FastVEP output directly into the VEP-compatible transcript picker.
 5. Run the independently tested standalone LOFTEE implementation.
 6. Join GeneBayes and assign `lof_t1` (`post_mean >= 0.18`) or `lof_t2`

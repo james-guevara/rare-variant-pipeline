@@ -44,7 +44,7 @@ chromosome=${CHROMOSOME:-chr22}
 contig=${CONTIG:-${chromosome#chr}}
 contig_length=${CONTIG_LENGTH:-50818468}
 
-reference=$annotation_root/Homo_sapiens.GRCh38.dna.chromosome.$contig.fa
+reference=$annotation_root/Homo_sapiens.GRCh38.dna.primary_assembly.fa
 ancestor=$loftee_root/loftee-grch38/human_ancestor.fa.gz
 gerp=$loftee_root/loftee-grch38/gerp_conservation_scores.homo_sapiens.GRCh38.bw
 conservation=$loftee_root/loftee-grch38/loftee.sql
