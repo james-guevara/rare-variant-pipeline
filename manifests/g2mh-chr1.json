@@ -28,7 +28,7 @@
     },
     "loftee_root": {
       "kind": "directory",
-      "sentinel": "ensembl-115/chr1.transcripts.sqlite"
+      "sentinel": "ensembl-115/transcripts.sqlite"
     },
     "genebayes": {
       "kind": "file"
