@@ -23,9 +23,10 @@ def test_gene_set_burdens_are_independent_of_lof_tiers(tmp_path):
     )
     plof = tmp_path / "plof.parquet"
     pq.write_table(pa.Table.from_pylist([
-        {"sample_id": "S1", "record_id": "v1", "Gene": "ENSG1.2", "SYMBOL": "GENE1", "LoF": "HC", "lof_tier": None},
-        {"sample_id": "S1", "record_id": "v2", "Gene": "OTHER", "SYMBOL": "GENE2", "LoF": "HC", "lof_tier": None},
-        {"sample_id": "S1", "record_id": "v3", "Gene": "ENSG1", "SYMBOL": "GENE1", "LoF": "LC", "lof_tier": None},
+        {"sample_id": "S1", "record_id": "v1", "Gene": "ENSG1.2", "SYMBOL": "GENE1", "LoF": "HC", "lof_tier": None, "primary_analysis_eligible": True},
+        {"sample_id": "S1", "record_id": "v2", "Gene": "OTHER", "SYMBOL": "GENE2", "LoF": "HC", "lof_tier": None, "primary_analysis_eligible": True},
+        {"sample_id": "S1", "record_id": "v3", "Gene": "ENSG1", "SYMBOL": "GENE1", "LoF": "LC", "lof_tier": None, "primary_analysis_eligible": True},
+        {"sample_id": "S2", "record_id": "v4", "Gene": "ENSG1", "SYMBOL": "GENE1", "LoF": "HC", "lof_tier": None, "primary_analysis_eligible": False},
     ]), plof)
     missense = tmp_path / "miss.parquet"
     pq.write_table(pa.Table.from_pylist([

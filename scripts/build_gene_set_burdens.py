@@ -19,6 +19,22 @@ def sql_paths(paths: list[Path]) -> str:
     return f"[{values}]"
 
 
+def eligible_source(con: duckdb.DuckDBPyConnection, paths: list[Path], name: str) -> str:
+    source = f"read_parquet({sql_paths(paths)}, union_by_name=true)"
+    columns = {column[0] for column in con.execute(f"SELECT * FROM {source} LIMIT 0").description}
+    predicates = []
+    for column in ("burden_count_available", "primary_analysis_eligible"):
+        if column in columns:
+            # Autosomal partitions acquire a NULL column under union_by_name;
+            # only an explicit sex-chromosome policy FALSE excludes a row.
+            predicates.append(f"({column} IS NULL OR {column})")
+    con.execute(
+        f"CREATE VIEW {name} AS SELECT * FROM {source}"
+        + (" WHERE " + " AND ".join(predicates) if predicates else "")
+    )
+    return name
+
+
 def read_samples(path: Path) -> list[dict[str, str]]:
     with path.open(newline="") as handle:
         first = handle.readline()
@@ -62,6 +78,8 @@ def main() -> None:
         "upper(NULLIF(gene_symbol, '.')) AS gene_symbol "
         f"FROM read_csv('{gene_sets}', delim='\\t', header=true, all_varchar=true)",
     )
+    plof_source = eligible_source(con, args.plof, "plof_input")
+    missense_source = eligible_source(con, args.missense, "missense_input")
 
     # Prefer stable Ensembl IDs. Symbol matching is a fallback for catalog rows
     # without an Ensembl ID, preventing aliases from double-counting a gene.
@@ -72,12 +90,12 @@ def main() -> None:
     con.execute(f"""
         CREATE TABLE events AS
         SELECT DISTINCT c.sample_id AS IID, m.gene_set_id, c.record_id, 'plof' AS variant_class
-        FROM read_parquet({sql_paths(args.plof)}, union_by_name=true) c
+        FROM {plof_source} c
         JOIN memberships m ON {match}
         WHERE c.LoF = 'HC'
         UNION
         SELECT DISTINCT c.sample_id AS IID, m.gene_set_id, c.record_id, c.miss_tier AS variant_class
-        FROM read_parquet({sql_paths(args.missense)}, union_by_name=true) c
+        FROM {missense_source} c
         JOIN memberships m ON {match}
         WHERE c.miss_tier IN ('miss_t1', 'miss_t2', 'miss_t3', 'miss_t4')
     """)
