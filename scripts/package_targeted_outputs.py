@@ -9,6 +9,8 @@ from pathlib import Path
 
 
 SCIENTIFIC_OUTPUTS = {
+    "plof_eligible_carriers": "11.plof-burden-eligible.parquet",
+    "missense_eligible_carriers": "11.missense-burden-eligible.parquet",
     "plof_counts": "12.plof-per-sample-counts.tsv",
     "missense_counts": "12.missense-per-sample-counts.tsv",
     "plof_primary_burden": "12.plof-primary-sample-burden.tsv",
