@@ -1,0 +1,21 @@
+aws_region = "us-east-1"
+
+# Existing resources are referenced, not created or owned by this configuration.
+subnet_id         = "subnet-xxxxxxxxxxxxxxxxx"
+security_group_ids = ["sg-xxxxxxxxxxxxxxxxx"]
+batch_instance_profile_arn = "arn:aws:iam::<ACCOUNT_ID>:instance-profile/<BATCH_INSTANCE_PROFILE>"
+vcz_batch_image            = "<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/rare-variant-vcz-batch@sha256:<IMAGE_DIGEST>"
+targeted_annotation_image  = "<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/rare-variant-pipeline-targeted@sha256:<IMAGE_DIGEST>"
+
+# The filesystem namespace is populated lazily from this existing prefix.
+s3_data_repository_path = "s3://example-bucket/staged/rare-variant-pilot"
+
+storage_capacity_gib = 1200
+file_system_path     = "/rare-variant-pilot"
+
+tags = {
+  Project    = "rare-variant-pipeline"
+  ManagedBy  = "Terraform"
+  Lifecycle  = "temporary"
+  Experiment = "targeted-lof-missense-chr22"
+}

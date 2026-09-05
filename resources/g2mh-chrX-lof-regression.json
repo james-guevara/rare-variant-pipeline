@@ -1,0 +1,30 @@
+{
+  "description": "Validated G2MH chrX LoF-only targeted workflow regression after problematic-region and genotype QC",
+  "reference_build": "GRCh38",
+  "annotation_release": "Ensembl 115",
+  "target_bed_sha256": "12ab38cee361eff77c9b3a2179f5fe93e5cbd8accaa96c1cd69ed60f2ef1f772",
+  "sample_sex_qc_sha256": "68b379dab3e0212e7e101149c087ad9c9077d0e17ebc33ce6cdaedfd94957487",
+  "postprocess_config_sha256": "5c0749e934a610f96fd54a5c069b6f246bc98f90d2d2c3d2c0231f2f1cc7ce70",
+  "expected_counts": {
+    "target_intervals": 6180,
+    "targeted_alleles": 40340,
+    "plof_rows": 130,
+    "lof_t1": 38,
+    "lof_t2": 56,
+    "qualifying_lof": 94,
+    "raw_carrier_rows": 536,
+    "region_filtered_rows": 109,
+    "genotype_qc_rows": 67,
+    "genotype_qc_alleles": 38,
+    "genotype_qc_samples": 65,
+    "primary_carrier_rows": 66,
+    "sensitivity_only_carrier_rows": 1
+  },
+  "canonical_hashes": {
+    "carrier_sha256": "42364277be9e3e4a3ac1712c1c5b81ab32a6cc551f8fe55905925d3e34f6ae32",
+    "variant_sha256": "707116c22b78791e1ccf056cdcebc9e76a9bc70188ceb6d764d3827d52c32367",
+    "coordinate_sha256": "1d347befe562d2df4595465497cb0893515fcc45e95818096d4c4fa7945a4d8b",
+    "variant_core_sha256": "07b4b5657316c0ac7fb266052363bc879522618ae7d5ec2f55a2dc978c6308f6",
+    "carrier_core_sha256": "1bf6f2688291f32d46c138c768a7a4c08e956d091bbf5a5c3ae770886e8f1371"
+  }
+}

@@ -137,6 +137,301 @@ for user accounts, so `singularity build --fakeroot` is refused — hence CI.
 
 ## Usage
 
+### Initialize a new cohort from VCF and PSAM
+
+The user-facing starting point is `scripts/initialize_cohort.py`. It requires only a
+joint VCF (or a per-chromosome VCF template), a PLINK PSAM, a shared pipeline-resource
+root, and a cohort output root:
+
+```bash
+python scripts/initialize_cohort.py \
+  --cohort new_cohort \
+  --joint-vcf s3://bucket/new_cohort.vcf.gz \
+  --psam /path/to/new_cohort.psam \
+  --reference-build GRCh38 \
+  --shared-resources-root /shared/rare-variant-pipeline \
+  --cohort-root /cohorts/new_cohort \
+  --output-dir setup/new_cohort
+```
+
+For separate chromosome files, replace `--joint-vcf` with a template such as
+`--vcf-template 's3://bucket/new_cohort.{chrom}.vcf.gz'`.
+
+Initialization performs no annotation and does not pretend cohort-derived resources
+already exist. It emits:
+
+- `cohort.json`: the small user declaration;
+- `sample_manifest.tsv`: normalized `FID`, `IID`, `PAT`, `MAT`, and `SEX` from the PSAM;
+- `chromosome_preparation.tsv`: paths for VCF inspection, Zarr conversion, observed
+  candidate derivation, postprocessing configuration, and eventual manifests/bindings;
+- `initialization_qc.json`: sample/sex counts and
+  `derived_resources_ready=false`.
+
+Every chromosome begins in `PENDING_DERIVED_RESOURCES`. Subsequent preparation stages
+inspect VCF headers and sample concordance, create the Zarr stores and cohort-derived
+candidate/QC resources, and only then materialize ready-to-run manifests and bindings.
+Shared Ensembl, LOFTEE, GeneBayes, dbNSFP, and problematic-region resources remain
+pipeline-owned rather than user inputs.
+
+By default, every nonzero `PAT` and `MAT` must also occur as an `IID` in the PSAM.
+Use `--allow-external-parents` when a cohort intentionally records unsequenced parents;
+their IDs are preserved, not treated as genotyped samples.
+
+Targeted chromosome runs also emit synonymous negative-control variants in the
+same GeneBayes `lof_t1` and `lof_t2` genes. This branch reuses FastVEP and Zarr,
+does not invoke LOFTEE, and applies the same region, genotype, population-AF, and
+cohort-AF eligibility stages as the LoF branch. Set
+`optional_outputs.synonymous_tiered_controls` to `false` in a scientific manifest
+to disable it. Its allele, carrier, gene, and count outputs are named
+`*.synonymous-*` and never enter `lof_t1`/`lof_t2` burden totals.
+
+Family genotype expansion is independently optional and defaults off. Enable
+`optional_outputs.family_genotypes: true` and declare a `sample_manifest` resource
+containing `FID` and `IID`. For every allele with a carrier, the
+extractor retains calls for sequenced members of the carrier families during the
+same Zarr read. Reference, missing, and carrier calls are distinguished, while a
+boolean marks the index carrier versus other samples sharing its `FID`. Outputs
+are separate `*.family-genotypes.parquet` files
+and do not change compact carrier tables or burden counts.
+
+The first read-only preparation stage is:
+
+```bash
+python scripts/inspect_cohort_vcfs.py \
+  --preparation-plan setup/new_cohort/chromosome_preparation.tsv \
+  --sample-manifest setup/new_cohort/sample_manifest.tsv \
+  --output-plan setup/new_cohort/chromosome_preparation.inspected.tsv \
+  --report setup/new_cohort/vcf_inspection.json
+```
+
+It reads VCF headers only, resolves `1` versus `chr1`, checks GRCh38 contig lengths,
+requires exact PSAM/VCF sample-set concordance, and verifies `GT`, `GQ`, `DP`, plus
+either `AD` or localized `LAD+LAA` are declared. Passing rows advance to `READY_FOR_ZARR`; no variant records are
+converted or annotated by this stage.
+
+On AWS, submit the inspected rows to the FSx-enabled Batch queue. The command is a
+dry run unless `--submit` is present:
+
+```bash
+python scripts/submit_vcz_plan.py \
+  --preparation-plan setup/new_cohort/chromosome_preparation.inspected.tsv \
+  --cohort new_cohort \
+  --queue rare-variant-vcz-fsx \
+  --job-definition rare-variant-vcz-plan:1 \
+  --workers 32 \
+  --memory 96G \
+  --validation sampled \
+  --submit \
+  --output setup/new_cohort/vcz_submission.json
+```
+
+The adapter resolves prefixed and unprefixed contigs from each VCF index. Conversion
+checkpoints are tied to the staged VCF checksum: an unchanged source resumes safely,
+while a changed source invalidates only that chromosome's conversion state.
+
+After Batch succeeds, validate the stores and advance passing rows:
+
+```bash
+python scripts/validate_vcz_plan.py \
+  --preparation-plan setup/new_cohort/chromosome_preparation.inspected.tsv \
+  --sample-manifest setup/new_cohort/sample_manifest.tsv \
+  --output-plan setup/new_cohort/chromosome_preparation.vcz-validated.tsv \
+  --report setup/new_cohort/vcz_validation.json
+```
+
+Validation requires the completion marker and sharded Zarr v3 metadata, checks exact
+sample order, required genotype arrays and their dimensions, and verifies sorted
+variant positions. Passing rows advance to `READY_FOR_DERIVED_RESOURCES`.
+
+### Reusable targeted workflow
+
+`targeted.nf` remains the standalone entrypoint, but is now a thin wrapper around
+the named DSL2 workflow in `workflows/targeted_manifest.nf`:
+
+```nextflow
+include { TARGETED_MANIFEST_WORKFLOW } from './workflows/targeted_manifest'
+
+workflow {
+    manifest_bindings = Channel.of(tuple(file(params.manifest), file(params.bindings)))
+    TARGETED_MANIFEST_WORKFLOW(manifest_bindings)
+}
+```
+
+The reusable workflow takes a channel of `(science_manifest, environment_bindings)`
+file tuples. The standalone wrapper creates a one-element channel; a cohort-level
+parent can provide one tuple per chromosome and Nextflow will scatter the same
+validated process without copying its implementation. Each binding supplies its own
+unique run root. `params.targeted_container` remains the single digest-pinned runtime
+for every tuple in a launch.
+
+The named workflow uses the same manifest, environment bindings, container,
+preflight, and run-root parameters as the standalone command and emits both
+`execution_receipt` and a portable `chromosome_outputs` directory. The latter
+contains the available validated chromosome-level LoF, missense, primary LoF, and
+sensitivity LoF burden TSVs plus a checksummed `targeted-output-manifest.json`.
+A future cohort-level parent workflow can therefore invoke
+the rare-variant and PGS branches independently and join their participant-level
+tables only after both branches complete. Scheduler and container-runtime settings
+remain site-specific configuration rather than part of the scientific workflow.
+
+`RARE_BURDEN_GATHER_WORKFLOW` in `workflows/rare_burden_gather.nf` consumes a cohort
+sample manifest and the completed chromosome-output packages. It emits
+`rare_burdens.tsv` and `rare_burdens_by_chromosome_stratum.tsv`. The thin
+`gather.nf` entrypoint allows this aggregation contract to be run and tested on its
+own before composition with the PGS workflow.
+
+`cohort.nf` connects those two reusable pieces without adding another scientific
+implementation. Its tab-separated run sheet has exactly three columns:
+
+```text
+chromosome\tmanifest\tbindings
+chr1\t/path/to/g2mh-chr1.json\t/path/to/aws-g2mh-chr1.json
+chrX\t/path/to/g2mh-chrX.json\t/path/to/aws-g2mh-chrX.json
+```
+
+Each binding must name a unique chromosome run root. The wrapper scatters all rows,
+passes the resulting checksummed chromosome packages directly to the gather workflow,
+and publishes `rare_burdens.tsv` plus
+`rare_burdens_by_chromosome_stratum.tsv` under `${params.outdir}/rare_burdens`.
+The cohort entrypoint defaults to `--lof_only false`, so the validated LoF and
+missense branches both run. Set `--lof_only true` explicitly when missense resources
+are unavailable or a deliberately LoF-only run is required. The single-chromosome
+`targeted.nf` entrypoint also retains its combined-branch default.
+`--expected_chromosomes` is required and must match the packages exactly, preventing
+an incomplete cohort from silently producing zero-filled burdens.
+
+The validated comprehensive G2MH release is pinned in
+`resources/g2mh-comprehensive-v1-release.json`. Validate gathered outputs with:
+
+```bash
+python scripts/validate_cohort_release.py \
+  --contract resources/g2mh-comprehensive-v1-release.json \
+  --burdens rare_burdens.tsv \
+  --strata rare_burdens_by_chromosome_class.tsv
+```
+
+This checks exact output hashes, sample and stratum completeness, and all six LoF
+and missense burden totals. Environment profiles may change executors and visible
+paths, but a scientific release changes only by creating a new versioned contract.
+
+`config/run-sheets/g2mh-prepared-five.tsv` is the explicit validation subset for the
+five G2MH chromosomes whose shared Ensembl/FastVEP/LOFTEE bundles are currently
+complete (`chr1`, `chr21`, `chr22`, `chrX`, and `chrY`). It is not a whole-genome
+completion claim; a 24-chromosome gather must name and receive all 24 packages.
+
+### PGS and rare-burden integration
+
+The preferred analysis-table contract is now participant-manifest centered.
+`scripts/build_analysis_dataset.py` takes an explicit `FID`/`IID`/`SEX` cohort
+manifest and any available participant-level PGS, rare-burden, and CNV tables.
+Each component has an independent `error`, `allow`, or `exclude` missing-data
+policy. The manifest determines row order and analysis eligibility; no genomic
+branch implicitly defines the cohort. The output includes a merged dictionary,
+component-level completeness QC, and explicit exclusions.
+
+CNV input is optional and must be an analysis-ready participant table with its
+own dictionary. Raw caller segment counts are not a substitute for CNV burdens.
+The intended primary CNV variables are unique genes affected by filtered,
+QC-passing DEL and DUP calls; that release step remains to be implemented in the
+CNV repository.
+
+The existing `INTEGRATED_ANALYSIS_WORKFLOW` below remains as a validated
+backward-compatible PGS-centered join while the manifest-centered interface is
+tested across cohorts.
+
+`ANALYSIS_DATASET_WORKFLOW` in `workflows/analysis_dataset.nf` is the reusable
+Nextflow boundary. `analysis.nf` is its standalone wrapper. For example, a
+manifest-centered PGS plus rare-burden assembly is:
+
+```bash
+nextflow -C targeted.config run analysis.nf -profile local_docker \
+  --participant_manifest /path/to/cohort.psam \
+  --pgs_dataset /path/to/analysis_dataset.tsv \
+  --pgs_dictionary /path/to/analysis_dataset_dictionary.tsv \
+  --rare_burdens /path/to/rare_burdens.tsv \
+  --missing_pgs_policy allow \
+  --missing_rare_policy error \
+  --cohort_id cohort_name \
+  --targeted_container repository/image@sha256:DIGEST \
+  --outdir results/cohort_name
+```
+
+Omit both files for a disabled PGS or CNV component; omit `--rare_burdens` to
+disable rare burdens. The four outputs are published under `<outdir>/analysis/`.
+
+The reusable boundary was validated through Nextflow 26.04.6 and AWS Batch on
+the G2MH participant-manifest universe. It retained all 1,065 participants and
+63 variables, allowed the expected 22 participants without PGS/PCA values, and
+required complete rare burdens. Its dataset, dictionary, QC, and exclusions
+were byte-for-byte identical to the direct assembler outputs. The validated
+results are under
+`s3://sebat-genomics-work/results/integrated-analysis/g2mh-manifest-universe-nextflow-v2/analysis/`.
+
+`COHORT_ANALYSIS_WORKFLOW` in `workflows/cohort_analysis.nf` is the parent
+workflow for a new cohort run. It launches the chromosome rare-variant branch,
+gathers the six burden counts, and passes those counts together with optional
+PGS/PCA and CNV participant tables into `ANALYSIS_DATASET_WORKFLOW`. The
+`cohort_analysis.nf` entry point exposes this composition without coupling this
+repository to a particular checkout of the separate PGS or CNV repositories:
+
+```bash
+nextflow -C targeted.config run cohort_analysis.nf -profile aws_batch \
+  --run_sheet config/run-sheets/cohort.tsv \
+  --participant_manifest /path/to/cohort.psam \
+  --expected_chromosomes chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY \
+  --pgs_dataset /path/to/pgs/analysis_dataset.tsv \
+  --pgs_dictionary /path/to/pgs/analysis_dataset_dictionary.tsv \
+  --cohort_id cohort_name \
+  --targeted_container repository/image@sha256:DIGEST \
+  --outdir results/cohort_name
+```
+
+PGS and CNV are optional paired inputs. Rare burdens are generated in the same
+run and therefore default to a strict missing-data policy. A future workspace
+workflow can call the same reusable boundary with `PGS_WORKFLOW` output channels
+directly; no changes to the scientific join are required.
+
+For restart, integration testing, or reuse of a versioned rare-variant release,
+replace `--run_sheet` and `--expected_chromosomes` with
+`--rare_burdens /path/to/rare_burdens.tsv`. The two modes are mutually exclusive:
+fresh cohort runs launch rare-variant processing, while release assembly consumes
+the previously validated participant-level burden table without recomputation.
+
+`INTEGRATED_ANALYSIS_WORKFLOW` in `workflows/integrated_analysis.nf` is the narrow
+join boundary between this repository and the reusable `PGS_WORKFLOW` from
+`james-guevara/pgs_pipeline`. It consumes the PGS `analysis_dataset` and
+`analysis_dictionary` outputs plus this pipeline's gathered `rare_burdens` table.
+The standalone `integrate.nf` wrapper accepts the same artifacts as paths.
+
+The join deliberately starts from the PGS analysis dataset, in its original row
+order. `--missing_rare_policy error` is the default: every PGS IID must be present in
+the completed wide rare-burden table. Set `--missing_rare_policy exclude` to continue
+with matched participants and record missing PGS IIDs in
+`integrated_analysis_exclusions.tsv`. Neither policy converts missing data to zero;
+blank/non-integer burden values still fail. Rare-only participants are excluded but
+counted in `integrated_analysis_qc.json`. Nonempty `FID` and `SEX` values must agree
+if both inputs provide them.
+
+Outputs under `${params.outdir}/integrated_analysis` are:
+
+- `integrated_analysis_dataset.tsv`, containing PGS/PCA variables and `lof_t1`,
+  `lof_t2`, and `miss_t1` through `miss_t4`;
+- `integrated_analysis_dictionary.tsv`, following the merged variable template;
+- `integrated_analysis_qc.json`, recording cohort ID, input/output participant counts,
+  excluded rare-only participants, and the analysis-universe rule.
+- `integrated_analysis_exclusions.tsv`, listing PGS participants omitted under the
+  configurable `exclude` policy (header-only under a complete strict join).
+
+```bash
+nextflow -C targeted.config run integrate.nf -profile local_docker \
+  --pgs_dataset /path/to/analysis_dataset.tsv \
+  --pgs_dictionary /path/to/analysis_dataset_dictionary.tsv \
+  --rare_burdens /path/to/rare_burdens.tsv \
+  --cohort_id g2mh \
+  --targeted_container docker.io/example/targeted@sha256:DIGEST \
+  --outdir results/g2mh
+```
+
 **New to this pipeline?** [`docs/running-g2mh.md`](docs/running-g2mh.md) is a runbook you
 can follow top to bottom — one-time setup, a chrY smoke test with the numbers to check
 against, then the full run. The rest of this section is reference material.
@@ -185,11 +480,45 @@ pipeline reads a pedigree, so "family processing" only ever extracted carriers.
 | `--regions_per_chunk` | Regions per scatter chunk | `1000` |
 | `--trace_prefix` | Prefix for report files | `""` |
 | `--single_vcf` | Path to one whole-genome VCF; per-chrom extraction happens in `BCFTOOLS_NORM`. Leave null for per-chrom inputs | `null` |
+| `--target_bed` | Optional BED on the shared site filesystem. `BCFTOOLS_NORM` uses the source VCF index to extract these intervals before decoding, normalization, VEP, and carrier extraction. On AWS, place it on the same FSx mount visible to the controller and Batch workers. | `null` |
 | `--local_alleles` | Input stores local-allele FORMAT fields — see below | `false` |
 | `--pp_cohort` | Key into `scripts/postprocess/resources.json` `cohorts` | set per profile |
 | `--count_group_col` | Column `PP_COUNT_CARRIERS` stratifies by | `tier` |
 
 ### Input dialects (DRAGEN msVCF)
+
+### Targeted early extraction
+
+Set `--target_bed` to restrict processing at the first VCF operation. The source
+VCF must be bgzip-compressed and indexed. This is materially different from
+filtering after VEP: only records overlapping the BED are decoded, normalized,
+annotated, queried for carriers, and postprocessed.
+
+The BED is an optimization boundary, not a tier definition. Generate it from a
+versioned transcript annotation with enough exon/splice padding to preserve every
+variant that could receive the intended consequence, and validate a targeted run
+against an existing full run before treating it as equivalent. A BED can represent
+GeneBayes-eligible genes, a curated gene set, or their union.
+
+```bash
+python scripts/build_target_bed.py \
+  --genebayes GeneBayes.Supplementary_Table_1.tsv \
+  --gtf Homo_sapiens.GRCh38.115.gtf.gz \
+  --output targeted-lof-shet-ge-0.03.bed \
+  --min-post-mean 0.03 \
+  --padding 8 \
+  --add-chr-prefix
+
+nextflow run main.nf -profile <cohort> \
+  --chroms chr22 \
+  --target_bed /shared/resources/targeted-lof.v1.bed \
+  -resume
+```
+
+Use `--add-chr-prefix` only when the source VCF contigs are named `chr1`,
+`chr2`, and so on while the GTF uses `1`, `2`, and so on. A contig-name
+mismatch yields an empty extraction, so the smoke test must assert a nonzero
+record count.
 
 Callers differ in what they store per sample. Both flags below default to `false`,
 and with both off `BCFTOOLS_NORM` emits the original single-command form, so task
@@ -246,8 +575,9 @@ One row per (consequential rare variant × carrier sample) with VEP annotations,
 
 **D2 — filtered, fully annotated variant × carrier table.**
 `RUN_POSTPROCESS` → `<outdir>/postprocess/filtered_annotated/<chrom>.filtered_annotated.parquet`.
-D1 after region filtering, genotype QC, the population-AF cap, dbNSFP scores and
-gene constraint, plus a `tier` column.
+D1 after region filtering, genotype QC, population-AF annotation, dbNSFP scores
+and gene constraint, plus a `tier` column. Population AF never removes rows in
+this stage; cohort-specific eligibility is a separate, explicit final output.
 
 **This is deliberately stratification-agnostic.** `tier_variants` *annotates* and
 does not filter, so untiered rows are retained. Tiering is only one way to slice the

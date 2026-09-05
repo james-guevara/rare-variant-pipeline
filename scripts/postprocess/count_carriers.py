@@ -40,6 +40,10 @@ def main() -> int:
     ap.add_argument("--sample-col", default="SAMPLE")
     ap.add_argument("--group-col", default="tier",
                     help="column to stratify counts by (default: tier)")
+    ap.add_argument(
+        "--eligibility-col",
+        help="optional boolean column restricting primary count and total outputs",
+    )
     args = ap.parse_args()
 
     files = ", ".join(f"'{p}'" for p in args.input)
@@ -47,20 +51,33 @@ def main() -> int:
     con = duckdb.connect()
 
     cols = {d[0] for d in con.execute(f"SELECT * FROM {src} LIMIT 0").description}
-    for needed in (args.sample_col, args.group_col):
+    required = [args.sample_col, args.group_col]
+    if args.eligibility_col:
+        required.append(args.eligibility_col)
+    for needed in required:
         if needed not in cols:
             print(f"ERROR: column {needed!r} not in input; found {sorted(cols)[:20]}...",
                   file=sys.stderr)
             return 1
 
     n_rows = con.execute(f"SELECT COUNT(*) FROM {src}").fetchone()[0]
-    print(f"input files: {len(args.input)}  rows: {n_rows:,}", file=sys.stderr)
+    count_src = src
+    if args.eligibility_col:
+        count_src = f"(SELECT * FROM {src} WHERE COALESCE({args.eligibility_col}, FALSE))"
+    n_count_rows = con.execute(f"SELECT COUNT(*) FROM {count_src}").fetchone()[0]
+    print(
+        f"input files: {len(args.input)}  rows: {n_rows:,}  primary rows: {n_count_rows:,}",
+        file=sys.stderr,
+    )
 
     # Tier vocabulary straight from the data, so a new tier in tier_variants.py
     # shows up here without a code change.
+    nonempty_group = (
+        f"NULLIF(trim(CAST({args.group_col} AS VARCHAR)), '') IS NOT NULL"
+    )
     tiers = [r[0] for r in con.execute(
-        f"SELECT DISTINCT {args.group_col} FROM {src} "
-        f"WHERE {args.group_col} IS NOT NULL ORDER BY 1").fetchall()]
+        f"SELECT DISTINCT {args.group_col} FROM {count_src} "
+        f"WHERE {nonempty_group} ORDER BY 1").fetchall()]
     if not tiers:
         print(f"ERROR: no non-null {args.group_col} values found", file=sys.stderr)
         return 1
@@ -72,8 +89,8 @@ def main() -> int:
             SELECT {args.group_col} AS "{args.group_col}",
                    COUNT(*)                                  AS n_carrier_rows,
                    COUNT(DISTINCT {args.sample_col})          AS n_samples_with_any
-            FROM {src}
-            WHERE {args.group_col} IS NOT NULL
+            FROM {count_src}
+            WHERE {nonempty_group}
             GROUP BY 1 ORDER BY 1
         ) TO '{args.out_totals}' (FORMAT CSV, DELIMITER '\t', HEADER)
     """)
@@ -86,18 +103,20 @@ def main() -> int:
         COPY (
             SELECT {args.sample_col} AS SAMPLE,
                {per_tier},
-               COUNT(*) FILTER (WHERE {args.group_col} IS NOT NULL) AS any_group
-            FROM {src}
+                   COUNT(*) FILTER (WHERE {nonempty_group}) AS any_group
+            FROM {count_src}
             GROUP BY 1
             ORDER BY 1
         ) TO '{args.out_counts}' (FORMAT CSV, DELIMITER '\t', HEADER)
     """)
 
-    n_samp = con.execute(f"SELECT COUNT(DISTINCT {args.sample_col}) FROM {src}").fetchone()[0]
+    n_samp = con.execute(
+        f"SELECT COUNT(DISTINCT {args.sample_col}) FROM {count_src}"
+    ).fetchone()[0]
     print(f"wrote {args.out_counts} ({n_samp:,} samples) and {args.out_totals}", file=sys.stderr)
     for t, n, s in con.execute(
-            f"SELECT {args.group_col}, COUNT(*), COUNT(DISTINCT {args.sample_col}) FROM {src} "
-            f"WHERE {args.group_col} IS NOT NULL GROUP BY 1 ORDER BY 1").fetchall():
+            f"SELECT {args.group_col}, COUNT(*), COUNT(DISTINCT {args.sample_col}) FROM {count_src} "
+            f"WHERE {nonempty_group} GROUP BY 1 ORDER BY 1").fetchall():
         print(f"  {t:10s} rows={n:>10,}  samples={s:>6,}", file=sys.stderr)
     return 0
 

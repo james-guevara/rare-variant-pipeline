@@ -25,6 +25,11 @@ params.chroms = "chr22"
 params.vcf_dir = "/expanse/projects/sebat1/s3/data/sebat/SSC_JG/gatk"
 params.vcf_pattern = "{chrom}.masked.vcf.gz"
 params.single_vcf = null  // null = per-chrom mode (default); set to VCF path for single-VCF mode
+// Optional BED used for indexed early extraction before normalization. This is
+// deliberately a direct shared-filesystem path rather than a process input: very
+// large cohort VCFs and the BED live on the shared site filesystem (Expanse or
+// FSx) and must not be copied into each task work directory.
+params.target_bed = null
 
 // Input dialect — what the source caller actually stores. Consumed by BCFTOOLS_NORM.
 params.local_alleles = false  // DRAGEN msVCF: decode LAD/LPL/LAA -> AD/PL BEFORE splitting
@@ -41,9 +46,9 @@ params.split_vep_dir = null   // for RUN_PREPARE_VARIANTS_ONLY: read per-chrom $
 
 // Variant filtering
 params.mode = "coding"           // "coding", "regulatory", or "splicing"
-params.af_threshold = 0.01       // gnomAD AF threshold for rare filtering (in prepare_variants)
-params.cohort_af_threshold = 0.01  // Cohort AF threshold for pre-VEP filtering
-params.max_cohort_af = 1.0       // Cohort AF cap in PREPARE_VARIANTS (1.0 = no filter; set to 0.01 for rare-only)
+params.af_threshold = 1.0        // Legacy compatibility; population AF is annotation-only
+params.cohort_af_threshold = 1.0 // Legacy compatibility; cohort AF filtering is a final explicit step
+params.max_cohort_af = 1.0       // No pre-VEP cohort AF filter
 params.regulatory_beds = "${projectDir}/resources/regulatory"
 params.spliceai_threshold = 0.2
 
@@ -79,7 +84,6 @@ params.qc_max_af = 0.001
 params.qc_het_ab_min = 0.25
 params.qc_het_ab_max = 0.75
 params.qc_hom_ab_min = 0.9
-params.qc_no_mane_filter = false
 
 // ============================================================================
 // Helper function to build input channel

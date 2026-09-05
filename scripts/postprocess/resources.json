@@ -18,13 +18,11 @@
     },
     "g2mh_wo_utrecht": {
       "input_dir": "/expanse/projects/sebat1/s3/data/sebat/prepare_variants/g2mh_wo_utrecht/parquet",
-      "ped": "/expanse/projects/sebat1/s3/data/sebat/rare_variant_pipeline_g2mh_wo_utrecht/resources/g2mh_wo_utrecht.psam",
-      "pop_af_max": 0.01
+      "ped": "/expanse/projects/sebat1/s3/data/sebat/rare_variant_pipeline_g2mh_wo_utrecht/resources/g2mh_wo_utrecht.psam"
     },
     "g2mh": {
       "input_dir": "/expanse/projects/sebat1/s3/data/sebat/prepare_variants/g2mh/parquet",
-      "ped": "/expanse/projects/sebat1/s3/data/sebat/rare_variant_pipeline_g2mh/resources/g2mh.psam",
-      "pop_af_max": 0.01
+      "ped": "/expanse/projects/sebat1/s3/data/sebat/rare_variant_pipeline_g2mh/resources/g2mh.psam"
     }
   },
   "output_base": "/expanse/projects/sebat1/s3/data/sebat/rv_postprocessing_v3/outputs",
@@ -37,10 +35,6 @@
   },
   "gnomad_constraint_tsv": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/gnomAD/constraint/gnomad.v4.1.constraint_metrics.tsv",
   "genebayes_tsv": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/GeneBayes/output/Supplementary_Table_1.tsv",
-  "pop_af_filter": {
-    "column": "gnomAD4.1_joint_AF",
-    "max": 0.001
-  },
   "qc": {
     "min_gq": 20,
     "min_dp": 10,

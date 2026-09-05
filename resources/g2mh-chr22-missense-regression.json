@@ -1,0 +1,30 @@
+{
+  "description": "Validated G2MH chr22 selected-transcript missense regression",
+  "status": "superseded",
+  "superseded_by": "g2mh-chr22-targeted-regression.json",
+  "reference_build": "GRCh38",
+  "annotation_release": "Ensembl 115",
+  "dbnsfp_release": "5.3.1a",
+  "fastvep_commit": "3bdb862b3153a90ef8cca0b07f02f357a15a3eb0",
+  "container_digest": "sha256:d752c78fba93cf104d4ce8a3b49a65702b88c0a7262dbb6f020b5dfd5511a8c0",
+  "downstream_container_digest": "sha256:01da69fcf6a3aca8518d35ecaeab89a0495f274a1a1495681eadddb710c70637",
+  "candidate_input_sha256": "49d644571d1f9f2ea31b275984e609280c7129be962f9edd7140ef4379f00ea5",
+  "expected_counts": {
+    "observed_candidates": 1443,
+    "selected_missense": 1330,
+    "rejected_selected_consequence": 113,
+    "miss_t1": 6,
+    "miss_t2": 21,
+    "miss_t3": 203,
+    "miss_t4": 1100,
+    "carrier_rows": 20425,
+    "carrier_samples": 1065,
+    "region_filtered_rows": 5448,
+    "genotype_qc_rows": 5287,
+    "population_af_eligible_rows": 1151,
+    "population_af_eligible_alleles": 843,
+    "burden_eligible_rows": 1107,
+    "burden_eligible_alleles": 841,
+    "burden_eligible_samples": 697
+  }
+}

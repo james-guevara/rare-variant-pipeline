@@ -1,0 +1,19 @@
+source_id	title	release	url	retrieved_date	usage_note
+sfari_2026q2	SFARI Gene scoring	2026 Q2	https://gene-development.sfari.org/database/gene-scoring/	2026-08-29	.
+fu_2022_legacy	Fu et al. TADA results used by the legacy pipeline	2022	https://pmc.ncbi.nlm.nih.gov/articles/PMC9653013/	2026-08-29	.
+satterstrom_2020_legacy	Satterstrom et al. ASD-102 used by the legacy pipeline	2020	https://doi.org/10.1016/j.cell.2019.12.036	2026-08-29	.
+ddg2p_2025_12_28_legacy	DDG2P export used by the legacy pipeline	2025-12-28	https://www.ebi.ac.uk/gene2phenotype/	2026-08-29	.
+sfari_2026_01_legacy	SFARI export used by the legacy pipeline	retrieved 2026-01-15	https://gene.sfari.org/tools/	2026-08-29	.
+schema_2022_legacy	SCHEMA lists used by the legacy pipeline	2022	https://pmc.ncbi.nlm.nih.gov/articles/PMC9805802/	2026-08-29	.
+panelapp_intellectual_disability_v11.26	PanelApp panel 285: Intellectual disability	11.26	https://panelapp.genomicsengland.co.uk/panels/285/	2026-08-29	.
+panelapp_epilepsy_v9.73	PanelApp panel 402: Epilepsy	9.73	https://panelapp.genomicsengland.co.uk/panels/402/	2026-08-29	.
+schema_2022	Published SCHEMA study	2022	https://pmc.ncbi.nlm.nih.gov/articles/PMC9805802/	2026-08-29	.
+schema_phase2_2026-04-23	SCHEMA Phase II gene results	2026-04-23	https://schema.broadinstitute.org/	2026-08-29	Current browser terms restrict some global/exome-wide and large gene-set analyses before the updated paper.
+schema_phase2_2026-05-07	SCHEMA Phase II gene results	2026-05-07	https://schema.broadinstitute.org/	2026-08-29	Current browser terms restrict some global/exome-wide and large gene-set analyses before the updated paper.
+schema_phase2_2026-05-26	SCHEMA Phase II gene results	2026-05-26	https://schema.broadinstitute.org/	2026-08-29	Current browser terms restrict some global/exome-wide and large gene-set analyses before the updated paper.
+schema_phase2_2026-07-15	SCHEMA Phase II gene results	2026-07-15	https://schema.broadinstitute.org/	2026-08-29	Current browser terms restrict some global/exome-wide and large gene-set analyses before the updated paper.
+schema_phase2_2026-08-07	SCHEMA Phase II gene results	2026-08-07	https://schema.broadinstitute.org/	2026-08-29	Current browser terms restrict some global/exome-wide and large gene-set analyses before the updated paper.
+schema_phase2_2026-08-21	SCHEMA Phase II gene results	2026-08-21	https://schema.broadinstitute.org/	2026-08-29	Current browser terms restrict some global/exome-wide and large gene-set analyses before the updated paper.
+epi25_2022	Epi25 gene results	2022-12-01	https://epi25.broadinstitute.org/	2026-08-29	.
+kosmicki_height_2026	Kosmicki et al. height preprint supplement	2026-06-22	https://www.medrxiv.org/content/10.64898/2026.06.22.26355163v1	2026-08-29	.
+bmi_exome_2021	Exome-wide BMI burden associations	2021	https://pmc.ncbi.nlm.nih.gov/articles/PMC10275396/	2026-08-29	.

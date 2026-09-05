@@ -1,0 +1,74 @@
+name: build-targeted-annotation-container
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "docker/targeted-annotation/**"
+      - "scripts/**"
+      - "src/**"
+      - "manifests/**"
+      - "config/bindings/**"
+      - "resources/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/targeted-container.yml"
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Derive image tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/rare-variant-pipeline-targeted
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=sha,format=short
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/targeted-annotation/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke-test image
+        run: |
+          image=$(echo "${{ steps.meta.outputs.tags }}" | head -1)
+          docker run --rm --platform linux/amd64 --entrypoint /bin/bash "$image" -c '
+            fastvep --version
+            fastvep-picker --help >/dev/null
+            bcftools --version | head -n1
+            python -c "import duckdb, pyarrow, pyBigWig, pysam, zarr"
+            python scripts/run_standalone_loftee.py --help >/dev/null
+            python scripts/pick_fastvep_consequences.py --help >/dev/null
+            python scripts/run_targeted_manifest.py --help >/dev/null
+            python scripts/validate_targeted_regression.py --help >/dev/null
+            test -r manifests/g2mh-chrX.json
+            test -r resources/g2mh-chrX-targeted-regression.json
+          '
