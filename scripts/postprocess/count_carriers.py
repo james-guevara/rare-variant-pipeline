@@ -72,9 +72,12 @@ def main() -> int:
 
     # Tier vocabulary straight from the data, so a new tier in tier_variants.py
     # shows up here without a code change.
+    nonempty_group = (
+        f"NULLIF(trim(CAST({args.group_col} AS VARCHAR)), '') IS NOT NULL"
+    )
     tiers = [r[0] for r in con.execute(
         f"SELECT DISTINCT {args.group_col} FROM {count_src} "
-        f"WHERE {args.group_col} IS NOT NULL ORDER BY 1").fetchall()]
+        f"WHERE {nonempty_group} ORDER BY 1").fetchall()]
     if not tiers:
         print(f"ERROR: no non-null {args.group_col} values found", file=sys.stderr)
         return 1
@@ -87,7 +90,7 @@ def main() -> int:
                    COUNT(*)                                  AS n_carrier_rows,
                    COUNT(DISTINCT {args.sample_col})          AS n_samples_with_any
             FROM {count_src}
-            WHERE {args.group_col} IS NOT NULL
+            WHERE {nonempty_group}
             GROUP BY 1 ORDER BY 1
         ) TO '{args.out_totals}' (FORMAT CSV, DELIMITER '\t', HEADER)
     """)
@@ -100,7 +103,7 @@ def main() -> int:
         COPY (
             SELECT {args.sample_col} AS SAMPLE,
                {per_tier},
-               COUNT(*) FILTER (WHERE {args.group_col} IS NOT NULL) AS any_group
+                   COUNT(*) FILTER (WHERE {nonempty_group}) AS any_group
             FROM {count_src}
             GROUP BY 1
             ORDER BY 1
@@ -113,7 +116,7 @@ def main() -> int:
     print(f"wrote {args.out_counts} ({n_samp:,} samples) and {args.out_totals}", file=sys.stderr)
     for t, n, s in con.execute(
             f"SELECT {args.group_col}, COUNT(*), COUNT(DISTINCT {args.sample_col}) FROM {count_src} "
-            f"WHERE {args.group_col} IS NOT NULL GROUP BY 1 ORDER BY 1").fetchall():
+            f"WHERE {nonempty_group} GROUP BY 1 ORDER BY 1").fetchall():
         print(f"  {t:10s} rows={n:>10,}  samples={s:>6,}", file=sys.stderr)
     return 0
 

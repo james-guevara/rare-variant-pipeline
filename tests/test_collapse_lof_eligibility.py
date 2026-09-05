@@ -22,6 +22,7 @@ def test_primary_and_sensitivity_lof_burdens_are_separate(tmp_path: Path):
         {"sample_id": "primary", "Gene": "G1", "SYMBOL": "ONE", "lof_tier": "lof_t1", "record_id": "v2", "primary_analysis_eligible": True, "burden_count_available": True},
         {"sample_id": "ambiguous", "Gene": "G2", "SYMBOL": "TWO", "lof_tier": "lof_t2", "record_id": "v3", "primary_analysis_eligible": False, "burden_count_available": True},
         {"sample_id": "qc_only", "Gene": "G3", "SYMBOL": "THREE", "lof_tier": "lof_t2", "record_id": "v4", "primary_analysis_eligible": False, "burden_count_available": False},
+        {"sample_id": "primary", "Gene": "G4", "SYMBOL": "FOUR", "lof_tier": "", "record_id": "v5", "primary_analysis_eligible": True, "burden_count_available": True},
     ]), source)
     outputs = {name: tmp_path / f"{name}.tsv" for name in (
         "primary_gene", "primary_burden", "sensitivity_gene", "sensitivity_burden"
