@@ -44,6 +44,8 @@ def main():
                         help="All input pLoFs with GeneBayes annotations")
     parser.add_argument("--qualifying-output", required=True, type=Path,
                         help="HC pLoFs in either GeneBayes tier")
+    parser.add_argument("--hc-output", required=True, type=Path,
+                        help="all HC pLoFs, including genes outside GeneBayes tiers")
     parser.add_argument("--lof-t1-min", default=0.18, type=float)
     parser.add_argument("--lof-t2-min", default=0.03, type=float)
     args = parser.parse_args()
@@ -60,6 +62,7 @@ def main():
         args.input.open(newline="") as source,
         args.output.open("w", newline="") as all_target,
         args.qualifying_output.open("w", newline="") as qualifying_target,
+        args.hc_output.open("w", newline="") as hc_target,
     ):
         reader = csv.DictReader(source, delimiter="\t")
         input_fields = list(reader.fieldnames or ())
@@ -74,6 +77,10 @@ def main():
         )
         all_writer.writeheader()
         qualifying_writer.writeheader()
+        hc_writer = csv.DictWriter(
+            hc_target, fieldnames=fields, delimiter="\t", lineterminator="\n"
+        )
+        hc_writer.writeheader()
 
         for row in reader:
             if row.get("LoF", "") not in ("HC", "LC"):
@@ -93,6 +100,8 @@ def main():
             )
             row["lof_tier"] = tier
             all_writer.writerow(row)
+            if row.get("LoF") == "HC":
+                hc_writer.writerow(row)
             counts[tier or "untiered"] += 1
             if tier:
                 qualifying_writer.writerow(row)

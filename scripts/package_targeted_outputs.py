@@ -16,7 +16,7 @@ SCIENTIFIC_OUTPUTS = {
     "synonymous_counts": "12.synonymous-per-sample-counts.tsv",
     "synonymous_sample_gene": "12.synonymous-sample-gene.tsv",
     "synonymous_sample_burden": "12.synonymous-sample-burden.tsv",
-    "plof_family_genotypes": "07.plof-tiered.family-genotypes.parquet",
+    "plof_family_genotypes": "07.plof.family-genotypes.parquet",
     "missense_family_genotypes": "07.missense-tiered.family-genotypes.parquet",
     "synonymous_family_genotypes": "07.synonymous-tiered.family-genotypes.parquet",
 }

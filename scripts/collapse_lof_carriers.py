@@ -15,6 +15,10 @@ def identifier(value: str) -> str:
 
 
 def write_burdens(con, source, sample_gene, sample_burden, where_clause):
+    where_clause = (
+        f"{where_clause} AND lof_tier IS NOT NULL"
+        if where_clause else "WHERE lof_tier IS NOT NULL"
+    )
     con.execute(f"""
         COPY (
             SELECT sample_id, Gene, SYMBOL, lof_tier,

@@ -30,11 +30,11 @@ def _write_run(root: Path, *, symbol: str = "GENE1") -> None:
     )
     con.execute(
         "COPY (SELECT 'S1' AS sample_id, 100::BIGINT AS POS) TO ? (FORMAT PARQUET)",
-        [str(root / "07.plof-tiered.carriers.parquet")],
+        [str(root / "07.plof.carriers.parquet")],
     )
     con.execute(
         "COPY (SELECT 'v1' AS record_id, 1::BIGINT AS carrier_count) TO ? (FORMAT PARQUET)",
-        [str(root / "07.plof-tiered.genotype-summary.parquet")],
+        [str(root / "07.plof.genotype-summary.parquet")],
     )
 
 

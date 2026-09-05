@@ -20,7 +20,7 @@ analyses, not as additional LoF events.
 
 | File pattern | Grain | Natural key | Purpose |
 |---|---|---|---|
-| `11.plof-burden-eligible.parquet` | qualifying allele × carrier sample | `record_id`, `sample_id` | Final carrier-level LoF analysis table after region, genotype, population-AF, and cohort-AF eligibility |
+| `11.plof-burden-eligible.parquet` | eligible HC-pLoF allele × carrier sample | `record_id`, `sample_id` | Reusable all-gene HC-pLoF carrier table after region, genotype, population-AF, and cohort-AF eligibility; includes rows outside GeneBayes tiers |
 | `11.missense-burden-eligible.parquet` | qualifying allele × carrier sample | `record_id`, `sample_id` | Equivalent final missense table |
 | `12.plof-primary-sample-gene.tsv` | sample × gene × LoF tier | `sample_id`, `Gene`, `lof_tier` | Deduplicated gene-level LoF burdens |
 | `12.plof-primary-sample-burden.tsv` | sample | `SAMPLE` | Wide per-sample LoF gene and variant counts; preferred LoF-to-PGS integration table |
@@ -199,7 +199,7 @@ run-level QC summary and should not be joined to a participant-level PGS table.
 | `04` | FastVEP rows after VEP-compatible transcript picking |
 | `05` | Standalone LOFTEE annotations |
 | `06` | GeneBayes/LoF or dbNSFP/missense tier assignment |
-| `07` | Recovered carriers and allele-level genotype summaries |
+| `07` | Recovered carriers and allele-level genotype summaries; the pLoF branch includes all HC calls, not only GeneBayes-tier genes |
 | `08` | Carrier rows after problematic-region filtering |
 | `09` | Carrier rows after per-genotype QC |
 | `10` | Population-AF annotated and population-eligible tables |

@@ -133,9 +133,10 @@ picked=$run_root/04.fastvep-picked.tsv
 loftee=$run_root/05.loftee.tsv
 plof_all=$run_root/06.plof-genebayes.tsv
 plof_tiered=$run_root/06.plof-tiered.tsv
-carriers=$run_root/07.plof-tiered.carriers.parquet
-carriers_raw=$run_root/07.plof-tiered.carriers.raw.parquet
-summary=$run_root/07.plof-tiered.genotype-summary.parquet
+plof_hc=$run_root/06.plof-hc.tsv
+carriers=$run_root/07.plof.carriers.parquet
+carriers_raw=$run_root/07.plof.carriers.raw.parquet
+summary=$run_root/07.plof.genotype-summary.parquet
 plof_regions=$run_root/08.plof-region-filtered.parquet
 plof_qc=$run_root/09.plof-genotype-qc.parquet
 plof_pop_annotated=$run_root/10.plof-population-af-annotated.parquet
@@ -177,7 +178,7 @@ synonymous_counts=$run_root/12.synonymous-per-sample-counts.tsv
 synonymous_totals=$run_root/12.synonymous-tier-totals.tsv
 synonymous_sample_gene=$run_root/12.synonymous-sample-gene.tsv
 synonymous_sample_burden=$run_root/12.synonymous-sample-burden.tsv
-plof_family=$run_root/07.plof-tiered.family-genotypes.parquet
+plof_family=$run_root/07.plof.family-genotypes.parquet
 
 if test "$family_genotypes" = 1; then
   test -r "$sample_manifest" || {
@@ -246,14 +247,16 @@ run_stage "$loftee" "$python" scripts/run_standalone_loftee.py \
   --ancestor "$ancestor" --gerp "$gerp" --conservation "$conservation" \
   --output "$loftee"
 
-if ! test -s "$plof_all" || ! test -s "$plof_tiered"; then
+if ! test -s "$plof_all" || ! test -s "$plof_tiered" || ! test -s "$plof_hc"; then
   "$python" scripts/join_genebayes_lof_tiers.py --input "$loftee" \
     --genebayes "$genebayes" --output "$plof_all" \
     --qualifying-output "$plof_tiered" \
+    --hc-output "$plof_hc" \
     --lof-t1-min "$lof_t1_min" --lof-t2-min "$lof_t2_min"
 fi
 test -s "$plof_all"
 test -s "$plof_tiered"
+test -s "$plof_hc"
 
 extract_carriers=$carriers
 if test "$sex_chromosome" = 1; then extract_carriers=$carriers_raw; fi
@@ -269,7 +272,7 @@ if ! test -s "$extract_carriers" || ! test -s "$summary" || \
     family_args=(--sample-manifest "$sample_manifest" --family-output "$plof_family")
   fi
   "$python" scripts/extract_zarr_allele_genotypes.py --zarr "$zarr_store" \
-    --alleles "$plof_tiered" --carriers-output "$extract_carriers" \
+    --alleles "$plof_hc" --carriers-output "$extract_carriers" \
     --summary-output "$summary" "${sex_extraction_args[@]}" \
     "${family_args[@]}"
 fi

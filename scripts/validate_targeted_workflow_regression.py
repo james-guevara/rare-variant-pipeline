@@ -12,8 +12,8 @@ import duckdb
 
 TSV_OUTPUT = "06.plof-tiered.tsv"
 PARQUET_OUTPUTS = (
-    "07.plof-tiered.carriers.parquet",
-    "07.plof-tiered.genotype-summary.parquet",
+    "07.plof.carriers.parquet",
+    "07.plof.genotype-summary.parquet",
 )
 
 
