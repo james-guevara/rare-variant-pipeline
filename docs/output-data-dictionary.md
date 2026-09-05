@@ -210,6 +210,35 @@ The `*.raw.parquet` sex-chromosome carrier files precede sex-policy annotation a
 checkpoints, not recommended analysis products. `workflow.log` records checkpoint
 timings and executed paths but is not a structured scientific output.
 
+## Gene-set burden table
+
+`scripts/build_gene_set_burdens.py` creates one row per participant and gene set:
+
+| Column | Definition |
+|---|---|
+| `FID`, `IID` | Participant identifiers from the supplied sample file |
+| `gene_set_id` | Versioned identifier from `gene_set_membership.tsv` |
+| `plof` | Distinct eligible HC-pLoF alleles carried in any member gene |
+| `miss_t1`–`miss_t4` | Distinct eligible missense alleles carried in member genes, by classifier tier |
+
+These are separate from the genome-wide GeneBayes burdens. In particular, `plof`
+does not require `lof_t1` or `lof_t2`; its input must contain eligible HC-pLoF
+carriers from all genes represented by the selected gene sets. The script writes
+explicit zeros for callset participants without a qualifying event, deduplicates
+transcript/repeated carrier rows, and permits an allele to contribute to multiple
+overlapping gene sets. It does not calculate GeneBayes-tier × gene-set intersections.
+
+Example:
+
+```bash
+uv run scripts/build_gene_set_burdens.py \
+  --samples cohort.psam \
+  --gene-sets resources/gene-sets/processed/2026-08-29/gene_set_membership.tsv \
+  --plof chr*/11.all-gene-plof-burden-eligible.parquet \
+  --missense chr*/11.missense-burden-eligible.parquet \
+  --output gene_set_burdens.tsv
+```
+
 ## PGS integration contract
 
 The proposed concrete modeling variables are listed individually in
