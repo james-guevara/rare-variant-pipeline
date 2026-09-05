@@ -8,6 +8,7 @@ params.targeted_container = null
 params.lof_only = false
 params.run_root = null
 params.outdir = 'results'
+params.gene_set_membership = "${projectDir}/resources/gene-sets/processed/2026-08-29/gene_set_membership.tsv"
 
 include { COHORT_RARE_BURDEN_WORKFLOW } from './workflows/cohort_rare_burden'
 
@@ -34,6 +35,9 @@ workflow {
     COHORT_RARE_BURDEN_WORKFLOW(
         manifest_bindings,
         Channel.value(file(params.sample_manifest, checkIfExists: true)),
-        Channel.value(params.expected_chromosomes)
+        Channel.value(params.expected_chromosomes),
+        Channel.value(file(params.gene_set_membership, checkIfExists: true)),
+        Channel.value(file("${projectDir}/scripts/consolidate_carrier_parquets.py", checkIfExists: true)),
+        Channel.value(file("${projectDir}/scripts/build_gene_set_burdens.py", checkIfExists: true))
     )
 }
