@@ -197,9 +197,13 @@ def main() -> None:
                 source_array.shape[0],
                 logical_chunks[0] * args.variant_shard_chunks,
             )
+        # Shards must contain whole logical chunks, including edge arrays whose
+        # length is smaller than one chunk. Zarr permits shards beyond array bounds.
         shard_shape = tuple(
-            min(axis_size, shard_axis)
-            for axis_size, shard_axis in zip(source_array.shape, shard_shape, strict=True)
+            max(chunk, math.ceil(min(axis_size, shard_axis) / chunk) * chunk)
+            for axis_size, shard_axis, chunk in zip(
+                source_array.shape, shard_shape, logical_chunks, strict=True
+            )
         )
         output = destination.create_array(
             name,
