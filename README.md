@@ -4,6 +4,12 @@ A modular Nextflow DSL2 pipeline for annotating and analyzing rare genetic varia
 
 ## Overview
 
+For preannotated population VCF blocks (including ABCD VEP112 inputs), the
+independent [sites-only catalog entrypoint](docs/sites-catalog.md) creates durable
+per-block VCF.gz/CSI files and validation receipts while preserving existing
+INFO/CSQ. It runs only genotype removal and validation; the workflow below is
+unchanged.
+
 This pipeline processes VCF files through variant annotation (VEP), filters for consequential variants (HIGH/MODERATE impact), and queries family genotypes to identify rare variants segregating in families.
 
 ## Pipeline Structure
