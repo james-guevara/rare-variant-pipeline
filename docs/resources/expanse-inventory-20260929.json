@@ -1,0 +1,2812 @@
+{
+  "observed_utc": "2026-09-30T00:31:57.392015+00:00",
+  "root": "/expanse/projects/sebat1/resources/rare-variant-pipeline",
+  "scope": "Resource metadata; no logs, genotype arrays, or dbNSFP partition traversal",
+  "entries": [
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1/Homo_sapiens.GRCh38.115.chr1.gff3",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/annotation/Homo_sapiens.GRCh38.115.chr1.gff3",
+      "bytes": 119822079,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/annotation/Homo_sapiens.GRCh38.115.chr1.gff3"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1/Homo_sapiens.GRCh38.115.chr1.gff3.fastvep.cache",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/annotation/Homo_sapiens.GRCh38.115.chr1.gff3.fastvep.cache",
+      "bytes": 36888397,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/annotation/Homo_sapiens.GRCh38.115.chr1.gff3.fastvep.cache"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1/Homo_sapiens.GRCh38.dna.chromosome.1.fa",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/annotation/Homo_sapiens.GRCh38.dna.chromosome.1.fa",
+      "bytes": 253105752,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/annotation/Homo_sapiens.GRCh38.dna.chromosome.1.fa"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1/Homo_sapiens.GRCh38.dna.chromosome.1.fa.fai",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/annotation/Homo_sapiens.GRCh38.dna.chromosome.1.fa.fai",
+      "bytes": 21,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/annotation/Homo_sapiens.GRCh38.dna.chromosome.1.fa.fai"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1/vep115.chr1.transcript-priority.tsv",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/annotation/vep115.chr1.transcript-priority.tsv",
+      "bytes": 2129790,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/annotation/vep115.chr1.transcript-priority.tsv"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1/vep115.consequence-ranks.tsv",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/annotation/vep115.consequence-ranks.tsv",
+      "bytes": 1040,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/annotation/vep115.consequence-ranks.tsv"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/Homo_sapiens.GRCh38.115.chr10.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/Homo_sapiens.GRCh38.115.chr10.gff3",
+      "bytes": 55609760,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/Homo_sapiens.GRCh38.115.chr10.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/Homo_sapiens.GRCh38.115.chr10.gff3.fastvep.cache",
+      "bytes": 16119773,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/Homo_sapiens.GRCh38.dna.chromosome.10.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/Homo_sapiens.GRCh38.dna.chromosome.10.fa",
+      "bytes": 136027438,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/Homo_sapiens.GRCh38.dna.chromosome.10.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/Homo_sapiens.GRCh38.dna.chromosome.10.fa.fai",
+      "bytes": 22,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/vep115.chr10.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/vep115.chr10.transcript-priority.tsv",
+      "bytes": 930367,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/Homo_sapiens.GRCh38.115.chr11.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/Homo_sapiens.GRCh38.115.chr11.gff3",
+      "bytes": 70128802,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/Homo_sapiens.GRCh38.115.chr11.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/Homo_sapiens.GRCh38.115.chr11.gff3.fastvep.cache",
+      "bytes": 20806996,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/Homo_sapiens.GRCh38.dna.chromosome.11.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/Homo_sapiens.GRCh38.dna.chromosome.11.fa",
+      "bytes": 137338124,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/Homo_sapiens.GRCh38.dna.chromosome.11.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/Homo_sapiens.GRCh38.dna.chromosome.11.fa.fai",
+      "bytes": 22,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/vep115.chr11.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/vep115.chr11.transcript-priority.tsv",
+      "bytes": 1215014,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/Homo_sapiens.GRCh38.115.chr12.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/Homo_sapiens.GRCh38.115.chr12.gff3",
+      "bytes": 63999116,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/Homo_sapiens.GRCh38.115.chr12.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/Homo_sapiens.GRCh38.115.chr12.gff3.fastvep.cache",
+      "bytes": 18803768,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/Homo_sapiens.GRCh38.dna.chromosome.12.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/Homo_sapiens.GRCh38.dna.chromosome.12.fa",
+      "bytes": 135496623,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/Homo_sapiens.GRCh38.dna.chromosome.12.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/Homo_sapiens.GRCh38.dna.chromosome.12.fa.fai",
+      "bytes": 22,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/vep115.chr12.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/vep115.chr12.transcript-priority.tsv",
+      "bytes": 1148168,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/Homo_sapiens.GRCh38.115.chr13.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/Homo_sapiens.GRCh38.115.chr13.gff3",
+      "bytes": 22668016,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/Homo_sapiens.GRCh38.115.chr13.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/Homo_sapiens.GRCh38.115.chr13.gff3.fastvep.cache",
+      "bytes": 5660225,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/Homo_sapiens.GRCh38.dna.chromosome.13.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/Homo_sapiens.GRCh38.dna.chromosome.13.fa",
+      "bytes": 116270459,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/Homo_sapiens.GRCh38.dna.chromosome.13.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/Homo_sapiens.GRCh38.dna.chromosome.13.fa.fai",
+      "bytes": 22,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/vep115.chr13.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/vep115.chr13.transcript-priority.tsv",
+      "bytes": 446725,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/Homo_sapiens.GRCh38.115.chr14.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/Homo_sapiens.GRCh38.115.chr14.gff3",
+      "bytes": 42332019,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/Homo_sapiens.GRCh38.115.chr14.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/Homo_sapiens.GRCh38.115.chr14.gff3.fastvep.cache",
+      "bytes": 11922190,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/Homo_sapiens.GRCh38.dna.chromosome.14.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/Homo_sapiens.GRCh38.dna.chromosome.14.fa",
+      "bytes": 108827838,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/Homo_sapiens.GRCh38.dna.chromosome.14.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/Homo_sapiens.GRCh38.dna.chromosome.14.fa.fai",
+      "bytes": 22,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/vep115.chr14.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/vep115.chr14.transcript-priority.tsv",
+      "bytes": 753677,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/Homo_sapiens.GRCh38.115.chr15.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/Homo_sapiens.GRCh38.115.chr15.gff3",
+      "bytes": 41655422,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/Homo_sapiens.GRCh38.115.chr15.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/Homo_sapiens.GRCh38.115.chr15.gff3.fastvep.cache",
+      "bytes": 11271279,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/Homo_sapiens.GRCh38.dna.chromosome.15.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/Homo_sapiens.GRCh38.dna.chromosome.15.fa",
+      "bytes": 103691101,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/Homo_sapiens.GRCh38.dna.chromosome.15.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/Homo_sapiens.GRCh38.dna.chromosome.15.fa.fai",
+      "bytes": 22,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/vep115.chr15.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/vep115.chr15.transcript-priority.tsv",
+      "bytes": 793482,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/Homo_sapiens.GRCh38.115.chr16.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/Homo_sapiens.GRCh38.115.chr16.gff3",
+      "bytes": 50447036,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/Homo_sapiens.GRCh38.115.chr16.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/Homo_sapiens.GRCh38.115.chr16.gff3.fastvep.cache",
+      "bytes": 14181954,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/Homo_sapiens.GRCh38.dna.chromosome.16.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/Homo_sapiens.GRCh38.dna.chromosome.16.fa",
+      "bytes": 91844042,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/Homo_sapiens.GRCh38.dna.chromosome.16.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/Homo_sapiens.GRCh38.dna.chromosome.16.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/vep115.chr16.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/vep115.chr16.transcript-priority.tsv",
+      "bytes": 908033,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/Homo_sapiens.GRCh38.115.chr17.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/Homo_sapiens.GRCh38.115.chr17.gff3",
+      "bytes": 67006375,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/Homo_sapiens.GRCh38.115.chr17.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/Homo_sapiens.GRCh38.115.chr17.gff3.fastvep.cache",
+      "bytes": 19658306,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/Homo_sapiens.GRCh38.dna.chromosome.17.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/Homo_sapiens.GRCh38.dna.chromosome.17.fa",
+      "bytes": 84645123,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/Homo_sapiens.GRCh38.dna.chromosome.17.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/Homo_sapiens.GRCh38.dna.chromosome.17.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/vep115.chr17.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/vep115.chr17.transcript-priority.tsv",
+      "bytes": 1144889,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/Homo_sapiens.GRCh38.115.chr18.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/Homo_sapiens.GRCh38.115.chr18.gff3",
+      "bytes": 20610173,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/Homo_sapiens.GRCh38.115.chr18.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/Homo_sapiens.GRCh38.115.chr18.gff3.fastvep.cache",
+      "bytes": 5277209,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/Homo_sapiens.GRCh38.dna.chromosome.18.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/Homo_sapiens.GRCh38.dna.chromosome.18.fa",
+      "bytes": 81712897,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/Homo_sapiens.GRCh38.dna.chromosome.18.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/Homo_sapiens.GRCh38.dna.chromosome.18.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/vep115.chr18.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/vep115.chr18.transcript-priority.tsv",
+      "bytes": 421781,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/Homo_sapiens.GRCh38.115.chr19.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/Homo_sapiens.GRCh38.115.chr19.gff3",
+      "bytes": 61711233,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/Homo_sapiens.GRCh38.115.chr19.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/Homo_sapiens.GRCh38.115.chr19.gff3.fastvep.cache",
+      "bytes": 19190725,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/Homo_sapiens.GRCh38.dna.chromosome.19.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/Homo_sapiens.GRCh38.dna.chromosome.19.fa",
+      "bytes": 59594634,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/Homo_sapiens.GRCh38.dna.chromosome.19.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/Homo_sapiens.GRCh38.dna.chromosome.19.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/vep115.chr19.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/vep115.chr19.transcript-priority.tsv",
+      "bytes": 1108931,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/Homo_sapiens.GRCh38.115.chr2.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/Homo_sapiens.GRCh38.115.chr2.gff3",
+      "bytes": 95816360,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/Homo_sapiens.GRCh38.115.chr2.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/Homo_sapiens.GRCh38.115.chr2.gff3.fastvep.cache",
+      "bytes": 28410480,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/Homo_sapiens.GRCh38.dna.chromosome.2.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/Homo_sapiens.GRCh38.dna.chromosome.2.fa",
+      "bytes": 246230144,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/Homo_sapiens.GRCh38.dna.chromosome.2.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/Homo_sapiens.GRCh38.dna.chromosome.2.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/vep115.chr2.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/vep115.chr2.transcript-priority.tsv",
+      "bytes": 1699520,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/Homo_sapiens.GRCh38.115.chr20.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/Homo_sapiens.GRCh38.115.chr20.gff3",
+      "bytes": 29961927,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/Homo_sapiens.GRCh38.115.chr20.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/Homo_sapiens.GRCh38.115.chr20.gff3.fastvep.cache",
+      "bytes": 8170181,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/Homo_sapiens.GRCh38.dna.chromosome.20.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/Homo_sapiens.GRCh38.dna.chromosome.20.fa",
+      "bytes": 65518294,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/Homo_sapiens.GRCh38.dna.chromosome.20.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/Homo_sapiens.GRCh38.dna.chromosome.20.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/vep115.chr20.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/vep115.chr20.transcript-priority.tsv",
+      "bytes": 561647,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root",
+      "bytes": null,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chr1.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.115.chr1.gff3",
+      "bytes": 119822079,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chr1.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.115.chr1.gff3.fastvep.cache",
+      "bytes": 36888397,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chr21.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.115.chr21.gff3",
+      "bytes": 14387295,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chr21.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.115.chr21.gff3.fastvep.cache",
+      "bytes": 2977698,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chr22.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.115.chr22.gff3",
+      "bytes": 30694071,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chr22.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.115.chr22.gff3.fastvep.cache",
+      "bytes": 7696643,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chrX.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.115.chrX.gff3",
+      "bytes": 38977595,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chrX.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.115.chrX.gff3.fastvep.cache",
+      "bytes": 12024355,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chrY.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.115.chrY.gff3",
+      "bytes": 3769626,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chrY.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.115.chrY.gff3.fastvep.cache",
+      "bytes": 415381,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.dna.chromosome.1.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.dna.chromosome.1.fa",
+      "bytes": 253105752,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.dna.chromosome.1.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.dna.chromosome.1.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.dna.chromosome.21.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.dna.chromosome.21.fa",
+      "bytes": 47488540,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.dna.chromosome.21.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.dna.chromosome.21.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.dna.chromosome.22.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.dna.chromosome.22.fa",
+      "bytes": 51665500,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.dna.chromosome.22.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.dna.chromosome.22.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.dna.chromosome.X.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.dna.chromosome.X.fa",
+      "bytes": 158641633,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.dna.chromosome.X.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.dna.chromosome.X.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.dna.chromosome.Y.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.dna.chromosome.Y.fa",
+      "bytes": 58181261,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.dna.chromosome.Y.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/Homo_sapiens.GRCh38.dna.chromosome.Y.fa.fai",
+      "bytes": 20,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/vep115.chr1.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/vep115.chr1.transcript-priority.tsv",
+      "bytes": 2129790,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/vep115.chr21.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/vep115.chr21.transcript-priority.tsv",
+      "bytes": 301515,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/vep115.chr22.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/vep115.chr22.transcript-priority.tsv",
+      "bytes": 514409,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/vep115.chrX.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/vep115.chrX.transcript-priority.tsv",
+      "bytes": 682171,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/vep115.chrY.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/vep115.chrY.transcript-priority.tsv",
+      "bytes": 90204,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/vep115.consequence-ranks.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/annotation_root/vep115.consequence-ranks.tsv",
+      "bytes": 1040,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.115.chr3.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.115.chr3.gff3",
+      "bytes": 81988552,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.115.chr3.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.115.chr3.gff3.fastvep.cache",
+      "bytes": 24325160,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.dna.chromosome.3.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.dna.chromosome.3.fa",
+      "bytes": 201600541,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.dna.chromosome.3.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.dna.chromosome.3.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/vep115.chr3.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/vep115.chr3.transcript-priority.tsv",
+      "bytes": 1383533,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/Homo_sapiens.GRCh38.115.chr4.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/Homo_sapiens.GRCh38.115.chr4.gff3",
+      "bytes": 50550111,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/Homo_sapiens.GRCh38.115.chr4.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/Homo_sapiens.GRCh38.115.chr4.gff3.fastvep.cache",
+      "bytes": 14408132,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/Homo_sapiens.GRCh38.dna.chromosome.4.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/Homo_sapiens.GRCh38.dna.chromosome.4.fa",
+      "bytes": 193384854,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/Homo_sapiens.GRCh38.dna.chromosome.4.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/Homo_sapiens.GRCh38.dna.chromosome.4.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/vep115.chr4.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/vep115.chr4.transcript-priority.tsv",
+      "bytes": 952836,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/Homo_sapiens.GRCh38.115.chr5.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/Homo_sapiens.GRCh38.115.chr5.gff3",
+      "bytes": 53321663,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/Homo_sapiens.GRCh38.115.chr5.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/Homo_sapiens.GRCh38.115.chr5.gff3.fastvep.cache",
+      "bytes": 15167563,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/Homo_sapiens.GRCh38.dna.chromosome.5.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/Homo_sapiens.GRCh38.dna.chromosome.5.fa",
+      "bytes": 184563953,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/Homo_sapiens.GRCh38.dna.chromosome.5.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/Homo_sapiens.GRCh38.dna.chromosome.5.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/vep115.chr5.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/vep115.chr5.transcript-priority.tsv",
+      "bytes": 1067570,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/Homo_sapiens.GRCh38.115.chr6.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/Homo_sapiens.GRCh38.115.chr6.gff3",
+      "bytes": 57360841,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/Homo_sapiens.GRCh38.115.chr6.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/Homo_sapiens.GRCh38.115.chr6.gff3.fastvep.cache",
+      "bytes": 16862266,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/Homo_sapiens.GRCh38.dna.chromosome.6.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/Homo_sapiens.GRCh38.dna.chromosome.6.fa",
+      "bytes": 173652802,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/Homo_sapiens.GRCh38.dna.chromosome.6.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/Homo_sapiens.GRCh38.dna.chromosome.6.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/vep115.chr6.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/vep115.chr6.transcript-priority.tsv",
+      "bytes": 1140043,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/Homo_sapiens.GRCh38.115.chr7.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/Homo_sapiens.GRCh38.115.chr7.gff3",
+      "bytes": 63846536,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/Homo_sapiens.GRCh38.115.chr7.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/Homo_sapiens.GRCh38.115.chr7.gff3.fastvep.cache",
+      "bytes": 17407044,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/Homo_sapiens.GRCh38.dna.chromosome.7.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/Homo_sapiens.GRCh38.dna.chromosome.7.fa",
+      "bytes": 162001796,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/Homo_sapiens.GRCh38.dna.chromosome.7.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/Homo_sapiens.GRCh38.dna.chromosome.7.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/vep115.chr7.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/vep115.chr7.transcript-priority.tsv",
+      "bytes": 1195791,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/Homo_sapiens.GRCh38.115.chr8.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/Homo_sapiens.GRCh38.115.chr8.gff3",
+      "bytes": 44608932,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/Homo_sapiens.GRCh38.115.chr8.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/Homo_sapiens.GRCh38.115.chr8.gff3.fastvep.cache",
+      "bytes": 12371598,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/Homo_sapiens.GRCh38.dna.chromosome.8.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/Homo_sapiens.GRCh38.dna.chromosome.8.fa",
+      "bytes": 147557670,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/Homo_sapiens.GRCh38.dna.chromosome.8.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/Homo_sapiens.GRCh38.dna.chromosome.8.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/vep115.chr8.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/vep115.chr8.transcript-priority.tsv",
+      "bytes": 928660,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.115.chr9.gff3",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.115.chr9.gff3",
+      "bytes": 51401270,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.115.chr9.gff3.fastvep.cache",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.115.chr9.gff3.fastvep.cache",
+      "bytes": 14289957,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.dna.chromosome.9.fa",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.dna.chromosome.9.fa",
+      "bytes": 140701352,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.dna.chromosome.9.fa.fai",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.dna.chromosome.9.fa.fai",
+      "bytes": 21,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/vep115.chr9.transcript-priority.tsv",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/vep115.chr9.transcript-priority.tsv",
+      "bytes": 950597,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr10",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr10",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr10/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr10/SHA256SUMS",
+      "bytes": 631,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr10/chr10.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr10/chr10.all-missense-candidates.parquet",
+      "bytes": 21021709,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr10/lof-genebayes-ge-0.03.chr10.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr10/lof-genebayes-ge-0.03.chr10.bed",
+      "bytes": 102126,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr10/lof-plus-missense-candidates.chr10.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr10/lof-plus-missense-candidates.chr10.bed",
+      "bytes": 256736,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr11",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr11",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr11/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr11/SHA256SUMS",
+      "bytes": 631,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr11/chr11.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr11/chr11.all-missense-candidates.parquet",
+      "bytes": 30659127,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr11/lof-genebayes-ge-0.03.chr11.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr11/lof-genebayes-ge-0.03.chr11.bed",
+      "bytes": 131958,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr11/lof-plus-missense-candidates.chr11.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr11/lof-plus-missense-candidates.chr11.bed",
+      "bytes": 347718,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr12",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr12",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr12/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr12/SHA256SUMS",
+      "bytes": 631,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr12/chr12.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr12/chr12.all-missense-candidates.parquet",
+      "bytes": 29037944,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr12/lof-genebayes-ge-0.03.chr12.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr12/lof-genebayes-ge-0.03.chr12.bed",
+      "bytes": 144028,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr12/lof-plus-missense-candidates.chr12.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr12/lof-plus-missense-candidates.chr12.bed",
+      "bytes": 343304,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr13",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr13",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr13/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr13/SHA256SUMS",
+      "bytes": 631,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr13/chr13.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr13/chr13.all-missense-candidates.parquet",
+      "bytes": 9917132,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr13/lof-genebayes-ge-0.03.chr13.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr13/lof-genebayes-ge-0.03.chr13.bed",
+      "bytes": 44184,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr13/lof-plus-missense-candidates.chr13.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr13/lof-plus-missense-candidates.chr13.bed",
+      "bytes": 111512,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr14",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr14",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr14/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr14/SHA256SUMS",
+      "bytes": 631,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr14/chr14.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr14/chr14.all-missense-candidates.parquet",
+      "bytes": 17056419,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr14/lof-genebayes-ge-0.03.chr14.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr14/lof-genebayes-ge-0.03.chr14.bed",
+      "bytes": 78782,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr14/lof-plus-missense-candidates.chr14.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr14/lof-plus-missense-candidates.chr14.bed",
+      "bytes": 196082,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr15",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr15",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr15/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr15/SHA256SUMS",
+      "bytes": 631,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr15/chr15.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr15/chr15.all-missense-candidates.parquet",
+      "bytes": 18887749,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr15/lof-genebayes-ge-0.03.chr15.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr15/lof-genebayes-ge-0.03.chr15.bed",
+      "bytes": 81420,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr15/lof-plus-missense-candidates.chr15.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr15/lof-plus-missense-candidates.chr15.bed",
+      "bytes": 225406,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr16",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr16",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr16/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr16/SHA256SUMS",
+      "bytes": 631,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr16/chr16.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr16/chr16.all-missense-candidates.parquet",
+      "bytes": 21454250,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr16/lof-genebayes-ge-0.03.chr16.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr16/lof-genebayes-ge-0.03.chr16.bed",
+      "bytes": 78500,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr16/lof-plus-missense-candidates.chr16.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr16/lof-plus-missense-candidates.chr16.bed",
+      "bytes": 252292,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr17",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr17",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr17/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr17/SHA256SUMS",
+      "bytes": 631,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr17/chr17.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr17/chr17.all-missense-candidates.parquet",
+      "bytes": 30240850,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr17/lof-genebayes-ge-0.03.chr17.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr17/lof-genebayes-ge-0.03.chr17.bed",
+      "bytes": 125982,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr17/lof-plus-missense-candidates.chr17.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr17/lof-plus-missense-candidates.chr17.bed",
+      "bytes": 345170,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr18",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr18",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr18/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr18/SHA256SUMS",
+      "bytes": 631,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr18/chr18.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr18/chr18.all-missense-candidates.parquet",
+      "bytes": 8561277,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr18/lof-genebayes-ge-0.03.chr18.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr18/lof-genebayes-ge-0.03.chr18.bed",
+      "bytes": 43142,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr18/lof-plus-missense-candidates.chr18.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr18/lof-plus-missense-candidates.chr18.bed",
+      "bytes": 99522,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr19",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr19",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr19/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr19/SHA256SUMS",
+      "bytes": 631,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr19/chr19.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr19/chr19.all-missense-candidates.parquet",
+      "bytes": 29642023,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr19/lof-genebayes-ge-0.03.chr19.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr19/lof-genebayes-ge-0.03.chr19.bed",
+      "bytes": 111256,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr19/lof-plus-missense-candidates.chr19.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr19/lof-plus-missense-candidates.chr19.bed",
+      "bytes": 383244,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr2",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr2",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr2/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr2/SHA256SUMS",
+      "bytes": 625,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr2/chr2.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr2/chr2.all-missense-candidates.parquet",
+      "bytes": 38961494,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr2/lof-genebayes-ge-0.03.chr2.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr2/lof-genebayes-ge-0.03.chr2.bed",
+      "bytes": 186836,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr2/lof-plus-missense-candidates.chr2.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr2/lof-plus-missense-candidates.chr2.bed",
+      "bytes": 504483,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr20",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr20",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr20/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr20/SHA256SUMS",
+      "bytes": 631,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr20/chr20.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr20/chr20.all-missense-candidates.parquet",
+      "bytes": 13062565,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr20/lof-genebayes-ge-0.03.chr20.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr20/lof-genebayes-ge-0.03.chr20.bed",
+      "bytes": 63240,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr20/lof-plus-missense-candidates.chr20.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr20/lof-plus-missense-candidates.chr20.bed",
+      "bytes": 152600,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr3",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr3",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr3/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr3/SHA256SUMS",
+      "bytes": 625,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr3/chr3.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr3/chr3.all-missense-candidates.parquet",
+      "bytes": 31673712,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr3/lof-genebayes-ge-0.03.chr3.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr3/lof-genebayes-ge-0.03.chr3.bed",
+      "bytes": 143814,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr3/lof-plus-missense-candidates.chr3.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr3/lof-plus-missense-candidates.chr3.bed",
+      "bytes": 372269,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr4",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr4",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr4/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr4/SHA256SUMS",
+      "bytes": 625,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr4/chr4.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr4/chr4.all-missense-candidates.parquet",
+      "bytes": 21500303,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr4/lof-genebayes-ge-0.03.chr4.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr4/lof-genebayes-ge-0.03.chr4.bed",
+      "bytes": 94749,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr4/lof-plus-missense-candidates.chr4.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr4/lof-plus-missense-candidates.chr4.bed",
+      "bytes": 249875,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr5",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr5",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr5/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr5/SHA256SUMS",
+      "bytes": 625,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr5/chr5.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr5/chr5.all-missense-candidates.parquet",
+      "bytes": 25453069,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr5/lof-genebayes-ge-0.03.chr5.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr5/lof-genebayes-ge-0.03.chr5.bed",
+      "bytes": 119664,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr5/lof-plus-missense-candidates.chr5.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr5/lof-plus-missense-candidates.chr5.bed",
+      "bytes": 274990,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr6",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr6",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr6/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr6/SHA256SUMS",
+      "bytes": 625,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr6/chr6.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr6/chr6.all-missense-candidates.parquet",
+      "bytes": 26985399,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr6/lof-genebayes-ge-0.03.chr6.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr6/lof-genebayes-ge-0.03.chr6.bed",
+      "bytes": 112904,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr6/lof-plus-missense-candidates.chr6.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr6/lof-plus-missense-candidates.chr6.bed",
+      "bytes": 300961,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr7",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr7",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr7/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr7/SHA256SUMS",
+      "bytes": 625,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr7/chr7.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr7/chr7.all-missense-candidates.parquet",
+      "bytes": 24509100,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr7/lof-genebayes-ge-0.03.chr7.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr7/lof-genebayes-ge-0.03.chr7.bed",
+      "bytes": 109606,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr7/lof-plus-missense-candidates.chr7.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr7/lof-plus-missense-candidates.chr7.bed",
+      "bytes": 282146,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr8",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr8",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr8/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr8/SHA256SUMS",
+      "bytes": 625,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr8/chr8.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr8/chr8.all-missense-candidates.parquet",
+      "bytes": 18043203,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr8/lof-genebayes-ge-0.03.chr8.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr8/lof-genebayes-ge-0.03.chr8.bed",
+      "bytes": 79468,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr8/lof-plus-missense-candidates.chr8.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr8/lof-plus-missense-candidates.chr8.bed",
+      "bytes": 212842,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr9",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr9",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr9/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr9/SHA256SUMS",
+      "bytes": 625,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr9/chr9.all-missense-candidates.parquet",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr9/chr9.all-missense-candidates.parquet",
+      "bytes": 21165967,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr9/lof-genebayes-ge-0.03.chr9.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr9/lof-genebayes-ge-0.03.chr9.bed",
+      "bytes": 96152,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr9/lof-plus-missense-candidates.chr9.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/candidate-bundles/genebayes-dbnsfp-5.3.1a-v1/chr9/lof-plus-missense-candidates.chr9.bed",
+      "bytes": 254628,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/candidates",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/candidates",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/candidates/chr1.observed-missense-candidates.parquet",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/inputs/chr1.observed-missense-candidates.parquet",
+      "bytes": 172256,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/inputs/chr1.observed-missense-candidates.parquet"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/candidates/g2mh.chr22.observed-missense-candidates.parquet",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/inputs/g2mh.chr22.observed-missense-candidates.parquet",
+      "bytes": 50372,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/inputs/g2mh.chr22.observed-missense-candidates.parquet"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/candidates/lof-plus-missense-candidates.chr1.bed",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/inputs/lof-plus-missense-candidates.chr1.bed",
+      "bytes": 626060,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/inputs/lof-plus-missense-candidates.chr1.bed"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/candidates/lof-plus-missense-candidates.chr22.bed",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/inputs/lof-plus-missense-candidates.chr22.bed",
+      "bytes": 129384,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/inputs/lof-plus-missense-candidates.chr22.bed"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/qc",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/qc",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/qc/chr1.postprocess.json",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/qc/chr1.postprocess.json",
+      "bytes": 605,
+      "mode": "0o664"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/qc/chr22.postprocess.json",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/qc/chr22.postprocess.json",
+      "bytes": 609,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/zarr",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/cohorts/g2mh/zarr",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/containers",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/containers",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/containers/rare-variant-targeted-sha-16e505b.sif",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/containers/rare-variant-targeted-sha-16e505b.sif",
+      "bytes": 197345280,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/containers/rare-variant-targeted-sha-16e505b.sif"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/containers/rare-variant-targeted-sha-199d55e.sif",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/containers/rare-variant-targeted-sha-199d55e.sif",
+      "bytes": 197345280,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/containers/rare-variant-targeted-sha-199d55e.sif"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/containers/rare-variant-targeted-sha-41de024.sif",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/containers/rare-variant-targeted-sha-41de024.sif",
+      "bytes": 197345280,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/containers/rare-variant-targeted-sha-41de024.sif"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/containers/rare-variant-targeted-sha-89470da.sif",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/containers/rare-variant-targeted-sha-89470da.sif",
+      "bytes": 197345280,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/containers/rare-variant-targeted-sha-89470da.sif"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/containers/rare-variant-targeted-sha-d6bd22e.sif",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/containers/rare-variant-targeted-sha-d6bd22e.sif",
+      "bytes": 197345280,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/containers/rare-variant-targeted-sha-d6bd22e.sif"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/dbnsfp",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/dbnsfp",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/dbnsfp/5.3.1a",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/dbnsfp/5.3.1a",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/dbnsfp/5.3.1a/parquet_scores_af",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/s3/data/sebat/resources/dbNSFP/5.3.1a/parquet_scores_af",
+      "bytes": null,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/s3/data/sebat/resources/dbNSFP/5.3.1a/parquet_scores_af"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/genebayes",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/genebayes",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/genebayes/GeneBayes.Supplementary_Table_1.tsv",
+      "kind": "symlink",
+      "exists": false,
+      "resolved": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/GeneBayes/output/Supplementary_Table_1.tsv",
+      "bytes": null,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/GeneBayes/output/Supplementary_Table_1.tsv"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/GRCh38",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/loftee_root",
+      "bytes": null,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/loftee_root"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/GRCh38/ensembl-115",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/loftee_root/ensembl-115",
+      "bytes": null,
+      "mode": "0o755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/GRCh38/ensembl-115/chr1.transcripts.sqlite",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/loftee/chr1.transcripts.sqlite",
+      "bytes": 80093184,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr1-v1/loftee/chr1.transcripts.sqlite"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/GRCh38/ensembl-115/chr22.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/loftee_root/ensembl-115/chr22.transcripts.sqlite",
+      "bytes": 19968000,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/GRCh38/loftee-grch38",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/loftee_root/loftee-grch38",
+      "bytes": null,
+      "mode": "0o755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/GRCh38/loftee-grch38/gerp_conservation_scores.homo_sapiens.GRCh38.bw",
+      "kind": "symlink",
+      "exists": false,
+      "resolved": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/LOFTEE/gerp_conservation_scores.homo_sapiens.GRCh38.bw",
+      "bytes": null,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/LOFTEE/gerp_conservation_scores.homo_sapiens.GRCh38.bw"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/GRCh38/loftee-grch38/human_ancestor.fa.gz",
+      "kind": "symlink",
+      "exists": false,
+      "resolved": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/LOFTEE/human_ancestor.fa.gz",
+      "bytes": null,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/LOFTEE/human_ancestor.fa.gz"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/GRCh38/loftee-grch38/human_ancestor.fa.gz.fai",
+      "kind": "symlink",
+      "exists": false,
+      "resolved": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/LOFTEE/human_ancestor.fa.gz.fai",
+      "bytes": null,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/LOFTEE/human_ancestor.fa.gz.fai"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/GRCh38/loftee-grch38/human_ancestor.fa.gz.gzi",
+      "kind": "symlink",
+      "exists": false,
+      "resolved": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/LOFTEE/human_ancestor.fa.gz.gzi",
+      "bytes": null,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/LOFTEE/human_ancestor.fa.gz.gzi"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/GRCh38/loftee-grch38/loftee.sql",
+      "kind": "symlink",
+      "exists": false,
+      "resolved": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/LOFTEE/loftee.sql",
+      "bytes": null,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/s3/data/sebat/g2mh/scripts/scripts_for_rare_pipeline/resources/LOFTEE/loftee.sql"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr10.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr10.transcripts.sqlite",
+      "bytes": 36945920,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr11.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr11.transcripts.sqlite",
+      "bytes": 46772224,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr12.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr12.transcripts.sqlite",
+      "bytes": 42471424,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr13.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr13.transcripts.sqlite",
+      "bytes": 14553088,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr14.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr14.transcripts.sqlite",
+      "bytes": 27881472,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr15.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr15.transcripts.sqlite",
+      "bytes": 27205632,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr16.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr16.transcripts.sqlite",
+      "bytes": 33374208,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr17.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr17.transcripts.sqlite",
+      "bytes": 44879872,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr18.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr18.transcripts.sqlite",
+      "bytes": 13262848,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr19.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr19.transcripts.sqlite",
+      "bytes": 41164800,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr2.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr2.transcripts.sqlite",
+      "bytes": 63893504,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr20.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr20.transcripts.sqlite",
+      "bytes": 19652608,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr3.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr3.transcripts.sqlite",
+      "bytes": 54583296,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr4.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr4.transcripts.sqlite",
+      "bytes": 33345536,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr5.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr5.transcripts.sqlite",
+      "bytes": 34856960,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr6.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr6.transcripts.sqlite",
+      "bytes": 37625856,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr7.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr7.transcripts.sqlite",
+      "bytes": 42123264,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr8.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr8.transcripts.sqlite",
+      "bytes": 29003776,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr9.transcripts.sqlite",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/loftee/ensembl-115/chr9.transcripts.sqlite",
+      "bytes": 33873920,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/logs",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/logs",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests/expanse-g2mh-chr1.json",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests/expanse-g2mh-chr1.json",
+      "bytes": 1090,
+      "mode": "0o664"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests/expanse-g2mh-chr22.binding.json",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests/expanse-g2mh-chr22.binding.json",
+      "bytes": 1102,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests/g2mh-chr1-targeted-regression.json",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests/g2mh-chr1-targeted-regression.json",
+      "bytes": 2203,
+      "mode": "0o664"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests/g2mh-chr1.json",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests/g2mh-chr1.json",
+      "bytes": 1107,
+      "mode": "0o664"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests/g2mh-chr22-targeted-regression.json",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests/g2mh-chr22-targeted-regression.json",
+      "bytes": 2555,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests/g2mh-chr22.science.json",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/manifests/g2mh-chr22.science.json",
+      "bytes": 1110,
+      "mode": "0o664"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/GRCh38",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/GRCh38",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.115.chr.gtf.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.115.chr.gtf.gz",
+      "bytes": 104303351,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.115.gff3.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.115.gff3.gz",
+      "bytes": 83835106,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.10.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.10.fa.gz",
+      "bytes": 40015021,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.11.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.11.fa.gz",
+      "bytes": 40108352,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.12.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.12.fa.gz",
+      "bytes": 39795542,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.13.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.13.fa.gz",
+      "bytes": 29525452,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.14.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.14.fa.gz",
+      "bytes": 27164419,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.15.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.15.fa.gz",
+      "bytes": 25214767,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.16.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.16.fa.gz",
+      "bytes": 24238195,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.17.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.17.fa.gz",
+      "bytes": 24104573,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.18.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.18.fa.gz",
+      "bytes": 23296059,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.19.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.19.fa.gz",
+      "bytes": 16689382,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.2.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.2.fa.gz",
+      "bytes": 72794281,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.20.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.20.fa.gz",
+      "bytes": 18833053,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.3.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.3.fa.gz",
+      "bytes": 59761837,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.4.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.4.fa.gz",
+      "bytes": 57378450,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.5.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.5.fa.gz",
+      "bytes": 54485176,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.6.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.6.fa.gz",
+      "bytes": 51500559,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.7.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.7.fa.gz",
+      "bytes": 47416846,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.8.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.8.fa.gz",
+      "bytes": 43616650,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.9.fa.gz",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/Homo_sapiens.GRCh38.dna.chromosome.9.fa.gz",
+      "bytes": 36536025,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/SHA256SUMS",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/references/ensembl-115-source/SHA256SUMS",
+      "bytes": 199,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions/GRCh38",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions/GRCh38",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions/GRCh38/chr1",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions/GRCh38/chr1",
+      "bytes": null,
+      "mode": "0o2775"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions/GRCh38/chr1/genomicSuperDups.chr1.bed",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/chr1-chr21/regions/genomicSuperDups.chr1.bed",
+      "bytes": 173165,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/chr1-chr21/regions/genomicSuperDups.chr1.bed"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions/GRCh38/chr1/rmsk.chr1.bed",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/chr1-chr21/regions/rmsk.chr1.bed",
+      "bytes": 21650272,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/chr1-chr21/regions/rmsk.chr1.bed"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions/GRCh38/chr1/simpleRepeat.chr1.bed",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/chr1-chr21/regions/simpleRepeat.chr1.bed",
+      "bytes": 2082591,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/chr1-chr21/regions/simpleRepeat.chr1.bed"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions/GRCh38/chr22",
+      "kind": "symlink",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/regions",
+      "bytes": null,
+      "mode": "0o777",
+      "link_target": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/regions"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions/GRCh38/chr22/genomicSuperDups.chr22.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/regions/genomicSuperDups.chr22.bed",
+      "bytes": 67920,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions/GRCh38/chr22/rmsk.chr22.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/regions/rmsk.chr22.bed",
+      "bytes": 3849291,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/regions/GRCh38/chr22/simpleRepeat.chr22.bed",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/j3guevar/rare-variant-pipeline-targeted-resources/portable-chr22-v1/regions/simpleRepeat.chr22.bed",
+      "bytes": 469280,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/staging",
+      "kind": "directory",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/staging",
+      "bytes": null,
+      "mode": "0o2755"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/staging/ensembl115-autosomes-chr2-20.tar.zst",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/staging/ensembl115-autosomes-chr2-20.tar.zst",
+      "bytes": 1260102775,
+      "mode": "0o644"
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/staging/ensembl115-autosomes-chr2-20.tar.zst.sha256",
+      "kind": "file",
+      "exists": true,
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/staging/ensembl115-autosomes-chr2-20.tar.zst.sha256",
+      "bytes": 168,
+      "mode": "0o644"
+    }
+  ]
+}

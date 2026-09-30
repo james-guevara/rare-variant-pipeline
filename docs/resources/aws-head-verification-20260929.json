@@ -1,0 +1,796 @@
+{
+  "method": "HEAD metadata comparison; not a new download/content hash",
+  "files": [
+    {
+      "path": "RESOURCE_BUNDLE_VERSION",
+      "bytes": 107,
+      "manifest_sha256": "119c9a33e34620984b407e4a810346f4476c30d923d933599e5988faa2cf90be",
+      "metadata_sha256": "119c9a33e34620984b407e4a810346f4476c30d923d933599e5988faa2cf90be",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr1.parquet",
+      "bytes": 1431645510,
+      "manifest_sha256": "5bb992f4ab7a742661d2f6c863dada365d841cfdf31d9e769e8556d97297d2fa",
+      "metadata_sha256": "5bb992f4ab7a742661d2f6c863dada365d841cfdf31d9e769e8556d97297d2fa",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr10.parquet",
+      "bytes": 569028012,
+      "manifest_sha256": "fdc7d02fa10a5fef63fac5ec6a8da61683e7d3b21c13c699b8a1a92bbcc393c2",
+      "metadata_sha256": "fdc7d02fa10a5fef63fac5ec6a8da61683e7d3b21c13c699b8a1a92bbcc393c2",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr11.parquet",
+      "bytes": 852816221,
+      "manifest_sha256": "0bbe111b1d00ff1e197473095b454d70146259efdbf7fae36cad0cd1174eba42",
+      "metadata_sha256": "0bbe111b1d00ff1e197473095b454d70146259efdbf7fae36cad0cd1174eba42",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr12.parquet",
+      "bytes": 764944177,
+      "manifest_sha256": "fbed68f018e7b22e050764285fba07b6389710b435e4a8249d25375f0af267af",
+      "metadata_sha256": "fbed68f018e7b22e050764285fba07b6389710b435e4a8249d25375f0af267af",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr13.parquet",
+      "bytes": 255351843,
+      "manifest_sha256": "ef45d95e44c9425f3c4a85ebca757996cbdce02e50bc49f2f2e9a89a93db9aac",
+      "metadata_sha256": "ef45d95e44c9425f3c4a85ebca757996cbdce02e50bc49f2f2e9a89a93db9aac",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr14.parquet",
+      "bytes": 463466327,
+      "manifest_sha256": "18fbbb4f19cd32d08821b422522f21276b105a8de1c34856246299c9f9b48ee0",
+      "metadata_sha256": "18fbbb4f19cd32d08821b422522f21276b105a8de1c34856246299c9f9b48ee0",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr15.parquet",
+      "bytes": 483503084,
+      "manifest_sha256": "d7e0ddd792f91fedce0e4431ae60b76dbd65952be5a713efe672b7bde843efa0",
+      "metadata_sha256": "d7e0ddd792f91fedce0e4431ae60b76dbd65952be5a713efe672b7bde843efa0",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr16.parquet",
+      "bytes": 587512258,
+      "manifest_sha256": "fb5155a2d8d97257656a213c2bc02afe5cb1bc242aaf8cb2c12c96968e8b73e0",
+      "metadata_sha256": "fb5155a2d8d97257656a213c2bc02afe5cb1bc242aaf8cb2c12c96968e8b73e0",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr17.parquet",
+      "bytes": 795132362,
+      "manifest_sha256": "a9025ab889291ffd73a00fc176382ce0ef97172fd2d71662815fa32cd2fedb58",
+      "metadata_sha256": "a9025ab889291ffd73a00fc176382ce0ef97172fd2d71662815fa32cd2fedb58",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr18.parquet",
+      "bytes": 231177933,
+      "manifest_sha256": "1ad0a8f15bebddb7e120f529ea6060aa71dce1ca3b3157eb4fc50c287054057c",
+      "metadata_sha256": "1ad0a8f15bebddb7e120f529ea6060aa71dce1ca3b3157eb4fc50c287054057c",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr19.parquet",
+      "bytes": 902128822,
+      "manifest_sha256": "807f67ec62ad4c99ca3fae4d59f4a9a1a23f639d5b351e7b47fb3dbe4684302b",
+      "metadata_sha256": "807f67ec62ad4c99ca3fae4d59f4a9a1a23f639d5b351e7b47fb3dbe4684302b",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr2.parquet",
+      "bytes": 1069407926,
+      "manifest_sha256": "c332b0d8640c8dc0ca8cf26cd5725531ebb59d54ef8ea3dd0e37ee0b990ff388",
+      "metadata_sha256": "c332b0d8640c8dc0ca8cf26cd5725531ebb59d54ef8ea3dd0e37ee0b990ff388",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr20.parquet",
+      "bytes": 342249839,
+      "manifest_sha256": "9d26bcc486534f46e0bbda8fdfbfba52cff08ca2237eca1e011acc0949daab01",
+      "metadata_sha256": "9d26bcc486534f46e0bbda8fdfbfba52cff08ca2237eca1e011acc0949daab01",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr21.parquet",
+      "bytes": 139238411,
+      "manifest_sha256": "c252f4d20062351c3ab2c12b478f3b8ff8ff41bb7be07b6ecf9c6605380515e5",
+      "metadata_sha256": "c252f4d20062351c3ab2c12b478f3b8ff8ff41bb7be07b6ecf9c6605380515e5",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr22.parquet",
+      "bytes": 298748270,
+      "manifest_sha256": "7ca84d9bf85627ab66aa86f3fe91a0e28630a7307a92caa3284589ccb21d50a9",
+      "metadata_sha256": "7ca84d9bf85627ab66aa86f3fe91a0e28630a7307a92caa3284589ccb21d50a9",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr3.parquet",
+      "bytes": 861933709,
+      "manifest_sha256": "e17511f980fc2ee342cb48879d47e123ff024e1d46ef5904e290adf3d6e4dc93",
+      "metadata_sha256": "e17511f980fc2ee342cb48879d47e123ff024e1d46ef5904e290adf3d6e4dc93",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr4.parquet",
+      "bytes": 588655986,
+      "manifest_sha256": "215e3277ba418e4fb4e5470ca89a749c5ffb2f39b0e127666cb9eaacc587082e",
+      "metadata_sha256": "215e3277ba418e4fb4e5470ca89a749c5ffb2f39b0e127666cb9eaacc587082e",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr5.parquet",
+      "bytes": 662746727,
+      "manifest_sha256": "6d54a69eec3fcad0fb01b3589802843fef3e797941578dcf8f6f6e95d0b4e4b3",
+      "metadata_sha256": "6d54a69eec3fcad0fb01b3589802843fef3e797941578dcf8f6f6e95d0b4e4b3",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr6.parquet",
+      "bytes": 720533558,
+      "manifest_sha256": "2ef226d98930f1440bc5ea71702834f9391cde45f76256c2f5a17ab96e1c57ea",
+      "metadata_sha256": "2ef226d98930f1440bc5ea71702834f9391cde45f76256c2f5a17ab96e1c57ea",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr7.parquet",
+      "bytes": 669308634,
+      "manifest_sha256": "64b28283d91385c3885fc9c32d6010b957ecc7abe3a3699f7b914409acccf1e0",
+      "metadata_sha256": "64b28283d91385c3885fc9c32d6010b957ecc7abe3a3699f7b914409acccf1e0",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr8.parquet",
+      "bytes": 488138029,
+      "manifest_sha256": "bc3af52071a5235fb5787536d5169d15eb993328ecf14f0993aea2f187eb7840",
+      "metadata_sha256": "bc3af52071a5235fb5787536d5169d15eb993328ecf14f0993aea2f187eb7840",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chr9.parquet",
+      "bytes": 570711585,
+      "manifest_sha256": "a1a13c19a35368f767fc0f99ed3e500cb9cc0dd1003e3502a12728bec533a394",
+      "metadata_sha256": "a1a13c19a35368f767fc0f99ed3e500cb9cc0dd1003e3502a12728bec533a394",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chrX.parquet",
+      "bytes": 534477744,
+      "manifest_sha256": "878aff0ffddd51a623efb6c3928378a0254047d8605a90a085d84806cad2519b",
+      "metadata_sha256": "878aff0ffddd51a623efb6c3928378a0254047d8605a90a085d84806cad2519b",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded_mane_select/chrY.parquet",
+      "bytes": 21959817,
+      "manifest_sha256": "aa461f6e62276c0490291bdcc21ac6805f62bc60ac996bb7ed8823d67a78a72c",
+      "metadata_sha256": "aa461f6e62276c0490291bdcc21ac6805f62bc60ac996bb7ed8823d67a78a72c",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr1.parquet",
+      "bytes": 350806009,
+      "manifest_sha256": "d9470f94822015db9a6e50be1197c90a5c3a64257f4f9aadb22b74919c95efed",
+      "metadata_sha256": "d9470f94822015db9a6e50be1197c90a5c3a64257f4f9aadb22b74919c95efed",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr10.parquet",
+      "bytes": 139162169,
+      "manifest_sha256": "11c80c567877c0340453455be50fd5ac6b7722aca0dda0f70145f5ef35be0076",
+      "metadata_sha256": "11c80c567877c0340453455be50fd5ac6b7722aca0dda0f70145f5ef35be0076",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr11.parquet",
+      "bytes": 210641881,
+      "manifest_sha256": "dc5c1c57e5ca8d3f69b3e9d3af378e57dd68f80e6987dc8011bcbe13495fb681",
+      "metadata_sha256": "dc5c1c57e5ca8d3f69b3e9d3af378e57dd68f80e6987dc8011bcbe13495fb681",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr12.parquet",
+      "bytes": 188972950,
+      "manifest_sha256": "b4432ebf491881c202932d546d2be55dd931ec2431fbaea874c063a3aac8a589",
+      "metadata_sha256": "b4432ebf491881c202932d546d2be55dd931ec2431fbaea874c063a3aac8a589",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr13.parquet",
+      "bytes": 61530088,
+      "manifest_sha256": "6223223653781c3882cfdfaab5d13ee91bc9f3975feb495ef20da6a37129852c",
+      "metadata_sha256": "6223223653781c3882cfdfaab5d13ee91bc9f3975feb495ef20da6a37129852c",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr14.parquet",
+      "bytes": 112173919,
+      "manifest_sha256": "97a3f3950b46ea8a8e4f7692acfb9d0a2eeabe159c790aff59be851177427918",
+      "metadata_sha256": "97a3f3950b46ea8a8e4f7692acfb9d0a2eeabe159c790aff59be851177427918",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr15.parquet",
+      "bytes": 117728301,
+      "manifest_sha256": "e88707fd72623adf340d97667d55647d29497fc0dcea077f93997838f11ef75e",
+      "metadata_sha256": "e88707fd72623adf340d97667d55647d29497fc0dcea077f93997838f11ef75e",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr16.parquet",
+      "bytes": 149128112,
+      "manifest_sha256": "a1d0051e19aff2e47321f89bed4932987bea86186842b1adc63a681dd6a996e6",
+      "metadata_sha256": "a1d0051e19aff2e47321f89bed4932987bea86186842b1adc63a681dd6a996e6",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr17.parquet",
+      "bytes": 199469617,
+      "manifest_sha256": "3afc64372523e59820d9767fa3685434509f7f224b0887c13cd993f92ed9de6d",
+      "metadata_sha256": "3afc64372523e59820d9767fa3685434509f7f224b0887c13cd993f92ed9de6d",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr18.parquet",
+      "bytes": 55810331,
+      "manifest_sha256": "398913628c09aaa3acfa3d96cb2386475b8a49352d58b19160ca9b967068fd35",
+      "metadata_sha256": "398913628c09aaa3acfa3d96cb2386475b8a49352d58b19160ca9b967068fd35",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr19.parquet",
+      "bytes": 229316205,
+      "manifest_sha256": "9aa53a6d6214f862361d628d8d5618e61322a946d93e3122c74d2befbe5afb49",
+      "metadata_sha256": "9aa53a6d6214f862361d628d8d5618e61322a946d93e3122c74d2befbe5afb49",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr2.parquet",
+      "bytes": 255764443,
+      "manifest_sha256": "8569b729fc733557239b842d0e01e8a0bf0862d6775b76342cbfe85079129173",
+      "metadata_sha256": "8569b729fc733557239b842d0e01e8a0bf0862d6775b76342cbfe85079129173",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr20.parquet",
+      "bytes": 85928384,
+      "manifest_sha256": "6d9823346d488bb37ad970b524616168c8fa13194ea743e332526fc056d13ab9",
+      "metadata_sha256": "6d9823346d488bb37ad970b524616168c8fa13194ea743e332526fc056d13ab9",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr21.parquet",
+      "bytes": 34605538,
+      "manifest_sha256": "81781a956da8719ab615dcd278e244f15bccb0873d462542aaf6486d0f85179f",
+      "metadata_sha256": "81781a956da8719ab615dcd278e244f15bccb0873d462542aaf6486d0f85179f",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr22.parquet",
+      "bytes": 74620499,
+      "manifest_sha256": "ea0d950eb89670129e8decafb4406a924a2508ff4de052b101ae1340bc4deab2",
+      "metadata_sha256": "ea0d950eb89670129e8decafb4406a924a2508ff4de052b101ae1340bc4deab2",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr3.parquet",
+      "bytes": 209419486,
+      "manifest_sha256": "05abc83d196c88b086ae03292eb3a8e3f2d71dcaf2ca866c00d7f7a63fa9f468",
+      "metadata_sha256": "05abc83d196c88b086ae03292eb3a8e3f2d71dcaf2ca866c00d7f7a63fa9f468",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr4.parquet",
+      "bytes": 143066847,
+      "manifest_sha256": "636fb5f90930aef4b9c35c74ebfa2cd661acdfe2e96c50925feffa653e731dfb",
+      "metadata_sha256": "636fb5f90930aef4b9c35c74ebfa2cd661acdfe2e96c50925feffa653e731dfb",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr5.parquet",
+      "bytes": 161313685,
+      "manifest_sha256": "99172146e6baa5626c3557c7b0bd9231f381294d89e6eba14430dcc146ec1815",
+      "metadata_sha256": "99172146e6baa5626c3557c7b0bd9231f381294d89e6eba14430dcc146ec1815",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr6.parquet",
+      "bytes": 174639457,
+      "manifest_sha256": "b38a2b53afddc7f24e97131cce44534c81ae4888109a332d6fbfb8561866aeae",
+      "metadata_sha256": "b38a2b53afddc7f24e97131cce44534c81ae4888109a332d6fbfb8561866aeae",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr7.parquet",
+      "bytes": 163918217,
+      "manifest_sha256": "f1bd418741704ce0c336b1562010a7f6b726edb4792332e241d8468f14bf8f79",
+      "metadata_sha256": "f1bd418741704ce0c336b1562010a7f6b726edb4792332e241d8468f14bf8f79",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr8.parquet",
+      "bytes": 118948913,
+      "manifest_sha256": "855d0fd28a65473048263ceefb1b5d2e2270b55c21fcc12e89e9768f5bb4c55d",
+      "metadata_sha256": "855d0fd28a65473048263ceefb1b5d2e2270b55c21fcc12e89e9768f5bb4c55d",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chr9.parquet",
+      "bytes": 140424574,
+      "manifest_sha256": "aa423bd9e063e624064fdb870cf3c92eccbc492c4a2c64fdb281263756f9c181",
+      "metadata_sha256": "aa423bd9e063e624064fdb870cf3c92eccbc492c4a2c64fdb281263756f9c181",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chrX.parquet",
+      "bytes": 123000318,
+      "manifest_sha256": "fd1a14da8b4c88133101d4fa654396d7c2c4cee78f47e9e9e38de41b57ad0b23",
+      "metadata_sha256": "fd1a14da8b4c88133101d4fa654396d7c2c4cee78f47e9e9e38de41b57ad0b23",
+      "size_matches_listing": true
+    },
+    {
+      "path": "dbNSFP/5.3.1a/parquet_scores_af/chrY.parquet",
+      "bytes": 4470887,
+      "manifest_sha256": "c45aa4ea0709ff73bac46383c82ab82fe4987349b6ad77acf07b0513c964a990",
+      "metadata_sha256": "c45aa4ea0709ff73bac46383c82ab82fe4987349b6ad77acf07b0513c964a990",
+      "size_matches_listing": true
+    },
+    {
+      "path": "ensembl-115/transcripts.sqlite",
+      "bytes": 790970368,
+      "manifest_sha256": "761ec5878477af6d6258090d367bee21a18a53ad930d8801a9e4d4a31fa3ed3b",
+      "metadata_sha256": "761ec5878477af6d6258090d367bee21a18a53ad930d8801a9e4d4a31fa3ed3b",
+      "size_matches_listing": true
+    },
+    {
+      "path": "loftee-grch38/gerp_conservation_scores.homo_sapiens.GRCh38.bw",
+      "bytes": 12617579354,
+      "manifest_sha256": "8801e57ce8effbef9248b122caee16da338bfa8319dd41392c9ce4e58ea6cfe8",
+      "metadata_sha256": "8801e57ce8effbef9248b122caee16da338bfa8319dd41392c9ce4e58ea6cfe8",
+      "size_matches_listing": true
+    },
+    {
+      "path": "loftee-grch38/human_ancestor.fa.gz",
+      "bytes": 885231320,
+      "manifest_sha256": "624b0e0f8e1c4e7c8639edf17df03f213621d1f56f6fa1c8025fad56082b157b",
+      "metadata_sha256": "624b0e0f8e1c4e7c8639edf17df03f213621d1f56f6fa1c8025fad56082b157b",
+      "size_matches_listing": true
+    },
+    {
+      "path": "loftee-grch38/human_ancestor.fa.gz.fai",
+      "bytes": 736,
+      "manifest_sha256": "703e9a2011886f90679e99d0333ca91afc81df726db91c76d57b9e2d6f182ec5",
+      "metadata_sha256": "703e9a2011886f90679e99d0333ca91afc81df726db91c76d57b9e2d6f182ec5",
+      "size_matches_listing": true
+    },
+    {
+      "path": "loftee-grch38/human_ancestor.fa.gz.gzi",
+      "bytes": 764520,
+      "manifest_sha256": "a31e4ee63e519a0da4a8e2750dabbca177129b7f312b2a993c17a99981e6a3bf",
+      "metadata_sha256": "a31e4ee63e519a0da4a8e2750dabbca177129b7f312b2a993c17a99981e6a3bf",
+      "size_matches_listing": true
+    },
+    {
+      "path": "loftee-grch38/loftee.sql",
+      "bytes": 148519936,
+      "manifest_sha256": "22e214f1513d67682602b5915dfd220ea9d8360448f0de0b8db72c49bf03649a",
+      "metadata_sha256": "22e214f1513d67682602b5915dfd220ea9d8360448f0de0b8db72c49bf03649a",
+      "size_matches_listing": true
+    },
+    {
+      "path": "postprocess/config.json",
+      "bytes": 419,
+      "manifest_sha256": "b49bccac875a669cf38dc14be9369444be4f76cb9c97b16642717db4c2c1c4b3",
+      "metadata_sha256": "b49bccac875a669cf38dc14be9369444be4f76cb9c97b16642717db4c2c1c4b3",
+      "size_matches_listing": true
+    },
+    {
+      "path": "problematic-regions/genomicSuperDups.bed",
+      "bytes": 1519236,
+      "manifest_sha256": "22a13e39b8ff1b835c39d1a4bbd2b511b66b477a2cd547924e1b3e3b33e8162f",
+      "metadata_sha256": "22a13e39b8ff1b835c39d1a4bbd2b511b66b477a2cd547924e1b3e3b33e8162f",
+      "size_matches_listing": true
+    },
+    {
+      "path": "problematic-regions/rmsk.bed",
+      "bytes": 260624139,
+      "manifest_sha256": "0c8ac6be02d66570fc62f69399e802f0933affcc02e165e6bcd087f0cd816288",
+      "metadata_sha256": "0c8ac6be02d66570fc62f69399e802f0933affcc02e165e6bcd087f0cd816288",
+      "size_matches_listing": true
+    },
+    {
+      "path": "problematic-regions/simpleRepeat.bed",
+      "bytes": 26853904,
+      "manifest_sha256": "4d0a881cbbe4030ad0c864f5413afaf17c4eaf15f6b6ca90d1559169c7d9bae4",
+      "metadata_sha256": "4d0a881cbbe4030ad0c864f5413afaf17c4eaf15f6b6ca90d1559169c7d9bae4",
+      "size_matches_listing": true
+    },
+    {
+      "path": "sample-qc/grch38-sex-chromosome-regions.json",
+      "bytes": 580,
+      "manifest_sha256": "1facfec20f5d0ebdedd6b40847448a98550bc19ae233c843e6a43e430f60d317",
+      "metadata_sha256": "1facfec20f5d0ebdedd6b40847448a98550bc19ae233c843e6a43e430f60d317",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/GeneBayes.Supplementary_Table_1.tsv",
+      "bytes": 1572515,
+      "manifest_sha256": "d5a88129246bb8a1f157c29d6bb566a81234fc752a3b1dd05fce0a422d7e49f3",
+      "metadata_sha256": "d5a88129246bb8a1f157c29d6bb566a81234fc752a3b1dd05fce0a422d7e49f3",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr1.gff3",
+      "bytes": 119822079,
+      "manifest_sha256": "063147719c3d0521c60994002d15d72877ea3b954b0b804ca3c7dca886ab17f9",
+      "metadata_sha256": "063147719c3d0521c60994002d15d72877ea3b954b0b804ca3c7dca886ab17f9",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr1.gff3.fastvep.cache",
+      "bytes": 36888397,
+      "manifest_sha256": "19742d30aeb90b76ce477bea32da5a9370af2411b128e6538c46726b4f71aee2",
+      "metadata_sha256": "19742d30aeb90b76ce477bea32da5a9370af2411b128e6538c46726b4f71aee2",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr10.gff3",
+      "bytes": 55609760,
+      "manifest_sha256": "17e40ee2614c656140152622bacc139277e72c053a49312714f8e5806f660a05",
+      "metadata_sha256": "17e40ee2614c656140152622bacc139277e72c053a49312714f8e5806f660a05",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr10.gff3.fastvep.cache",
+      "bytes": 16119773,
+      "manifest_sha256": "2627c1142cc4f2c3fb536a5b1164fae4cbf7fd0a0e6cf47b251b820daabf01a4",
+      "metadata_sha256": "2627c1142cc4f2c3fb536a5b1164fae4cbf7fd0a0e6cf47b251b820daabf01a4",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr11.gff3",
+      "bytes": 70128802,
+      "manifest_sha256": "872f16df2eae2fb6d5a6b04c27c6dd87b954b6a3627492a6b64c20c87484ae37",
+      "metadata_sha256": "872f16df2eae2fb6d5a6b04c27c6dd87b954b6a3627492a6b64c20c87484ae37",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr11.gff3.fastvep.cache",
+      "bytes": 20806996,
+      "manifest_sha256": "4f428ce777c5e7c4970334aec453f51753c251ab07539326a0c3d56c4fe61ba8",
+      "metadata_sha256": "4f428ce777c5e7c4970334aec453f51753c251ab07539326a0c3d56c4fe61ba8",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr12.gff3",
+      "bytes": 63999116,
+      "manifest_sha256": "8daca07075334597ef3b28ca783f540f34e9a0aaad151921be4cba7b05443f5a",
+      "metadata_sha256": "8daca07075334597ef3b28ca783f540f34e9a0aaad151921be4cba7b05443f5a",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr12.gff3.fastvep.cache",
+      "bytes": 18803768,
+      "manifest_sha256": "4dd4786f4d5c50bd61d179f5f5d16734aff9823a236f949fbbf310933b9d1f9d",
+      "metadata_sha256": "4dd4786f4d5c50bd61d179f5f5d16734aff9823a236f949fbbf310933b9d1f9d",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr13.gff3",
+      "bytes": 22668016,
+      "manifest_sha256": "58be9d2993a5f080eee01118e2cf691e3461ef9c8bd7702e626aa8a2045d38e3",
+      "metadata_sha256": "58be9d2993a5f080eee01118e2cf691e3461ef9c8bd7702e626aa8a2045d38e3",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr13.gff3.fastvep.cache",
+      "bytes": 5660225,
+      "manifest_sha256": "b0b160e5c155171a03af3c6970f01b7402b67d8d4f82ff7addfb334fd6a23ae2",
+      "metadata_sha256": "b0b160e5c155171a03af3c6970f01b7402b67d8d4f82ff7addfb334fd6a23ae2",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr14.gff3",
+      "bytes": 42332019,
+      "manifest_sha256": "b861aa386a3ee8409d3de07a4849bf656ed21451e13797982d472d7b5ec861a3",
+      "metadata_sha256": "b861aa386a3ee8409d3de07a4849bf656ed21451e13797982d472d7b5ec861a3",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr14.gff3.fastvep.cache",
+      "bytes": 11922190,
+      "manifest_sha256": "635555011e63ef122145276d833a4cf2a45c9a6e24715b17ae7a6e6514bac91f",
+      "metadata_sha256": "635555011e63ef122145276d833a4cf2a45c9a6e24715b17ae7a6e6514bac91f",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr15.gff3",
+      "bytes": 41655422,
+      "manifest_sha256": "b615abf3368bdd2a13d49059eede00d8f2aa0a2ca621d91747c71bd25aa2597b",
+      "metadata_sha256": "b615abf3368bdd2a13d49059eede00d8f2aa0a2ca621d91747c71bd25aa2597b",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr15.gff3.fastvep.cache",
+      "bytes": 11271279,
+      "manifest_sha256": "aa362addb2e9009c319b6edebb502dd8391f0361e90a93634382c4bd030aa0fd",
+      "metadata_sha256": "aa362addb2e9009c319b6edebb502dd8391f0361e90a93634382c4bd030aa0fd",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr16.gff3",
+      "bytes": 50447036,
+      "manifest_sha256": "03474be35af82421b1805c3236d78a685c5534aa0f557718c6e132a4fc675d04",
+      "metadata_sha256": "03474be35af82421b1805c3236d78a685c5534aa0f557718c6e132a4fc675d04",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr16.gff3.fastvep.cache",
+      "bytes": 14181954,
+      "manifest_sha256": "6e8dca2a52001fd454e634ba0f0845c51e2b2adce5b112f216b7eb7b4c6c4613",
+      "metadata_sha256": "6e8dca2a52001fd454e634ba0f0845c51e2b2adce5b112f216b7eb7b4c6c4613",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr17.gff3",
+      "bytes": 67006375,
+      "manifest_sha256": "f91d7c80ef7a8104c2547d88ad0ff6abf30f37ee8b3e1274878e687ae6cccb3b",
+      "metadata_sha256": "f91d7c80ef7a8104c2547d88ad0ff6abf30f37ee8b3e1274878e687ae6cccb3b",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr17.gff3.fastvep.cache",
+      "bytes": 19658306,
+      "manifest_sha256": "1ec5e575aaab6ac765acb3824c17b94f9dc6dec70b1499aca277e3637edd49e8",
+      "metadata_sha256": "1ec5e575aaab6ac765acb3824c17b94f9dc6dec70b1499aca277e3637edd49e8",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr18.gff3",
+      "bytes": 20610173,
+      "manifest_sha256": "637cd6d54c0bc0910cc8e78893901de54f90b90eba3cd34fcc1b66496b60cac3",
+      "metadata_sha256": "637cd6d54c0bc0910cc8e78893901de54f90b90eba3cd34fcc1b66496b60cac3",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr18.gff3.fastvep.cache",
+      "bytes": 5277209,
+      "manifest_sha256": "e9e9d1a0f75d18cb21315be0377f14a29fb8b71bb30669bdb28f9376b0823b85",
+      "metadata_sha256": "e9e9d1a0f75d18cb21315be0377f14a29fb8b71bb30669bdb28f9376b0823b85",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr19.gff3",
+      "bytes": 61711233,
+      "manifest_sha256": "1cce4bc7b8a7cc5ad5294cfaec658bd81f285df221fb2d7239274f723bc4aadf",
+      "metadata_sha256": "1cce4bc7b8a7cc5ad5294cfaec658bd81f285df221fb2d7239274f723bc4aadf",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr19.gff3.fastvep.cache",
+      "bytes": 19190725,
+      "manifest_sha256": "0003eaaba4082be0344db64e37396c5e37660e52d521f3a3615b526a39a6be14",
+      "metadata_sha256": "0003eaaba4082be0344db64e37396c5e37660e52d521f3a3615b526a39a6be14",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr2.gff3",
+      "bytes": 95816360,
+      "manifest_sha256": "2b616eda3c531bed87dcab9c9141d885f6ae9d527f65a461dcfe9fb9a7052e56",
+      "metadata_sha256": "2b616eda3c531bed87dcab9c9141d885f6ae9d527f65a461dcfe9fb9a7052e56",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr2.gff3.fastvep.cache",
+      "bytes": 28410480,
+      "manifest_sha256": "c2ea0e06d0e7b75d32fd55988c5a16461a91bf9affef1c6fbd2f2755f3e388bf",
+      "metadata_sha256": "c2ea0e06d0e7b75d32fd55988c5a16461a91bf9affef1c6fbd2f2755f3e388bf",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr20.gff3",
+      "bytes": 29961927,
+      "manifest_sha256": "c34c61611da3826e69c63655ccd7e4250e385264f2ac70912925a549e46aa941",
+      "metadata_sha256": "c34c61611da3826e69c63655ccd7e4250e385264f2ac70912925a549e46aa941",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr20.gff3.fastvep.cache",
+      "bytes": 8170181,
+      "manifest_sha256": "9c6c698e9543abefe096a71cb9d3d9c256350a514ced34315babe52176daee03",
+      "metadata_sha256": "9c6c698e9543abefe096a71cb9d3d9c256350a514ced34315babe52176daee03",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr21.gff3",
+      "bytes": 14387295,
+      "manifest_sha256": "3b9c0ddded71ddd408f92d73fdc496899568700d7c2e24b870043b1413d2f7c0",
+      "metadata_sha256": "3b9c0ddded71ddd408f92d73fdc496899568700d7c2e24b870043b1413d2f7c0",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr21.gff3.fastvep.cache",
+      "bytes": 2977698,
+      "manifest_sha256": "df9289c112450a756561d12512f1f4b03605727ceda6aa551e68e2e4d2fb6f29",
+      "metadata_sha256": "df9289c112450a756561d12512f1f4b03605727ceda6aa551e68e2e4d2fb6f29",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr22.gff3",
+      "bytes": 30694071,
+      "manifest_sha256": "256c85d51d9551883fddfc33bbbce11a783f438f638c69fdc4055e3467626143",
+      "metadata_sha256": "256c85d51d9551883fddfc33bbbce11a783f438f638c69fdc4055e3467626143",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr22.gff3.fastvep.cache",
+      "bytes": 7696643,
+      "manifest_sha256": "4b4393393cdf8227a40e93a05f5af13208a7e8ad8d24c3deeebd2096a2711560",
+      "metadata_sha256": "4b4393393cdf8227a40e93a05f5af13208a7e8ad8d24c3deeebd2096a2711560",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr3.gff3",
+      "bytes": 81988552,
+      "manifest_sha256": "20c28c8aa70e3d082a45509a269f5950b283cb7a2033224ee635f8464c2dfc96",
+      "metadata_sha256": "20c28c8aa70e3d082a45509a269f5950b283cb7a2033224ee635f8464c2dfc96",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr3.gff3.fastvep.cache",
+      "bytes": 24325160,
+      "manifest_sha256": "01e8a45aa285686fabfcfb464314231c79dc7a79909fe4c9986d119be1366d13",
+      "metadata_sha256": "01e8a45aa285686fabfcfb464314231c79dc7a79909fe4c9986d119be1366d13",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr4.gff3",
+      "bytes": 50550111,
+      "manifest_sha256": "837007597458b3a16fd98740126efa8d6d1e470942a7897d656000a832cc25fd",
+      "metadata_sha256": "837007597458b3a16fd98740126efa8d6d1e470942a7897d656000a832cc25fd",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr4.gff3.fastvep.cache",
+      "bytes": 14408132,
+      "manifest_sha256": "ce03cd342dba02233618ec5d11beb3faff2e59950f110e166d8901ed95769567",
+      "metadata_sha256": "ce03cd342dba02233618ec5d11beb3faff2e59950f110e166d8901ed95769567",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr5.gff3",
+      "bytes": 53321663,
+      "manifest_sha256": "b7e4f9e3eb81addd03341844bd17f8d59ea83909cb04af6e5b3f2c6664b4a30f",
+      "metadata_sha256": "b7e4f9e3eb81addd03341844bd17f8d59ea83909cb04af6e5b3f2c6664b4a30f",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr5.gff3.fastvep.cache",
+      "bytes": 15167563,
+      "manifest_sha256": "c8eac585f16007f870f7f94ce9bcb0ef3b34fac9167c8bc9a154e115f5029deb",
+      "metadata_sha256": "c8eac585f16007f870f7f94ce9bcb0ef3b34fac9167c8bc9a154e115f5029deb",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr6.gff3",
+      "bytes": 57360841,
+      "manifest_sha256": "92940adc3d1070c1a2bbdaa13bf505de72d4aa22573098e4ca9dc90ca928150b",
+      "metadata_sha256": "92940adc3d1070c1a2bbdaa13bf505de72d4aa22573098e4ca9dc90ca928150b",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr6.gff3.fastvep.cache",
+      "bytes": 16862266,
+      "manifest_sha256": "c2590cb62d101dbf63d739c11872c334dae27c8db4376360e761b84bbb2e215a",
+      "metadata_sha256": "c2590cb62d101dbf63d739c11872c334dae27c8db4376360e761b84bbb2e215a",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr7.gff3",
+      "bytes": 63846536,
+      "manifest_sha256": "1b2710ae619bb54d19170951070f13df65f4aec46fb929f5fcee33ccf110794d",
+      "metadata_sha256": "1b2710ae619bb54d19170951070f13df65f4aec46fb929f5fcee33ccf110794d",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr7.gff3.fastvep.cache",
+      "bytes": 17407044,
+      "manifest_sha256": "777c24ab9284775de7d91d9f084c082eec1cf4cbada8cc919d7b6b49c20b2df9",
+      "metadata_sha256": "777c24ab9284775de7d91d9f084c082eec1cf4cbada8cc919d7b6b49c20b2df9",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr8.gff3",
+      "bytes": 44608932,
+      "manifest_sha256": "1755b21e0004622425fc090418f2de221a481ce60b43129d0c097e208e03b647",
+      "metadata_sha256": "1755b21e0004622425fc090418f2de221a481ce60b43129d0c097e208e03b647",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr8.gff3.fastvep.cache",
+      "bytes": 12371598,
+      "manifest_sha256": "48953fd4b2b441332cf5f816b3733fe5636fd8ac8113ac88562f2bbe25ddbc52",
+      "metadata_sha256": "48953fd4b2b441332cf5f816b3733fe5636fd8ac8113ac88562f2bbe25ddbc52",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr9.gff3",
+      "bytes": 51401270,
+      "manifest_sha256": "dce304e33d96d86769905826f6ca66fcf9fc12fa086737afaf8f0de977c2f460",
+      "metadata_sha256": "dce304e33d96d86769905826f6ca66fcf9fc12fa086737afaf8f0de977c2f460",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr9.gff3.fastvep.cache",
+      "bytes": 14289957,
+      "manifest_sha256": "b7716382da1ded62bcc9bb6251baf7941410fab33af3ff477fd9d66984102621",
+      "metadata_sha256": "b7716382da1ded62bcc9bb6251baf7941410fab33af3ff477fd9d66984102621",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chrX.gff3",
+      "bytes": 38977595,
+      "manifest_sha256": "edab5137c07411cc4b35e1eb31b6ce707ea08d7a9ed24ff9c346a5651bb213b8",
+      "metadata_sha256": "edab5137c07411cc4b35e1eb31b6ce707ea08d7a9ed24ff9c346a5651bb213b8",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chrX.gff3.fastvep.cache",
+      "bytes": 12024355,
+      "manifest_sha256": "c89895f40944929808255296dfe023c5c4d7c436c3aaf1ba5096787b27bdfc25",
+      "metadata_sha256": "c89895f40944929808255296dfe023c5c4d7c436c3aaf1ba5096787b27bdfc25",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chrY.gff3",
+      "bytes": 3769626,
+      "manifest_sha256": "7f2285a30ef47af879d623c5850dfad5fa81c81e0216a919fe8ee7d7cf8e26c6",
+      "metadata_sha256": "7f2285a30ef47af879d623c5850dfad5fa81c81e0216a919fe8ee7d7cf8e26c6",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chrY.gff3.fastvep.cache",
+      "bytes": 415381,
+      "manifest_sha256": "d8b8419575db741cc4ab9b242746360bbd8820f981da794f1ae684771c62169d",
+      "metadata_sha256": "d8b8419575db741cc4ab9b242746360bbd8820f981da794f1ae684771c62169d",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371,
+      "manifest_sha256": "ec0fd649a3baa1793e20f31aaa626d9a9f1a48c0033ed5b9557fdab822e1c90f",
+      "metadata_sha256": "ec0fd649a3baa1793e20f31aaa626d9a9f1a48c0033ed5b9557fdab822e1c90f",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689,
+      "manifest_sha256": "0266242b50bafafef5e6acc960e34f512bb71d23f7c0aec91933f06395364788",
+      "metadata_sha256": "0266242b50bafafef5e6acc960e34f512bb71d23f7c0aec91933f06395364788",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040,
+      "manifest_sha256": "cfcb59609de6e02e7e461d5770dd20b96c8e92d35578305ae080c41eba72ddbf",
+      "metadata_sha256": "cfcb59609de6e02e7e461d5770dd20b96c8e92d35578305ae080c41eba72ddbf",
+      "size_matches_listing": true
+    },
+    {
+      "path": "targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432,
+      "manifest_sha256": "dda1e7a59c6c8b5f78a1176ab1764a657dcf4d0ea7dc4ddc0304e7e624dac94d",
+      "metadata_sha256": "dda1e7a59c6c8b5f78a1176ab1764a657dcf4d0ea7dc4ddc0304e7e624dac94d",
+      "size_matches_listing": true
+    }
+  ]
+}

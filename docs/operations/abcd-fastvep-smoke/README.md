@@ -24,7 +24,7 @@ vep115.transcript-priority.tsv
 vep115.consequence-ranks.tsv
 ```
 
-Use the validated cache and tables, not freshly generated approximations. The current [production runner](https://github.com/james-guevara/rare-variant-pipeline/blob/b686ef796ed6706bcf0ab15ff3731021441f1cd1/scripts/run_targeted_chromosome.sh) supplies these filenames. The documentation does not establish expected SHA-256 values for all six resources. Obtain a source checksum manifest when staging; this wrapper records actual NBDC checksums but cannot independently certify their provenance.
+These exact six consolidated resources are in `s3://sebat-genomics-work/resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/`. Their expected hashes are supplied in [SHA256SUMS.chr22](SHA256SUMS.chr22), checked against the existing GitHub runtime manifest, the S3 checksum index, and S3 object SHA-256 metadata on 2026-09-29. The old Expanse chromosome directories have different filenames and are not a consolidated v1 mirror. See the [full resource inventory](../../resources/README.md) and the [existing consolidation documentation](https://github.com/james-guevara/integrated_genomics_pipeline/blob/main/docs/operations/rare-variant-resource-locations.md).
 
 The ECR registry requires authorized access. If NBDC cannot pull it, build/export a SIF from this exact digest on an authorized machine and transfer that SIF with its SHA-256. Keep its build provenance. A SIF checksum is not the OCI digest. Do not assume an older `41de024` SIF has the validated Rust picker. No AWS/Expanse resource paths are assumed here.
 
@@ -35,6 +35,30 @@ apptainer pull targeted-rust-picker.sif \
   docker://640838474376.dkr.ecr.us-east-1.amazonaws.com/rare-variant-pipeline-targeted@sha256:7d5b76a28e2427ca97af6ebec1d5e38aec63b93609419c0cc77c063e48e2917d
 sha256sum targeted-rust-picker.sif > targeted-rust-picker.sif.sha256
 ```
+
+## Download the six verified resources
+
+On a machine with authorized S3 access, use an empty staging directory and the provided checksum file. Transfer the resulting files and checksum file to NBDC if NBDC has no AWS access. No presigned URLs or credentials need to be shared with ChatGPT.
+
+```bash
+set -euo pipefail
+export RES=/your/staging/path/ensembl-115
+export HANDOFF=/your/path/abcd-fastvep-smoke
+mkdir -p "$RES"
+S3_ANNOTATION=s3://sebat-genomics-work/resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115
+for name in \
+  Homo_sapiens.GRCh38.115.chr22.gff3 \
+  Homo_sapiens.GRCh38.115.chr22.gff3.fastvep.cache \
+  Homo_sapiens.GRCh38.dna.primary_assembly.fa \
+  Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai \
+  vep115.transcript-priority.tsv \
+  vep115.consequence-ranks.tsv; do
+  aws s3 cp "$S3_ANNOTATION/$name" "$RES/$name" --only-show-errors
+done
+(cd "$RES" && sha256sum -c "$HANDOFF/SHA256SUMS.chr22")
+```
+
+These six files total approximately 3.20 GB. Run the checksum check again after transfer to NBDC. Downloading/hashing resources will warm filesystem caches; record whether the benchmark is a first or repeated invocation.
 
 ## NBDC presence checks
 

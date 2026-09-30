@@ -1,0 +1,757 @@
+{
+  "observed_utc": "2026-09-30T00:33:37.282821+00:00",
+  "bucket": "sebat-genomics-work",
+  "prefix": "resources/rare-variant-pipeline/v1/",
+  "objects": [
+    {
+      "Key": "resources/rare-variant-pipeline/v1/DBNSFP_SHA256SUMS",
+      "Size": 5618,
+      "LastModified": "2026-09-14T05:07:49+00:00",
+      "ETag": "\"53dda11362ab3cdc16b9d57d710dc7a9\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/RESOURCE_BUNDLE_VERSION",
+      "Size": 107,
+      "LastModified": "2026-09-14T05:07:49+00:00",
+      "ETag": "\"1e604d6356ea45e2a70beb63c55108c4\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/RESOURCE_SHA256SUMS",
+      "Size": 14431,
+      "LastModified": "2026-09-14T18:16:10+00:00",
+      "ETag": "\"3bcae1fd65018dac806cfe9aad435617\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr1.parquet",
+      "Size": 1431645510,
+      "LastModified": "2026-09-14T05:07:56+00:00",
+      "ETag": "\"f8d5383ff0b6e054e42864e2cb2bcd9d-22\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr10.parquet",
+      "Size": 569028012,
+      "LastModified": "2026-09-14T05:08:05+00:00",
+      "ETag": "\"3c59f966f60cb1deffaa62aa459ddd06-9\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr11.parquet",
+      "Size": 852816221,
+      "LastModified": "2026-09-14T05:08:13+00:00",
+      "ETag": "\"dc6b5473c3528abf050a96b88ecc60f0-13\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr12.parquet",
+      "Size": 764944177,
+      "LastModified": "2026-09-14T05:08:22+00:00",
+      "ETag": "\"92da8c84f810f321b1c5f681ff7da4f4-12\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr13.parquet",
+      "Size": 255351843,
+      "LastModified": "2026-09-14T05:08:26+00:00",
+      "ETag": "\"065a1bdc66f8cda772c7447793e571d4-4\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr14.parquet",
+      "Size": 463466327,
+      "LastModified": "2026-09-14T05:08:30+00:00",
+      "ETag": "\"0d7ad20a5807f3fb5aaf8bdccbd4d8da-7\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr15.parquet",
+      "Size": 483503084,
+      "LastModified": "2026-09-14T05:08:35+00:00",
+      "ETag": "\"d77ac9debbb0aff5ce2de9554c64cd30-8\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr16.parquet",
+      "Size": 587512258,
+      "LastModified": "2026-09-14T05:08:41+00:00",
+      "ETag": "\"dfb7a46957beec3ec9dc966bb66d94dc-9\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr17.parquet",
+      "Size": 795132362,
+      "LastModified": "2026-09-14T05:08:48+00:00",
+      "ETag": "\"7e4f26186e4a9b1698fa2b53751c022b-12\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr18.parquet",
+      "Size": 231177933,
+      "LastModified": "2026-09-14T05:08:52+00:00",
+      "ETag": "\"2db1c8b709c17319ec22c89f1bb8386a-4\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr19.parquet",
+      "Size": 902128822,
+      "LastModified": "2026-09-14T05:09:00+00:00",
+      "ETag": "\"29f377ad43a084fdc12cdf9a62a6267e-14\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr2.parquet",
+      "Size": 1069407926,
+      "LastModified": "2026-09-14T05:09:10+00:00",
+      "ETag": "\"94efd8b2efb424c5e16ec0a49258ecf7-16\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr20.parquet",
+      "Size": 342249839,
+      "LastModified": "2026-09-14T05:09:16+00:00",
+      "ETag": "\"fb805061225a83c617bfbcd8616fc5db-6\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr21.parquet",
+      "Size": 139238411,
+      "LastModified": "2026-09-14T05:09:19+00:00",
+      "ETag": "\"d2dbeb53c3dff76ad279ea763053cf7d-3\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr22.parquet",
+      "Size": 298748270,
+      "LastModified": "2026-09-14T05:09:22+00:00",
+      "ETag": "\"5af5ef661e56d06cf516adb9a336ee80-5\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr3.parquet",
+      "Size": 861933709,
+      "LastModified": "2026-09-14T05:09:29+00:00",
+      "ETag": "\"cf9b105a1862b811bde06e11bb2e1455-13\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr4.parquet",
+      "Size": 588655986,
+      "LastModified": "2026-09-14T05:09:36+00:00",
+      "ETag": "\"40d2cc76ca61dc8ab4e7e0b206092793-9\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr5.parquet",
+      "Size": 662746727,
+      "LastModified": "2026-09-14T05:09:43+00:00",
+      "ETag": "\"f3072d7cd6c2e456dee4eeb6f24b530a-10\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr6.parquet",
+      "Size": 720533558,
+      "LastModified": "2026-09-14T05:09:51+00:00",
+      "ETag": "\"ae052f3e1c67a9f020badb620a216e0c-11\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr7.parquet",
+      "Size": 669308634,
+      "LastModified": "2026-09-14T05:09:57+00:00",
+      "ETag": "\"4e941dafc12211f184860b1bf15d5d99-10\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr8.parquet",
+      "Size": 488138029,
+      "LastModified": "2026-09-14T05:10:03+00:00",
+      "ETag": "\"ad259681aa7c8e4899b5c076b00e4159-8\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chr9.parquet",
+      "Size": 570711585,
+      "LastModified": "2026-09-14T05:10:09+00:00",
+      "ETag": "\"9382e5d0eacd85b89b7247dc8675a951-9\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chrX.parquet",
+      "Size": 534477744,
+      "LastModified": "2026-09-14T05:10:15+00:00",
+      "ETag": "\"7463fa3f07da99ee38ac2451d5e6c040-8\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded_mane_select/chrY.parquet",
+      "Size": 21959817,
+      "LastModified": "2026-09-14T05:10:17+00:00",
+      "ETag": "\"2a27ce0ee30e68e8d1be2e511620e292-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr1.parquet",
+      "Size": 350806009,
+      "LastModified": "2026-09-14T05:10:20+00:00",
+      "ETag": "\"3391baa61d8d3d4a04c431560e63b77f-6\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr10.parquet",
+      "Size": 139162169,
+      "LastModified": "2026-09-14T05:10:23+00:00",
+      "ETag": "\"6aa33df748a4e8a6f7e553d8d28d9161-3\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr11.parquet",
+      "Size": 210641881,
+      "LastModified": "2026-09-14T05:10:25+00:00",
+      "ETag": "\"4f4fdf739ec37d6da47c84d445720f5b-4\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr12.parquet",
+      "Size": 188972950,
+      "LastModified": "2026-09-14T05:10:27+00:00",
+      "ETag": "\"9d6d0b164f1050aaa171601bde5e0aa6-3\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr13.parquet",
+      "Size": 61530088,
+      "LastModified": "2026-09-14T05:10:28+00:00",
+      "ETag": "\"7d9f1d9ceeda59df53a9c8adee9f488a-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr14.parquet",
+      "Size": 112173919,
+      "LastModified": "2026-09-14T05:10:30+00:00",
+      "ETag": "\"381c28e332278bd7852f414b351b29c0-2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr15.parquet",
+      "Size": 117728301,
+      "LastModified": "2026-09-14T05:10:31+00:00",
+      "ETag": "\"474d68a7401c8558f04c948badb82b27-2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr16.parquet",
+      "Size": 149128112,
+      "LastModified": "2026-09-14T05:10:33+00:00",
+      "ETag": "\"b06c37b9f13ae56810f7f34788246825-3\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr17.parquet",
+      "Size": 199469617,
+      "LastModified": "2026-09-14T05:10:36+00:00",
+      "ETag": "\"d4ef0fc0f70d5beaca2a7a0ec2fcb204-3\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr18.parquet",
+      "Size": 55810331,
+      "LastModified": "2026-09-14T05:10:37+00:00",
+      "ETag": "\"cd41246765c647322be3fba0d01a5fdf-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr19.parquet",
+      "Size": 229316205,
+      "LastModified": "2026-09-14T05:10:39+00:00",
+      "ETag": "\"980765e043a0937f960cb86a42a077ea-4\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr2.parquet",
+      "Size": 255764443,
+      "LastModified": "2026-09-14T05:10:42+00:00",
+      "ETag": "\"4cbddcd437866af9e15fe19a8bb76a55-4\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr20.parquet",
+      "Size": 85928384,
+      "LastModified": "2026-09-14T05:10:44+00:00",
+      "ETag": "\"b02dad8a3f0c2ee856ed6631cc4e2e90-2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr21.parquet",
+      "Size": 34605538,
+      "LastModified": "2026-09-14T05:10:45+00:00",
+      "ETag": "\"21f51b22c18c3c41c560089543ba0939-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr22.parquet",
+      "Size": 74620499,
+      "LastModified": "2026-09-14T05:10:46+00:00",
+      "ETag": "\"d3c85f974ca258a6467d666e220a0563-2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr3.parquet",
+      "Size": 209419486,
+      "LastModified": "2026-09-14T05:10:48+00:00",
+      "ETag": "\"0f6d4b06ddf824487ca3215d5bd6f5db-4\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr4.parquet",
+      "Size": 143066847,
+      "LastModified": "2026-09-14T05:10:50+00:00",
+      "ETag": "\"00fa9fce03a0f287e49a4cfc04f9f7ff-3\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr5.parquet",
+      "Size": 161313685,
+      "LastModified": "2026-09-14T05:10:52+00:00",
+      "ETag": "\"22d1f5a5eb7752d7bf56ee5273e0f0ac-3\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr6.parquet",
+      "Size": 174639457,
+      "LastModified": "2026-09-14T05:10:54+00:00",
+      "ETag": "\"da6282b98c1232f99a81abaa77c8c8e2-3\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr7.parquet",
+      "Size": 163918217,
+      "LastModified": "2026-09-14T05:10:56+00:00",
+      "ETag": "\"459da2c6ece02c612570a94195862f75-3\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr8.parquet",
+      "Size": 118948913,
+      "LastModified": "2026-09-14T05:10:58+00:00",
+      "ETag": "\"637ab38de5820b1c05750b35a7b32426-2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chr9.parquet",
+      "Size": 140424574,
+      "LastModified": "2026-09-14T05:10:59+00:00",
+      "ETag": "\"0ee17f69f86091c7c513bf70c9bd1e88-3\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chrX.parquet",
+      "Size": 123000318,
+      "LastModified": "2026-09-14T05:11:01+00:00",
+      "ETag": "\"9ea72a694b0c071477ff73a069c5516a-2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_scores_af/chrY.parquet",
+      "Size": 4470887,
+      "LastModified": "2026-09-14T05:11:02+00:00",
+      "ETag": "\"4611320849e91ea43443d7a608166852\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/ensembl-115/transcripts.sqlite",
+      "Size": 790970368,
+      "LastModified": "2026-09-14T05:11:08+00:00",
+      "ETag": "\"fc14e8c3342ea18c89320efb4bdab641-12\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/loftee-grch38/gerp_conservation_scores.homo_sapiens.GRCh38.bw",
+      "Size": 12617579354,
+      "LastModified": "2026-09-14T05:12:46+00:00",
+      "ETag": "\"e9602aceb065c8bf363fe25d353179ea-189\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/loftee-grch38/human_ancestor.fa.gz",
+      "Size": 885231320,
+      "LastModified": "2026-09-14T05:13:30+00:00",
+      "ETag": "\"3ea4a4922edf5e98528f8042c382a15d-14\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/loftee-grch38/human_ancestor.fa.gz.fai",
+      "Size": 736,
+      "LastModified": "2026-09-14T05:13:33+00:00",
+      "ETag": "\"4702c5b1a20ad9b872af9b7ca47a8add\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/loftee-grch38/human_ancestor.fa.gz.gzi",
+      "Size": 764520,
+      "LastModified": "2026-09-14T05:13:33+00:00",
+      "ETag": "\"f41ec630c75971cdb0d4b464ef7a3839\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/loftee-grch38/loftee.sql",
+      "Size": 148519936,
+      "LastModified": "2026-09-14T05:13:34+00:00",
+      "ETag": "\"3445821b934350bda89855450e186b93-3\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/postprocess/config.json",
+      "Size": 419,
+      "LastModified": "2026-09-14T05:13:35+00:00",
+      "ETag": "\"bb1387558e0f8ba41641ea59aa9e48f1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/problematic-regions/genomicSuperDups.bed",
+      "Size": 1519236,
+      "LastModified": "2026-09-14T05:13:35+00:00",
+      "ETag": "\"7cc8b2cde0a83fa3f52fae6bc97eee49\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/problematic-regions/rmsk.bed",
+      "Size": 260624139,
+      "LastModified": "2026-09-14T05:13:37+00:00",
+      "ETag": "\"0e2b5adbbe510d8bc412b6fd7f804156-4\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/problematic-regions/simpleRepeat.bed",
+      "Size": 26853904,
+      "LastModified": "2026-09-14T05:13:38+00:00",
+      "ETag": "\"357b70b080227757e4cb9a2a2b0300e5-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/sample-qc/grch38-sex-chromosome-regions.json",
+      "Size": 580,
+      "LastModified": "2026-09-14T05:13:39+00:00",
+      "ETag": "\"2a662a0aaeb8b1b4de33e32019aa95ba\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/source-archive/ensembl-115/Homo_sapiens.GRCh38.115.chr.gtf.gz",
+      "Size": 104303351,
+      "LastModified": "2026-09-05T07:17:57+00:00",
+      "ETag": "\"ba8d92cd89733d40a41c912e543f51c5-13\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/source-archive/ensembl-115/Homo_sapiens.GRCh38.115.gff3.gz",
+      "Size": 83835106,
+      "LastModified": "2026-09-05T07:17:59+00:00",
+      "ETag": "\"4f1f03adb8e0e279267caee4721992e7-10\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/source-archive/ensembl-115/Homo_sapiens.GRCh38.dna.chromosome.22.fa.gz",
+      "Size": 11389810,
+      "LastModified": "2026-09-05T07:18:01+00:00",
+      "ETag": "\"d9fcffcd4ac3ecb24a7a5bf7913fd646-2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/source-archive/ensembl-115/Homo_sapiens.GRCh38.dna.chromosome.X.fa.gz",
+      "Size": 46167328,
+      "LastModified": "2026-09-05T07:18:02+00:00",
+      "ETag": "\"e21dde7865782f4e899441d0cda3c88d-6\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/source-archive/ensembl-115/Homo_sapiens.GRCh38.dna.chromosome.Y.fa.gz",
+      "Size": 7857347,
+      "LastModified": "2026-09-05T07:18:03+00:00",
+      "ETag": "\"c57a2abadcac9f8638fc99f3d0c04bbf\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/source-archive/ensembl-115/fasta.CHECKSUMS",
+      "Size": 4979,
+      "LastModified": "2026-09-05T07:18:04+00:00",
+      "ETag": "\"96bfc0d42dec28ca4e751f45bde93edf\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/source-archive/ensembl-115/gtf.CHECKSUMS",
+      "Size": 224,
+      "LastModified": "2026-09-05T07:18:04+00:00",
+      "ETag": "\"61d025b91dc38a88c82b5cc0037ecd93\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/source-archive/loftee-grch38/loftee.sql.gz",
+      "Size": 29960948,
+      "LastModified": "2026-09-05T07:18:05+00:00",
+      "ETag": "\"6ca8a2ffb31825a15fdf728bae4bcf30-4\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/GeneBayes.Supplementary_Table_1.tsv",
+      "Size": 1572515,
+      "LastModified": "2026-09-14T05:13:39+00:00",
+      "ETag": "\"c2b41675dc2f07e4c29e1584505071e5\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr1.gff3",
+      "Size": 119822079,
+      "LastModified": "2026-09-14T05:13:40+00:00",
+      "ETag": "\"7868e07d66a3a4cd033e81137ace3b05-2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr1.gff3.fastvep.cache",
+      "Size": 36888397,
+      "LastModified": "2026-09-14T05:13:41+00:00",
+      "ETag": "\"9d1db4ea8a1786a591cdf99101bf05af-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr10.gff3",
+      "Size": 55609760,
+      "LastModified": "2026-09-14T05:13:42+00:00",
+      "ETag": "\"12b46ad60a6f11d8f2bf7eb4895a374e-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr10.gff3.fastvep.cache",
+      "Size": 16119773,
+      "LastModified": "2026-09-14T05:13:43+00:00",
+      "ETag": "\"4b6cbec0a56922e4eb782520a65eda66-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr11.gff3",
+      "Size": 70128802,
+      "LastModified": "2026-09-14T05:13:44+00:00",
+      "ETag": "\"6767999e1abce9a413ee62ee66271072-2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr11.gff3.fastvep.cache",
+      "Size": 20806996,
+      "LastModified": "2026-09-14T05:13:45+00:00",
+      "ETag": "\"da3b6c9148c82f2df51dab8ce6f8573a-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr12.gff3",
+      "Size": 63999116,
+      "LastModified": "2026-09-14T05:13:46+00:00",
+      "ETag": "\"931396aaf4e3d371bfd60e5c216a512f-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr12.gff3.fastvep.cache",
+      "Size": 18803768,
+      "LastModified": "2026-09-14T05:13:47+00:00",
+      "ETag": "\"530ad4092ae29197f58d75ed2390d13f-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr13.gff3",
+      "Size": 22668016,
+      "LastModified": "2026-09-14T05:13:47+00:00",
+      "ETag": "\"6f8e9a775eee760fc9730c66cfb85698-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr13.gff3.fastvep.cache",
+      "Size": 5660225,
+      "LastModified": "2026-09-14T05:13:47+00:00",
+      "ETag": "\"3d022eda20041e1aa04a4f94b186a62d\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr14.gff3",
+      "Size": 42332019,
+      "LastModified": "2026-09-14T05:13:48+00:00",
+      "ETag": "\"6c2cc572b00f385765f96ea206ff059b-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr14.gff3.fastvep.cache",
+      "Size": 11922190,
+      "LastModified": "2026-09-14T05:13:49+00:00",
+      "ETag": "\"2270074a896d159e6e6a1d3dbf4256a7-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr15.gff3",
+      "Size": 41655422,
+      "LastModified": "2026-09-14T05:13:49+00:00",
+      "ETag": "\"59196c68fa54728308f52e2cebfaea8b-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr15.gff3.fastvep.cache",
+      "Size": 11271279,
+      "LastModified": "2026-09-14T05:13:50+00:00",
+      "ETag": "\"ad3c34b7ea8c021684a0f5c4a0c05179-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr16.gff3",
+      "Size": 50447036,
+      "LastModified": "2026-09-14T05:13:51+00:00",
+      "ETag": "\"3a30db80df40a7e5698b6c6cd10c06a2-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr16.gff3.fastvep.cache",
+      "Size": 14181954,
+      "LastModified": "2026-09-14T05:13:51+00:00",
+      "ETag": "\"43a1461879b68d473b68edda56987348-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr17.gff3",
+      "Size": 67006375,
+      "LastModified": "2026-09-14T05:13:52+00:00",
+      "ETag": "\"31366c3c7e241a562ae1e10e21ec70c2-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr17.gff3.fastvep.cache",
+      "Size": 19658306,
+      "LastModified": "2026-09-14T05:13:53+00:00",
+      "ETag": "\"ffcb1d6abd991ef3dd24da584652daa8-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr18.gff3",
+      "Size": 20610173,
+      "LastModified": "2026-09-14T05:13:54+00:00",
+      "ETag": "\"4f127d14234d6af688ed9f697530ac47-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr18.gff3.fastvep.cache",
+      "Size": 5277209,
+      "LastModified": "2026-09-14T05:13:54+00:00",
+      "ETag": "\"6f2c78e8299a0e6eadf270585d2b225c\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr19.gff3",
+      "Size": 61711233,
+      "LastModified": "2026-09-14T05:13:55+00:00",
+      "ETag": "\"9b6f8059e93ca9a1193f09b1658ff79a-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr19.gff3.fastvep.cache",
+      "Size": 19190725,
+      "LastModified": "2026-09-14T05:13:56+00:00",
+      "ETag": "\"b7fc40ff22ff4b4243558bbf9b0ef339-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr2.gff3",
+      "Size": 95816360,
+      "LastModified": "2026-09-14T05:13:57+00:00",
+      "ETag": "\"d9597d76dd1ed6b32aac3b310cc642ca-2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr2.gff3.fastvep.cache",
+      "Size": 28410480,
+      "LastModified": "2026-09-14T05:13:58+00:00",
+      "ETag": "\"dfcda7947095e3c675415f07a7890149-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr20.gff3",
+      "Size": 29961927,
+      "LastModified": "2026-09-14T05:13:59+00:00",
+      "ETag": "\"b76f342839c9c26c885629aced803361-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr20.gff3.fastvep.cache",
+      "Size": 8170181,
+      "LastModified": "2026-09-14T05:14:00+00:00",
+      "ETag": "\"efb2ac95679ab4e9d04b3fdbe7c26fb1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr21.gff3",
+      "Size": 14387295,
+      "LastModified": "2026-09-14T05:14:00+00:00",
+      "ETag": "\"57c622c7074295f0c91d1e56035ef913-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr21.gff3.fastvep.cache",
+      "Size": 2977698,
+      "LastModified": "2026-09-14T05:14:00+00:00",
+      "ETag": "\"c286ca72ee1aa6347860775e37b71f27\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr22.gff3",
+      "Size": 30694071,
+      "LastModified": "2026-09-14T05:14:00+00:00",
+      "ETag": "\"ce10849c8b55f7ade53584c63e8d8f4e-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr22.gff3.fastvep.cache",
+      "Size": 7696643,
+      "LastModified": "2026-09-14T05:14:01+00:00",
+      "ETag": "\"8807b59827d9f9a9cd462eff8f0bd738\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr3.gff3",
+      "Size": 81988552,
+      "LastModified": "2026-09-14T05:14:02+00:00",
+      "ETag": "\"4faaadf9815b8b208685617035414e56-2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr3.gff3.fastvep.cache",
+      "Size": 24325160,
+      "LastModified": "2026-09-14T05:14:03+00:00",
+      "ETag": "\"ee34932f1c807053b5d04d2adecd46ab-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr4.gff3",
+      "Size": 50550111,
+      "LastModified": "2026-09-14T05:14:03+00:00",
+      "ETag": "\"6ff585eecbb4a11dfae8344a3f3a7b33-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr4.gff3.fastvep.cache",
+      "Size": 14408132,
+      "LastModified": "2026-09-14T05:14:04+00:00",
+      "ETag": "\"84ffde16755da0333f3672990c5e43e2-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr5.gff3",
+      "Size": 53321663,
+      "LastModified": "2026-09-14T05:14:05+00:00",
+      "ETag": "\"a81087fa44daf48cb01a1298f45fe46d-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr5.gff3.fastvep.cache",
+      "Size": 15167563,
+      "LastModified": "2026-09-14T05:14:06+00:00",
+      "ETag": "\"4d67af6e1722a26d3391da4f8874ee37-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr6.gff3",
+      "Size": 57360841,
+      "LastModified": "2026-09-14T05:14:07+00:00",
+      "ETag": "\"165f86cdabc018f68d80e5058643902c-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr6.gff3.fastvep.cache",
+      "Size": 16862266,
+      "LastModified": "2026-09-14T05:14:07+00:00",
+      "ETag": "\"bd40c9ef48f68a23376383eedcbbb2c5-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr7.gff3",
+      "Size": 63846536,
+      "LastModified": "2026-09-14T05:14:08+00:00",
+      "ETag": "\"073bfede7ec72260e07ddae8f92ff3ef-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr7.gff3.fastvep.cache",
+      "Size": 17407044,
+      "LastModified": "2026-09-14T05:14:09+00:00",
+      "ETag": "\"a8d6db58abdd0b5e72bb0983ea5e0030-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr8.gff3",
+      "Size": 44608932,
+      "LastModified": "2026-09-14T05:14:10+00:00",
+      "ETag": "\"b27e2a96efd6476959c0dd960e346b9e-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr8.gff3.fastvep.cache",
+      "Size": 12371598,
+      "LastModified": "2026-09-14T05:14:10+00:00",
+      "ETag": "\"5734aa4166c87670e703184d3cf87614-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr9.gff3",
+      "Size": 51401270,
+      "LastModified": "2026-09-14T05:14:11+00:00",
+      "ETag": "\"3e000df29dfe717a0cc78590b953d107-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr9.gff3.fastvep.cache",
+      "Size": 14289957,
+      "LastModified": "2026-09-14T05:14:12+00:00",
+      "ETag": "\"0cf2b854ae0184792624c409df7b3d4d-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chrX.gff3",
+      "Size": 38977595,
+      "LastModified": "2026-09-14T05:14:13+00:00",
+      "ETag": "\"6d7e37cf941b547065644b5ba0df0752-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chrX.gff3.fastvep.cache",
+      "Size": 12024355,
+      "LastModified": "2026-09-14T05:14:13+00:00",
+      "ETag": "\"e7a02761db17884e115ea0d8ae3174b4-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chrY.gff3",
+      "Size": 3769626,
+      "LastModified": "2026-09-14T05:14:14+00:00",
+      "ETag": "\"d9aec4e0383db5b1041112127941fe97\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chrY.gff3.fastvep.cache",
+      "Size": 415381,
+      "LastModified": "2026-09-14T05:14:14+00:00",
+      "ETag": "\"a97eba9ed8bd3cb19c81d171da5fae1a\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "Size": 3139742371,
+      "LastModified": "2026-09-14T05:14:42+00:00",
+      "ETag": "\"663e311fcf518ad5a1984f12198a675d-47\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "Size": 689,
+      "LastModified": "2026-09-14T05:14:50+00:00",
+      "ETag": "\"7edad40d073f12e789cc0a93654296c2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "Size": 1040,
+      "LastModified": "2026-09-14T05:14:50+00:00",
+      "ETag": "\"d4291a9459f2e2be7ea202b88fb3bcfc\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "Size": 22466432,
+      "LastModified": "2026-09-14T05:14:50+00:00",
+      "ETag": "\"6fb86a98b47b82dc9b29d41337f94cc0-1\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/transfer-receipts/RESOURCE_SHA256SUMS.pre-repair-20260914",
+      "Size": 14431,
+      "LastModified": "2026-09-14T18:16:09+00:00",
+      "ETag": "\"a2963c8e57d64124c16ff78dd84fb9e2\""
+    },
+    {
+      "Key": "resources/rare-variant-pipeline/v1/transfer-receipts/fsx-copy-20260913.json",
+      "Size": 26916,
+      "LastModified": "2026-09-14T05:14:51+00:00",
+      "ETag": "\"3ad076c1060af6b0d96b1ee025f6e36a\""
+    }
+  ]
+}
