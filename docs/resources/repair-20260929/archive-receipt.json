@@ -1,0 +1,56 @@
+{
+  "status": "passed",
+  "files": [
+    {
+      "path": "source-archive/ensembl-115/Homo_sapiens.GRCh38.115.chr.gtf.gz",
+      "bytes": 104303351,
+      "sha256": "8fd9b38838279308abeb565bb020d05dcd6af90ba2a4df1e94b9d4efa835572a"
+    },
+    {
+      "path": "source-archive/ensembl-115/Homo_sapiens.GRCh38.115.gff3.gz",
+      "bytes": 83835106,
+      "sha256": "1e553efa8496d662e7264061a5cecf3001eb9a1157aaa66d80cd7ac35841509c"
+    },
+    {
+      "path": "source-archive/ensembl-115/Homo_sapiens.GRCh38.dna.chromosome.22.fa.gz",
+      "bytes": 11389810,
+      "sha256": "974f97ac8ef7ffae971b63b47608feda327403be40c27e391ee4a1a78b800df5"
+    },
+    {
+      "path": "source-archive/ensembl-115/Homo_sapiens.GRCh38.dna.chromosome.X.fa.gz",
+      "bytes": 46167328,
+      "sha256": "9948f1c14ad63f3d874f2dbd352b4a096bddfe4bece30220bb80e5d7a0fc7f66"
+    },
+    {
+      "path": "source-archive/ensembl-115/Homo_sapiens.GRCh38.dna.chromosome.Y.fa.gz",
+      "bytes": 7857347,
+      "sha256": "2bb6a147b9b22f10b2ee0d7813c20ec2f5a4629b65594450d07a1f89d542d0d4"
+    },
+    {
+      "path": "source-archive/ensembl-115/fasta.CHECKSUMS",
+      "bytes": 4979,
+      "sha256": "f413b69588fe36008a61ac509d02c09fe0f3b967b4838b4a172fa5d237af26c8"
+    },
+    {
+      "path": "source-archive/ensembl-115/gtf.CHECKSUMS",
+      "bytes": 224,
+      "sha256": "349732c93ebb34c682e0633d22395b5c4f76126e23d10d0d5416990dc40239ad"
+    },
+    {
+      "path": "source-archive/loftee-grch38/loftee.sql.gz",
+      "bytes": 29960948,
+      "sha256": "527182b8a4f81d0f68d06fa311c0d22730423f2d419859c782f477ab67656441"
+    },
+    {
+      "path": "transfer-receipts/RESOURCE_SHA256SUMS.pre-repair-20260914",
+      "bytes": 14431,
+      "sha256": "b2865b0c96926bab48d8e0b4f077d7e4a3cc287c7b46e0322f026668bf2bca9d"
+    },
+    {
+      "path": "transfer-receipts/fsx-copy-20260913.json",
+      "bytes": 26916,
+      "sha256": "525394ac1fc86f84401b635c3291a7f3b10994ffff38c94086a3dfc75e58d243"
+    }
+  ],
+  "finished_unix": 1790729352.742831
+}

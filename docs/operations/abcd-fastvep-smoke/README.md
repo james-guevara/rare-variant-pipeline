@@ -24,7 +24,7 @@ vep115.transcript-priority.tsv
 vep115.consequence-ranks.tsv
 ```
 
-These exact six consolidated resources are in `s3://sebat-genomics-work/resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/`. Their expected hashes are supplied in [SHA256SUMS.chr22](SHA256SUMS.chr22), checked against the existing GitHub runtime manifest, the S3 checksum index, and S3 object SHA-256 metadata on 2026-09-29. The old Expanse chromosome directories have different filenames and are not a consolidated v1 mirror. See the [full resource inventory](../../resources/README.md) and the [existing consolidation documentation](https://github.com/james-guevara/integrated_genomics_pipeline/blob/main/docs/operations/rare-variant-resource-locations.md).
+These exact six consolidated resources are in `s3://sebat-genomics-work/resources/rare-variant-pipeline/v1/targeted-annotation/ensembl-115/`. Their expected hashes are supplied in [SHA256SUMS.chr22](SHA256SUMS.chr22), checked against the existing GitHub runtime manifest, the S3 checksum index, and S3 object SHA-256 metadata on 2026-09-29. The restored Expanse copy is `/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/`; use this versioned path. Historical chromosome-specific filenames are retained only for compatibility. See the [full resource inventory](../../resources/README.md) and the [existing consolidation documentation](https://github.com/james-guevara/integrated_genomics_pipeline/blob/main/docs/operations/rare-variant-resource-locations.md).
 
 The ECR registry requires authorized access. If NBDC cannot pull it, build/export a SIF from this exact digest on an authorized machine and transfer that SIF with its SHA-256. Keep its build provenance. A SIF checksum is not the OCI digest. Do not assume an older `41de024` SIF has the validated Rust picker. No AWS/Expanse resource paths are assumed here.
 
@@ -35,6 +35,17 @@ apptainer pull targeted-rust-picker.sif \
   docker://640838474376.dkr.ecr.us-east-1.amazonaws.com/rare-variant-pipeline-targeted@sha256:7d5b76a28e2427ca97af6ebec1d5e38aec63b93609419c0cc77c063e48e2917d
 sha256sum targeted-rust-picker.sif > targeted-rust-picker.sif.sha256
 ```
+
+## Already staged on Expanse
+
+The repaired Expanse registry now supplies the exact resources and pinned smoke-test SIF:
+
+```bash
+RES=/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115
+SIF=/expanse/projects/sebat1/resources/rare-variant-pipeline/containers/v1/targeted-7d5b76a28e2427ca97af6ebec1d5e38aec63b93609419c0cc77c063e48e2917d.sif
+```
+
+The SIF has a portable `.sha256` sidecar. Transfer that image, its sidecar, and the six annotation resources to NBDC, preserving timestamps where possible. Verify the resource and SIF checksums at the destination and enforce the cache-newer-than-GFF rule below before binding the resources read-only. See the [repair report](../../resources/repair-20260929/README.md) for validation and exact image hashes. Codex has not run the ABCD benchmark on NBDC.
 
 ## Download the six verified resources
 
@@ -56,6 +67,19 @@ for name in \
   aws s3 cp "$S3_ANNOTATION/$name" "$RES/$name" --only-show-errors
 done
 (cd "$RES" && sha256sum -c "$HANDOFF/SHA256SUMS.chr22")
+```
+
+FastVEP decides cache freshness using **strict filesystem modification-time ordering** (`cache_mtime > gff_mtime`). S3 copies can give the pair equal or reversed timestamps. After verifying downloaded bytes, set the cache timestamp newer than its matching GFF3; this changes metadata only, not the pinned SHA-256. Then bind resources read-only as shown below. Otherwise FastVEP may rebuild a valid cache or waste time reparsing GFF3.
+
+```bash
+python3 - "$RES" <<'PY_CACHE_TIME'
+import os, pathlib, sys
+root = pathlib.Path(sys.argv[1])
+gff = root / 'Homo_sapiens.GRCh38.115.chr22.gff3'
+cache = pathlib.Path(str(gff) + '.fastvep.cache')
+ns = max(cache.stat().st_mtime_ns, gff.stat().st_mtime_ns + 1_000_000_000)
+os.utime(cache, ns=(ns, ns))
+PY_CACHE_TIME
 ```
 
 These six files total approximately 3.20 GB. Run the checksum check again after transfer to NBDC. Downloading/hashing resources will warm filesystem caches; record whether the benchmark is a first or repeated invocation.

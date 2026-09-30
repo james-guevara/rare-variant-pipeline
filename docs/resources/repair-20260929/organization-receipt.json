@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "release": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1",
+  "legacy": "/expanse/projects/sebat1/resources/rare-variant-pipeline/legacy/registry-before-20260929",
+  "actions": [
+    "All 24 annotation chromosome directories now use the same six consolidated resource aliases; all prior filenames retained.",
+    "Repaired active LOFTEE support paths; added consolidated transcript database, preserved old chromosome databases.",
+    "Repaired GeneBayes alias and published current -> releases/v1."
+  ],
+  "legacy_byte_differences": {
+    "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chr22.gff3.fastvep.cache": {
+      "old_sha256": "4b4393393cdf8227a40e93a05f5af13208a7e8ad8d24c3deeebd2096a2711560",
+      "v1_sha256": "e1a36d709ba22d713b40c69cfeece8da385f68a6f996ad86994753b8c5cd0058",
+      "old_file_preserved_under": "/expanse/projects/sebat1/resources/rare-variant-pipeline/legacy/registry-before-20260929/annotation-ensembl-115/chr22/Homo_sapiens.GRCh38.115.chr22.gff3.fastvep.cache"
+    },
+    "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.115.chr3.gff3.fastvep.cache": {
+      "old_sha256": "01e8a45aa285686fabfcfb464314231c79dc7a79909fe4c9986d119be1366d13",
+      "v1_sha256": "21e65efc6d1a0f48665e2cbed4fa2e46ef2c9568df2d694b4faf4ca665e89371",
+      "old_file_preserved_under": "/expanse/projects/sebat1/resources/rare-variant-pipeline/legacy/registry-before-20260929/annotation-ensembl-115/chr3/Homo_sapiens.GRCh38.115.chr3.gff3.fastvep.cache"
+    },
+    "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.115.chr9.gff3.fastvep.cache": {
+      "old_sha256": "b7716382da1ded62bcc9bb6251baf7941410fab33af3ff477fd9d66984102621",
+      "v1_sha256": "044b6c572d9e401016b4eb429a87d6569c0d2b701c909665476b920a69b8156e",
+      "old_file_preserved_under": "/expanse/projects/sebat1/resources/rare-variant-pipeline/legacy/registry-before-20260929/annotation-ensembl-115/chr9/Homo_sapiens.GRCh38.115.chr9.gff3.fastvep.cache"
+    }
+  },
+  "finished_unix": 1790730190.6267312
+}

@@ -1,0 +1,198 @@
+{
+  "status": "passed",
+  "reason": "Initial validation rebuilt 3 caches because download-time mtime ordering made them stale; restored original manifest bytes, enforced cache>GFF mtime, made release read-only.",
+  "files": [
+    {
+      "chromosome": "chr1",
+      "expected_sha256": "19742d30aeb90b76ce477bea32da5a9370af2411b128e6538c46726b4f71aee2",
+      "before_sha256": "19742d30aeb90b76ce477bea32da5a9370af2411b128e6538c46726b4f71aee2",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729007892797981,
+      "gff_mtime_ns": 1790729006892797981
+    },
+    {
+      "chromosome": "chr2",
+      "expected_sha256": "c2ea0e06d0e7b75d32fd55988c5a16461a91bf9affef1c6fbd2f2755f3e388bf",
+      "before_sha256": "c2ea0e06d0e7b75d32fd55988c5a16461a91bf9affef1c6fbd2f2755f3e388bf",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729024613364630,
+      "gff_mtime_ns": 1790729023613364630
+    },
+    {
+      "chromosome": "chr3",
+      "expected_sha256": "01e8a45aa285686fabfcfb464314231c79dc7a79909fe4c9986d119be1366d13",
+      "before_sha256": "21e65efc6d1a0f48665e2cbed4fa2e46ef2c9568df2d694b4faf4ca665e89371",
+      "restored_bytes": true,
+      "cache_mtime_ns": 1790729057186242770,
+      "gff_mtime_ns": 1790729056186242770
+    },
+    {
+      "chromosome": "chr4",
+      "expected_sha256": "ce03cd342dba02233618ec5d11beb3faff2e59950f110e166d8901ed95769567",
+      "before_sha256": "ce03cd342dba02233618ec5d11beb3faff2e59950f110e166d8901ed95769567",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729065500386051,
+      "gff_mtime_ns": 1790729064500386051
+    },
+    {
+      "chromosome": "chr5",
+      "expected_sha256": "c8eac585f16007f870f7f94ce9bcb0ef3b34fac9167c8bc9a154e115f5029deb",
+      "before_sha256": "c8eac585f16007f870f7f94ce9bcb0ef3b34fac9167c8bc9a154e115f5029deb",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729085608967223,
+      "gff_mtime_ns": 1790729084608967223
+    },
+    {
+      "chromosome": "chr6",
+      "expected_sha256": "c2590cb62d101dbf63d739c11872c334dae27c8db4376360e761b84bbb2e215a",
+      "before_sha256": "c2590cb62d101dbf63d739c11872c334dae27c8db4376360e761b84bbb2e215a",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729094268183018,
+      "gff_mtime_ns": 1790729093268183018
+    },
+    {
+      "chromosome": "chr7",
+      "expected_sha256": "777c24ab9284775de7d91d9f084c082eec1cf4cbada8cc919d7b6b49c20b2df9",
+      "before_sha256": "777c24ab9284775de7d91d9f084c082eec1cf4cbada8cc919d7b6b49c20b2df9",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729115917767618,
+      "gff_mtime_ns": 1790729114917767618
+    },
+    {
+      "chromosome": "chr8",
+      "expected_sha256": "48953fd4b2b441332cf5f816b3733fe5636fd8ac8113ac88562f2bbe25ddbc52",
+      "before_sha256": "48953fd4b2b441332cf5f816b3733fe5636fd8ac8113ac88562f2bbe25ddbc52",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729124095883585,
+      "gff_mtime_ns": 1790729123095883585
+    },
+    {
+      "chromosome": "chr9",
+      "expected_sha256": "b7716382da1ded62bcc9bb6251baf7941410fab33af3ff477fd9d66984102621",
+      "before_sha256": "044b6c572d9e401016b4eb429a87d6569c0d2b701c909665476b920a69b8156e",
+      "restored_bytes": true,
+      "cache_mtime_ns": 1790729141176281430,
+      "gff_mtime_ns": 1790729140176281430
+    },
+    {
+      "chromosome": "chr10",
+      "expected_sha256": "2627c1142cc4f2c3fb536a5b1164fae4cbf7fd0a0e6cf47b251b820daabf01a4",
+      "before_sha256": "2627c1142cc4f2c3fb536a5b1164fae4cbf7fd0a0e6cf47b251b820daabf01a4",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729148150209286,
+      "gff_mtime_ns": 1790729147150209286
+    },
+    {
+      "chromosome": "chr11",
+      "expected_sha256": "4f428ce777c5e7c4970334aec453f51753c251ab07539326a0c3d56c4fe61ba8",
+      "before_sha256": "4f428ce777c5e7c4970334aec453f51753c251ab07539326a0c3d56c4fe61ba8",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729162745560756,
+      "gff_mtime_ns": 1790729161745560756
+    },
+    {
+      "chromosome": "chr12",
+      "expected_sha256": "4dd4786f4d5c50bd61d179f5f5d16734aff9823a236f949fbbf310933b9d1f9d",
+      "before_sha256": "4dd4786f4d5c50bd61d179f5f5d16734aff9823a236f949fbbf310933b9d1f9d",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729173912358125,
+      "gff_mtime_ns": 1790729172912358125
+    },
+    {
+      "chromosome": "chr13",
+      "expected_sha256": "b0b160e5c155171a03af3c6970f01b7402b67d8d4f82ff7addfb334fd6a23ae2",
+      "before_sha256": "b0b160e5c155171a03af3c6970f01b7402b67d8d4f82ff7addfb334fd6a23ae2",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729194930755986,
+      "gff_mtime_ns": 1790729193930755986
+    },
+    {
+      "chromosome": "chr14",
+      "expected_sha256": "635555011e63ef122145276d833a4cf2a45c9a6e24715b17ae7a6e6514bac91f",
+      "before_sha256": "635555011e63ef122145276d833a4cf2a45c9a6e24715b17ae7a6e6514bac91f",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729199987861745,
+      "gff_mtime_ns": 1790729198987861745
+    },
+    {
+      "chromosome": "chr15",
+      "expected_sha256": "aa362addb2e9009c319b6edebb502dd8391f0361e90a93634382c4bd030aa0fd",
+      "before_sha256": "aa362addb2e9009c319b6edebb502dd8391f0361e90a93634382c4bd030aa0fd",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729208761471329,
+      "gff_mtime_ns": 1790729207761471329
+    },
+    {
+      "chromosome": "chr16",
+      "expected_sha256": "6e8dca2a52001fd454e634ba0f0845c51e2b2adce5b112f216b7eb7b4c6c4613",
+      "before_sha256": "6e8dca2a52001fd454e634ba0f0845c51e2b2adce5b112f216b7eb7b4c6c4613",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729215547433303,
+      "gff_mtime_ns": 1790729214547433303
+    },
+    {
+      "chromosome": "chr17",
+      "expected_sha256": "1ec5e575aaab6ac765acb3824c17b94f9dc6dec70b1499aca277e3637edd49e8",
+      "before_sha256": "1ec5e575aaab6ac765acb3824c17b94f9dc6dec70b1499aca277e3637edd49e8",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729223960521240,
+      "gff_mtime_ns": 1790729222960521240
+    },
+    {
+      "chromosome": "chr18",
+      "expected_sha256": "e9e9d1a0f75d18cb21315be0377f14a29fb8b71bb30669bdb28f9376b0823b85",
+      "before_sha256": "e9e9d1a0f75d18cb21315be0377f14a29fb8b71bb30669bdb28f9376b0823b85",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729235734823418,
+      "gff_mtime_ns": 1790729234734823418
+    },
+    {
+      "chromosome": "chr19",
+      "expected_sha256": "0003eaaba4082be0344db64e37396c5e37660e52d521f3a3615b526a39a6be14",
+      "before_sha256": "0003eaaba4082be0344db64e37396c5e37660e52d521f3a3615b526a39a6be14",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729243016879454,
+      "gff_mtime_ns": 1790729242016879454
+    },
+    {
+      "chromosome": "chr20",
+      "expected_sha256": "9c6c698e9543abefe096a71cb9d3d9c256350a514ced34315babe52176daee03",
+      "before_sha256": "9c6c698e9543abefe096a71cb9d3d9c256350a514ced34315babe52176daee03",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729247594272927,
+      "gff_mtime_ns": 1790729246594272927
+    },
+    {
+      "chromosome": "chr21",
+      "expected_sha256": "df9289c112450a756561d12512f1f4b03605727ceda6aa551e68e2e4d2fb6f29",
+      "before_sha256": "df9289c112450a756561d12512f1f4b03605727ceda6aa551e68e2e4d2fb6f29",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729256323217267,
+      "gff_mtime_ns": 1790729255323217267
+    },
+    {
+      "chromosome": "chr22",
+      "expected_sha256": "4b4393393cdf8227a40e93a05f5af13208a7e8ad8d24c3deeebd2096a2711560",
+      "before_sha256": "e1a36d709ba22d713b40c69cfeece8da385f68a6f996ad86994753b8c5cd0058",
+      "restored_bytes": true,
+      "cache_mtime_ns": 1790729262692323324,
+      "gff_mtime_ns": 1790729261692323324
+    },
+    {
+      "chromosome": "chrX",
+      "expected_sha256": "c89895f40944929808255296dfe023c5c4d7c436c3aaf1ba5096787b27bdfc25",
+      "before_sha256": "c89895f40944929808255296dfe023c5c4d7c436c3aaf1ba5096787b27bdfc25",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729267829548853,
+      "gff_mtime_ns": 1790729266829548853
+    },
+    {
+      "chromosome": "chrY",
+      "expected_sha256": "d8b8419575db741cc4ab9b242746360bbd8820f981da794f1ae684771c62169d",
+      "before_sha256": "d8b8419575db741cc4ab9b242746360bbd8820f981da794f1ae684771c62169d",
+      "restored_bytes": false,
+      "cache_mtime_ns": 1790729271853846668,
+      "gff_mtime_ns": 1790729270853846668
+    }
+  ]
+}

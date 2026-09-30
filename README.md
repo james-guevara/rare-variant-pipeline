@@ -604,4 +604,4 @@ MIT
 
 ## Resource locations and deployment audit
 
-See the [verified Expanse/S3 resource map](docs/resources/README.md) for the consolidated v1 release, exact file catalog/checksums, Expanse symlink targets and missing resources, and the [ABCD FastVEP smoke-test handoff](docs/operations/abcd-fastvep-smoke/README.md). The September consolidated release is preserved in S3; the older Expanse registry is not a completed mirror.
+See the [verified Expanse/S3 resource map](docs/resources/README.md) for the consolidated v1 release, exact file catalog/checksums, Expanse symlink targets and missing resources, and the [ABCD FastVEP smoke-test handoff](docs/operations/abcd-fastvep-smoke/README.md). The September consolidated release is preserved in S3 and has been restored to Expanse. See the [restoration receipts and validation](docs/resources/repair-20260929/README.md) for the current verified state.

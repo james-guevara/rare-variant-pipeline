@@ -1,0 +1,70 @@
+{
+  "status": "passed",
+  "input_records": 20,
+  "output_picked_rows": 20,
+  "output_bytes": 3388,
+  "input_preparation_seconds": 0.20439078006893396,
+  "input_sha256": "2ca698fad15fcbdb73d43a82bb7ae5f7fe5d3ccabab365885476192060998e04",
+  "output_sha256": "8d907d3c369f126f77def6d6d5794778b34011b7f28673ddb9c09d2fa67ef5bb",
+  "source_vcf": "/expanse/projects/sebat1/resources/rare-variant-pipeline/maintenance/repair-20260929/validation-readonly/chr22.synthetic.vcf",
+  "removed_input_csq": false,
+  "contig_renames": {},
+  "timing": {
+    "wall_seconds": 0.8904842040501535,
+    "cpu_seconds": 1.015465,
+    "peak_child_rss_kib": 515684
+  },
+  "rss_scope": "largest individual child RSS; not summed concurrent pipeline RSS",
+  "documented_fastvep_commit": "cb8113d7bab2db42cb06bb2b2a40c57b60ea2561",
+  "documented_picker_version": "0.1.0",
+  "documented_picker_source_commit": "1671c5a76c369da50c64320d7dc3c719ac2ab95a",
+  "documented_oci_digest": "sha256:7d5b76a28e2427ca97af6ebec1d5e38aec63b93609419c0cc77c063e48e2917d",
+  "supplied_sif_sha256": "6eb015d6cb41ae10c64d373b508963496f14a2f57f14d3294cfcd5e06d922d8f",
+  "identity_note": "Documented revisions require a SIF built from the pinned OCI image; hashes below identify actual files.",
+  "binaries": {
+    "bcftools": {
+      "path": "/usr/bin/bcftools",
+      "sha256": "bbffe621485c08b00d7a92fc4884408be7753fa7cdae75abca54aaae38f10556"
+    },
+    "fastvep": {
+      "path": "/opt/fastvep/fastvep",
+      "sha256": "2b80f3cfda393eed027cda892ea921b2d5cb4eef6a8fa500a81cf6dbebf5bef8"
+    },
+    "fastvep-picker": {
+      "path": "/usr/local/bin/fastvep-picker",
+      "sha256": "cf46dc28aa0ea9f96b8ce3ef348549db04726413d10d78371aa1575164c3187f"
+    }
+  },
+  "resources": {
+    "gff3": {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr22.gff3",
+      "bytes": 30694071,
+      "sha256": "256c85d51d9551883fddfc33bbbce11a783f438f638c69fdc4055e3467626143"
+    },
+    "cache": {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr22.gff3.fastvep.cache",
+      "bytes": 7696643,
+      "sha256": "4b4393393cdf8227a40e93a05f5af13208a7e8ad8d24c3deeebd2096a2711560"
+    },
+    "fasta": {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371,
+      "sha256": "ec0fd649a3baa1793e20f31aaa626d9a9f1a48c0033ed5b9557fdab822e1c90f"
+    },
+    "fai": {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689,
+      "sha256": "0266242b50bafafef5e6acc960e34f512bb71d23f7c0aec91933f06395364788"
+    },
+    "priority": {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432,
+      "sha256": "dda1e7a59c6c8b5f78a1176ab1764a657dcf4d0ea7dc4ddc0304e7e624dac94d"
+    },
+    "ranks": {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040,
+      "sha256": "cfcb59609de6e02e7e461d5770dd20b96c8e92d35578305ae080c41eba72ddbf"
+    }
+  }
+}

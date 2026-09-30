@@ -1,0 +1,453 @@
+{
+  "status": "passed",
+  "resource_root": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1",
+  "chromosomes": {
+    "chr1": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 9,
+      "seconds": 1.6686151251196861
+    },
+    "chr2": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 14,
+      "seconds": 1.4551530089229345
+    },
+    "chr3": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 20,
+      "seconds": 2.796924155205488
+    },
+    "chr4": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 15,
+      "seconds": 1.4566117841750383
+    },
+    "chr5": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 20,
+      "seconds": 1.4033324792981148
+    },
+    "chr6": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 18,
+      "seconds": 1.543961664661765
+    },
+    "chr7": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 16,
+      "seconds": 1.434181647375226
+    },
+    "chr8": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 18,
+      "seconds": 1.5599658358842134
+    },
+    "chr9": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 16,
+      "seconds": 1.9467243161052465
+    },
+    "chr10": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 18,
+      "seconds": 1.577133009210229
+    },
+    "chr11": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 12,
+      "seconds": 1.5273509286344051
+    },
+    "chr12": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 19,
+      "seconds": 1.5488066114485264
+    },
+    "chr13": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 20,
+      "seconds": 1.5174692701548338
+    },
+    "chr14": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 18,
+      "seconds": 1.5966854579746723
+    },
+    "chr15": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 14,
+      "seconds": 1.4997731819748878
+    },
+    "chr16": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 3,
+      "seconds": 1.418008590117097
+    },
+    "chr17": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 20,
+      "seconds": 1.602889845147729
+    },
+    "chr18": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 20,
+      "seconds": 1.5758257992565632
+    },
+    "chr19": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 18,
+      "seconds": 1.5142709277570248
+    },
+    "chr20": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 20,
+      "seconds": 1.5855852868407965
+    },
+    "chr21": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 20,
+      "seconds": 1.5253060180693865
+    },
+    "chr22": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 19,
+      "seconds": 1.6666678469628096
+    },
+    "chrX": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 15,
+      "seconds": 1.4100219383835793
+    },
+    "chrY": {
+      "synthetic_sites": 20,
+      "picked_rows": 20,
+      "loftee_rows": 15,
+      "seconds": 1.3228236977010965
+    }
+  },
+  "parquets": {
+    "parquet_scores_af/chr1": {
+      "rows": 8788707,
+      "row_groups": 72
+    },
+    "parquet_scores_af/chr2": {
+      "rows": 6358380,
+      "row_groups": 52
+    },
+    "parquet_scores_af/chr3": {
+      "rows": 4943743,
+      "row_groups": 40
+    },
+    "parquet_scores_af/chr4": {
+      "rows": 3441580,
+      "row_groups": 28
+    },
+    "parquet_scores_af/chr5": {
+      "rows": 4008694,
+      "row_groups": 33
+    },
+    "parquet_scores_af/chr6": {
+      "rows": 4351024,
+      "row_groups": 36
+    },
+    "parquet_scores_af/chr7": {
+      "rows": 4042471,
+      "row_groups": 33
+    },
+    "parquet_scores_af/chr8": {
+      "rows": 2944439,
+      "row_groups": 24
+    },
+    "parquet_scores_af/chr9": {
+      "rows": 3505184,
+      "row_groups": 29
+    },
+    "parquet_scores_af/chr10": {
+      "rows": 3386846,
+      "row_groups": 28
+    },
+    "parquet_scores_af/chr11": {
+      "rows": 5076571,
+      "row_groups": 42
+    },
+    "parquet_scores_af/chr12": {
+      "rows": 4500802,
+      "row_groups": 37
+    },
+    "parquet_scores_af/chr13": {
+      "rows": 1570551,
+      "row_groups": 13
+    },
+    "parquet_scores_af/chr14": {
+      "rows": 2703163,
+      "row_groups": 22
+    },
+    "parquet_scores_af/chr15": {
+      "rows": 2980293,
+      "row_groups": 25
+    },
+    "parquet_scores_af/chr16": {
+      "rows": 3646885,
+      "row_groups": 30
+    },
+    "parquet_scores_af/chr17": {
+      "rows": 4952989,
+      "row_groups": 41
+    },
+    "parquet_scores_af/chr18": {
+      "rows": 1349202,
+      "row_groups": 11
+    },
+    "parquet_scores_af/chr19": {
+      "rows": 5704039,
+      "row_groups": 47
+    },
+    "parquet_scores_af/chr20": {
+      "rows": 2080871,
+      "row_groups": 17
+    },
+    "parquet_scores_af/chr21": {
+      "rows": 836391,
+      "row_groups": 7
+    },
+    "parquet_scores_af/chr22": {
+      "rows": 1799075,
+      "row_groups": 15
+    },
+    "parquet_scores_af/chrX": {
+      "rows": 3273325,
+      "row_groups": 27
+    },
+    "parquet_scores_af/chrY": {
+      "rows": 164907,
+      "row_groups": 2
+    },
+    "parquet_expanded_mane_select/chr1": {
+      "rows": 8106827,
+      "row_groups": 66
+    },
+    "parquet_expanded_mane_select/chr2": {
+      "rows": 5907813,
+      "row_groups": 48
+    },
+    "parquet_expanded_mane_select/chr3": {
+      "rows": 4579099,
+      "row_groups": 37
+    },
+    "parquet_expanded_mane_select/chr4": {
+      "rows": 3231210,
+      "row_groups": 27
+    },
+    "parquet_expanded_mane_select/chr5": {
+      "rows": 3681133,
+      "row_groups": 30
+    },
+    "parquet_expanded_mane_select/chr6": {
+      "rows": 4015590,
+      "row_groups": 33
+    },
+    "parquet_expanded_mane_select/chr7": {
+      "rows": 3717228,
+      "row_groups": 30
+    },
+    "parquet_expanded_mane_select/chr8": {
+      "rows": 2717363,
+      "row_groups": 22
+    },
+    "parquet_expanded_mane_select/chr9": {
+      "rows": 3224650,
+      "row_groups": 27
+    },
+    "parquet_expanded_mane_select/chr10": {
+      "rows": 3089745,
+      "row_groups": 25
+    },
+    "parquet_expanded_mane_select/chr11": {
+      "rows": 4672082,
+      "row_groups": 38
+    },
+    "parquet_expanded_mane_select/chr12": {
+      "rows": 4129295,
+      "row_groups": 34
+    },
+    "parquet_expanded_mane_select/chr13": {
+      "rows": 1468610,
+      "row_groups": 12
+    },
+    "parquet_expanded_mane_select/chr14": {
+      "rows": 2496163,
+      "row_groups": 21
+    },
+    "parquet_expanded_mane_select/chr15": {
+      "rows": 2781405,
+      "row_groups": 23
+    },
+    "parquet_expanded_mane_select/chr16": {
+      "rows": 3272871,
+      "row_groups": 27
+    },
+    "parquet_expanded_mane_select/chr17": {
+      "rows": 4536182,
+      "row_groups": 37
+    },
+    "parquet_expanded_mane_select/chr18": {
+      "rows": 1252716,
+      "row_groups": 11
+    },
+    "parquet_expanded_mane_select/chr19": {
+      "rows": 5045474,
+      "row_groups": 41
+    },
+    "parquet_expanded_mane_select/chr20": {
+      "rows": 1862356,
+      "row_groups": 16
+    },
+    "parquet_expanded_mane_select/chr21": {
+      "rows": 755738,
+      "row_groups": 7
+    },
+    "parquet_expanded_mane_select/chr22": {
+      "rows": 1615190,
+      "row_groups": 14
+    },
+    "parquet_expanded_mane_select/chrX": {
+      "rows": 3057857,
+      "row_groups": 25
+    },
+    "parquet_expanded_mane_select/chrY": {
+      "rows": 159788,
+      "row_groups": 2
+    }
+  },
+  "synthetic_only": true,
+  "transcript_counts": {
+    "1": 48010,
+    "10": 20905,
+    "11": 27524,
+    "12": 25993,
+    "13": 10011,
+    "14": 17051,
+    "15": 17938,
+    "16": 20639,
+    "17": 25996,
+    "18": 9482,
+    "19": 25328,
+    "2": 38255,
+    "20": 12664,
+    "21": 6806,
+    "22": 11615,
+    "3": 31373,
+    "4": 21415,
+    "5": 24027,
+    "6": 25648,
+    "7": 26951,
+    "8": 20905,
+    "9": 21361,
+    "X": 15421,
+    "Y": 2010
+  },
+  "ensembl-115/transcripts.sqlite": "integrity_check passed",
+  "loftee-grch38/loftee.sql": "integrity_check passed",
+  "priority_data_rows": 505194,
+  "regions_genomicSuperDups": [
+    "1",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "2",
+    "20",
+    "21",
+    "22",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "X",
+    "Y"
+  ],
+  "regions_rmsk": [
+    "1",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "2",
+    "20",
+    "21",
+    "22",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "X",
+    "Y"
+  ],
+  "regions_simpleRepeat": [
+    "1",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "2",
+    "20",
+    "21",
+    "22",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "X",
+    "Y"
+  ],
+  "finished_unix": 1790730107.342413
+}

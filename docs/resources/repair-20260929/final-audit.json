@@ -1,0 +1,735 @@
+{
+  "status": "passed",
+  "checked_unix": 1790730793.1420944,
+  "regular_release_files": 127,
+  "chromosome_directories": 24,
+  "canonical_annotation_aliases": [
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1/Homo_sapiens.GRCh38.115.chr1.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr1.gff3",
+      "bytes": 119822079
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1/Homo_sapiens.GRCh38.115.chr1.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr1.gff3.fastvep.cache",
+      "bytes": 36888397
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr1/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/Homo_sapiens.GRCh38.115.chr2.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr2.gff3",
+      "bytes": 95816360
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/Homo_sapiens.GRCh38.115.chr2.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr2.gff3.fastvep.cache",
+      "bytes": 28410480
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr2/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.115.chr3.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr3.gff3",
+      "bytes": 81988552
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.115.chr3.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr3.gff3.fastvep.cache",
+      "bytes": 24353813
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr3/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/Homo_sapiens.GRCh38.115.chr4.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr4.gff3",
+      "bytes": 50550111
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/Homo_sapiens.GRCh38.115.chr4.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr4.gff3.fastvep.cache",
+      "bytes": 14408132
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr4/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/Homo_sapiens.GRCh38.115.chr5.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr5.gff3",
+      "bytes": 53321663
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/Homo_sapiens.GRCh38.115.chr5.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr5.gff3.fastvep.cache",
+      "bytes": 15167563
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr5/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/Homo_sapiens.GRCh38.115.chr6.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr6.gff3",
+      "bytes": 57360841
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/Homo_sapiens.GRCh38.115.chr6.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr6.gff3.fastvep.cache",
+      "bytes": 16862266
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr6/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/Homo_sapiens.GRCh38.115.chr7.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr7.gff3",
+      "bytes": 63846536
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/Homo_sapiens.GRCh38.115.chr7.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr7.gff3.fastvep.cache",
+      "bytes": 17407044
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr7/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/Homo_sapiens.GRCh38.115.chr8.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr8.gff3",
+      "bytes": 44608932
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/Homo_sapiens.GRCh38.115.chr8.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr8.gff3.fastvep.cache",
+      "bytes": 12371598
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr8/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.115.chr9.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr9.gff3",
+      "bytes": 51401270
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.115.chr9.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr9.gff3.fastvep.cache",
+      "bytes": 14281601
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr9/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/Homo_sapiens.GRCh38.115.chr10.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr10.gff3",
+      "bytes": 55609760
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/Homo_sapiens.GRCh38.115.chr10.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr10.gff3.fastvep.cache",
+      "bytes": 16119773
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr10/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/Homo_sapiens.GRCh38.115.chr11.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr11.gff3",
+      "bytes": 70128802
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/Homo_sapiens.GRCh38.115.chr11.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr11.gff3.fastvep.cache",
+      "bytes": 20806996
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr11/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/Homo_sapiens.GRCh38.115.chr12.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr12.gff3",
+      "bytes": 63999116
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/Homo_sapiens.GRCh38.115.chr12.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr12.gff3.fastvep.cache",
+      "bytes": 18803768
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr12/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/Homo_sapiens.GRCh38.115.chr13.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr13.gff3",
+      "bytes": 22668016
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/Homo_sapiens.GRCh38.115.chr13.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr13.gff3.fastvep.cache",
+      "bytes": 5660225
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr13/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/Homo_sapiens.GRCh38.115.chr14.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr14.gff3",
+      "bytes": 42332019
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/Homo_sapiens.GRCh38.115.chr14.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr14.gff3.fastvep.cache",
+      "bytes": 11922190
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr14/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/Homo_sapiens.GRCh38.115.chr15.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr15.gff3",
+      "bytes": 41655422
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/Homo_sapiens.GRCh38.115.chr15.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr15.gff3.fastvep.cache",
+      "bytes": 11271279
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr15/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/Homo_sapiens.GRCh38.115.chr16.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr16.gff3",
+      "bytes": 50447036
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/Homo_sapiens.GRCh38.115.chr16.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr16.gff3.fastvep.cache",
+      "bytes": 14181954
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr16/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/Homo_sapiens.GRCh38.115.chr17.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr17.gff3",
+      "bytes": 67006375
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/Homo_sapiens.GRCh38.115.chr17.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr17.gff3.fastvep.cache",
+      "bytes": 19658306
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr17/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/Homo_sapiens.GRCh38.115.chr18.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr18.gff3",
+      "bytes": 20610173
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/Homo_sapiens.GRCh38.115.chr18.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr18.gff3.fastvep.cache",
+      "bytes": 5277209
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr18/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/Homo_sapiens.GRCh38.115.chr19.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr19.gff3",
+      "bytes": 61711233
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/Homo_sapiens.GRCh38.115.chr19.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr19.gff3.fastvep.cache",
+      "bytes": 19190725
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr19/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/Homo_sapiens.GRCh38.115.chr20.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr20.gff3",
+      "bytes": 29961927
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/Homo_sapiens.GRCh38.115.chr20.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr20.gff3.fastvep.cache",
+      "bytes": 8170181
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr20/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr21/Homo_sapiens.GRCh38.115.chr21.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr21.gff3",
+      "bytes": 14387295
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr21/Homo_sapiens.GRCh38.115.chr21.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr21.gff3.fastvep.cache",
+      "bytes": 2977698
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr21/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr21/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr21/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr21/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chr22.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr22.gff3",
+      "bytes": 30694071
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.115.chr22.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chr22.gff3.fastvep.cache",
+      "bytes": 7708764
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chr22/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chrX/Homo_sapiens.GRCh38.115.chrX.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chrX.gff3",
+      "bytes": 38977595
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chrX/Homo_sapiens.GRCh38.115.chrX.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chrX.gff3.fastvep.cache",
+      "bytes": 12024355
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chrX/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chrX/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chrX/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chrX/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chrY/Homo_sapiens.GRCh38.115.chrY.gff3",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chrY.gff3",
+      "bytes": 3769626
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chrY/Homo_sapiens.GRCh38.115.chrY.gff3.fastvep.cache",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.115.chrY.gff3.fastvep.cache",
+      "bytes": 415381
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chrY/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+      "bytes": 3139742371
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chrY/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/Homo_sapiens.GRCh38.dna.primary_assembly.fa.fai",
+      "bytes": 689
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chrY/vep115.transcript-priority.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.transcript-priority.tsv",
+      "bytes": 22466432
+    },
+    {
+      "path": "/expanse/projects/sebat1/resources/rare-variant-pipeline/annotation/ensembl-115/chrY/vep115.consequence-ranks.tsv",
+      "resolved": "/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/targeted-annotation/ensembl-115/vep115.consequence-ranks.tsv",
+      "bytes": 1040
+    }
+  ],
+  "broken_active_resource_links": [],
+  "temporary_credential_files_remaining": 0,
+  "root_readme_exists": true,
+  "post_validation_hashes_passed": 113,
+  "release_read_only": true,
+  "container_files_read_only": true,
+  "final_validation_job": "54530330"
+}

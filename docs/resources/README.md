@@ -1,4 +1,6 @@
-# Rare-variant resources: verified locations and unresolved Expanse consolidation
+# Rare-variant resources: locations and repair history
+
+**Repair report:** [Expanse v1 restoration and final verification](repair-20260929/README.md). The audit below records the **pre-repair** state; consult the repair report and deployed README for current paths.
 
 Audit: 2026-09-29. This document covers reusable rare-variant scientific resources, container identities, source archives, and deployment paths. It does not inventory protected variant records, genotypes, run outputs, or SPARK WES jobs.
 
