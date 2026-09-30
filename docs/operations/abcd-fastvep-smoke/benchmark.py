@@ -18,6 +18,7 @@ p.add_argument('--resources', required=True)
 p.add_argument('--chromosome', default='chr22', help='Resource filename component')
 p.add_argument('--outdir', required=True)
 p.add_argument('--sif-sha256', required=True)
+p.add_argument('--resource-identities', help='Optional checksum lock from the Nextflow adapter; immutable resources only')
 a = p.parse_args()
 root, source, out = Path(a.resources), Path(a.input), Path(a.outdir)
 out.mkdir(parents=True, exist_ok=True)
@@ -36,6 +37,16 @@ files = {k: root / v for k, v in names.items()}
 for path in [source, *files.values()]:
     if not path.is_file() or path.stat().st_size == 0:
         raise SystemExit(f'Missing/empty required file: {path.name}')
+if files['cache'].stat().st_mtime_ns <= files['gff3'].stat().st_mtime_ns:
+    raise SystemExit('Cache must be newer than GFF3; resources were not modified.')
+locked = None
+if a.resource_identities:
+    locked = json.loads(Path(a.resource_identities).read_text())
+    for key, path in files.items():
+        item = locked[key]
+        stat = path.stat()
+        if (str(path.resolve()), stat.st_size, stat.st_mtime_ns) != (item['path'], item['bytes'], item['mtime_ns']):
+            raise SystemExit('Resource changed since checksum lock creation: ' + path.name)
 bins = {name: shutil.which(name) for name in ['bcftools', 'fastvep', 'fastvep-picker']}
 if not all(bins.values()):
     raise SystemExit('Container must provide bcftools, fastvep, and fastvep-picker.')
@@ -151,7 +162,7 @@ with open(stats, 'w') as f:
                 supplied_sif_sha256=a.sif_sha256,
                 identity_note='Documented revisions require a SIF built from the pinned OCI image; hashes below identify actual files.',
                 binaries={k: dict(path=v, sha256=sha(v)) for k, v in bins.items()},
-                resources={k: dict(path=str(v), bytes=v.stat().st_size, sha256=sha(v)) for k, v in files.items()})
+                resources=locked if locked is not None else {k: dict(path=str(v), bytes=v.stat().st_size, sha256=sha(v)) for k, v in files.items()})
     receipt.write_text(json.dumps(data, indent=2) + '\n')
     log.unlink()
     print(json.dumps(dict(status='passed', input_records=input_count, output_picked_rows=rows,
