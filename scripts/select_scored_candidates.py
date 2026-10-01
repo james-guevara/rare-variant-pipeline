@@ -44,6 +44,7 @@ def run(a):
                    selection='missense consequence token and n_flag >= 1; all HC LoF rows retained',
                    allele_policy='sequence and spanning_deletion labelled separately; no biological star-burden decision',
                    genebayes_join='Gene == ensg, exact; no symbol fallback or gene-ID rewriting',
+                   dbnsfp_policy='expanded_mane_select row subset; exact allele join; no picked-transcript or gene match; no unfiltered fallback',
                    score_policy='reuse join_scores.SCORES/extract_expr; ranks scalar; raw list MAX except popEVE MIN; duplicate exact keys aggregate as existing code')
     start = time.perf_counter()
     con = None
@@ -87,11 +88,12 @@ def run(a):
         con.execute(f'CREATE TEMP TABLE scores AS SELECT chrom_key,POS,REF,ALT,count(*) AS dbnsfp_source_rows,{aggregate} FROM matched_scores GROUP BY chrom_key,POS,REF,ALT')
         columns = ', '.join('s.'+ident(target) for src,target,encoding,agg in SCORES)
         flags = ' + '.join(f'CAST(COALESCE({ident(col)}>={threshold},FALSE) AS INTEGER)' for col,threshold in T_STARS.items())
+        available = ' + '.join(f'CAST({ident(col)} IS NOT NULL AS INTEGER)' for col in T_STARS)
         con.execute(f'''CREATE TEMP TABLE miss_scored AS
             WITH joined AS (SELECT m.*,s.dbnsfp_source_rows IS NOT NULL AS dbnsfp_matched,
                            COALESCE(s.dbnsfp_source_rows,0) AS dbnsfp_source_rows,{columns}
                            FROM miss m LEFT JOIN scores s USING(chrom_key,POS,REF,ALT)),
-                 flagged AS (SELECT *, {flags} AS n_flag FROM joined)
+                 flagged AS (SELECT *, {flags} AS n_flag, {available} AS n_scored FROM joined)
             SELECT *, n_flag AS miss_n_flag,
                    CASE n_flag WHEN 4 THEN 'miss_t1' WHEN 3 THEN 'miss_t2' WHEN 2 THEN 'miss_t3' WHEN 1 THEN 'miss_t4' END AS tier
             FROM flagged''')
@@ -117,6 +119,10 @@ def run(a):
                 dbnsfp_matches=count(f'SELECT count(*) FROM miss_scored WHERE {where} AND dbnsfp_matched'),
                 dbnsfp_nonmatches=count(f'SELECT count(*) FROM miss_scored WHERE {where} AND NOT dbnsfp_matched'),
                 n_flag_counts={str(n):count(f'SELECT count(*) FROM miss_scored WHERE {where} AND n_flag={n}') for n in range(5)},
+                n_scored_counts={str(n):count(f'SELECT count(*) FROM miss_scored WHERE {where} AND n_scored={n}') for n in range(5)},
+                rankscore_missing_counts={col:count(f'SELECT count(*) FROM miss_scored WHERE {where} AND {ident(col)} IS NULL') for col in T_STARS},
+                matched_without_rankscores=count(f'SELECT count(*) FROM miss_scored WHERE {where} AND dbnsfp_matched AND n_scored=0'),
+                fully_scored_below_thresholds=count(f'SELECT count(*) FROM miss_scored WHERE {where} AND n_scored=4 AND n_flag=0'),
                 missense_selected_rows=count(f'SELECT count(*) FROM miss_scored WHERE {where} AND n_flag>=1'),
                 hc_rows=count(f'SELECT count(*) FROM hc_scored WHERE {where}'),
                 genebayes_matches=count(f'SELECT count(*) FROM hc_scored WHERE {where} AND genebayes_matched'),

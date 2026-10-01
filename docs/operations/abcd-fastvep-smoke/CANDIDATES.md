@@ -65,12 +65,64 @@ single combined tier. No genotype scans or new carrier implementation are added;
 a future missense carrier adapter should feed these exact keys into the existing
 indexed exact-allele machinery, preserving the HC extractor's current contract.
 
+## Reconciliation with the existing analysis (2026-10-01)
+
+The MANE resource filter and raw-score list reduction were deliberate choices in
+prior work, not newly discovered issues or an accidental substitution for
+transcript matching. The April 21 analysis notes in `Rare Variant Postprocessing`
+reported chr22 MPC coverage of **53.0% at the MANE position versus 73.5% with
+list-max**. Those are historical measurements, not new ABCD results. The same notes
+and later sensitivity analyses considered non-MANE genes/transcripts, including
+SHANK3. Later LoF work removed the MANE requirement. This candidate stage likewise
+has **no MANE requirement on HC rows** and applies no SHANK3 exception or gene list.
+
+The checked-in historical
+[per-variant scoring analysis](https://github.com/james-guevara/rare-variant-postprocessing/blob/main/steps/missense_counts_pervariant.py)
+and [composite scoring analysis](https://github.com/james-guevara/rare-variant-postprocessing/blob/main/steps/missense_counts_composite.py)
+explicitly use `parquet_expanded_mane_select`. The
+[resource builder](https://github.com/james-guevara/rare-variant-postprocessing/blob/main/scripts/regen_dbnsfp_expanded.py)
+creates both the unfiltered and MANE-filtered representations. The established
+four-rankscore model and current `join_scores.py` are preserved here; switching to
+MANE-position MPC or silently switching the reference universe would change that
+policy. Prior observations do not guarantee every ABCD picked transcript agrees
+with every score source; this stage does not claim that agreement.
+
+Existing alternatives were inspected read-only at:
+
+```text
+/expanse/projects/sebat1/s3/data/sebat/resources/dbNSFP/5.3.1a/
+```
+
+| Product | Existing semantics | Used here? |
+|---|---|---|
+| `parquet_expanded_mane_select` | Expanded columns, rows with `MANE LIKE '%Select%'`; transcript lists remain intact | Yes, canonical locked v1 copy |
+| `parquet_expanded` | Same expanded columns without the MANE row filter | No |
+| `parquet_mpc` | Gene-keyed preferred row, MANE-position and maximum MPC, transcript IDs, `has_mane_select`; retains a non-MANE row when needed | No |
+| `parquet_am` | Analogous MANE-position/maximum AlphaMissense representation | No |
+| `parquet_scores_af` | Earlier scores and AF; its builder does not include ClinPred | No |
+| `parquet_af` | Allele-frequency columns | No |
+
+The specialized products' builder is `build_dbnsfp_split_parquets.py` beside those
+resources. It picks one row per position/REF/ALT/first Ensembl gene ID, preferring
+MANE-containing rows; it is not a strict MANE-only filter. This is a separate
+representation from the expanded resource. Existence of these alternatives was
+verified on Expanse, not on NBDC. They have not been added to the canonical v1 lock
+or staged by this PR. No new resource transfer is required for the current pilot.
+
+`n_scored` counts available numeric rankscores among the four tier predictors;
+`n_flag` still counts threshold passes. Receipts report both distributions, missing
+counts for each predictor, matched rows with no rankscores, and fully scored rows
+below every threshold. These distinguish reference nonmatches, score missingness,
+and below-threshold scores without changing tiers. A missing score is not evidence
+of benignity. Nonmatches cannot be attributed specifically to the MANE filter from
+this resource alone. There is no automatic fallback to the unfiltered product.
+
 ## Output retention and spanning deletions
 
 Published under `<outdir>/candidates/<unit_id>/`:
 
 - `missense.parquet`: only rows with `n_flag >= 1`, their picked annotation columns,
-  `allele_class`, all score outputs, resource match/multiplicity fields, and tier.
+  `allele_class`, all score outputs, `n_scored`, resource match/multiplicity fields, and tier.
 - `lof_hc.parquet`: **all HC rows**, including unmatched/untiered GeneBayes rows,
   their existing annotations, `allele_class`, GeneBayes metrics/match flag, and tier.
 - `receipt.json`: input/resource/code identities and hashes, counts by allele class,
@@ -206,7 +258,7 @@ wrong input pairing, canonical hash verification, caching, and durable publicati
 A regression invokes the original `tier_variants.py` and compares its tier labels
 against both new products. These are not real NBDC block12 results.
 
-Local validation: **38 tests passed** (8 candidate tests plus the existing exact
+Local validation: **39 tests passed** (9 candidate tests plus the existing exact
 carrier, sites annotation, and sites catalog suites):
 
 ```bash

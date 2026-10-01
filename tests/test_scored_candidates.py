@@ -70,6 +70,9 @@ def test_exact_scores_missing_annotations_thresholds_and_gene_join(tmp_path,caps
     seq=r['by_allele_class']['sequence'];star=r['by_allele_class']['spanning_deletion']
     assert seq['dbnsfp_matches']==5 and seq['dbnsfp_nonmatches']==4
     assert seq['n_flag_counts']=={'0':5,'1':1,'2':1,'3':1,'4':1}
+    assert seq['n_scored_counts']=={'0':4,'1':0,'2':0,'3':0,'4':5}
+    assert seq['fully_scored_below_thresholds']==1
+    assert seq['matched_without_rankscores']==0
     assert star['dbnsfp_nonmatches']==1 and star['missense_selected_rows']==0
     assert star['hc_rows']==1 and star['lof_tier_counts']['lof_t2']==1
     assert seq['genebayes_matches']==3 and seq['genebayes_nonmatches']==1
@@ -82,6 +85,34 @@ def test_exact_scores_missing_annotations_thresholds_and_gene_join(tmp_path,caps
     assert hc==[(20,'lof_t1','sequence',True),(21,'lof_t2','spanning_deletion',True),(22,None,'sequence',True),(23,None,'sequence',False),(25,'lof_t2','sequence',True)]
     assert not list(out.glob('*.tsv'))
     assert 'ENSG1' not in capsys.readouterr().out
+
+
+def test_mpc_non_mane_value_and_missing_rankscore_policy(tmp_path):
+    a=fixture(tmp_path)
+    meta=json.loads(Path(a.metadata).read_text());db=Path(meta['dbnsfp']['path'])
+    con=duckdb.connect()
+    # One scored non-MANE transcript and a missing MANE value: historical
+    # list-max behavior must not be replaced by positional MANE extraction.
+    con.execute('CREATE TABLE source AS SELECT *, ? AS MANE, ? AS Ensembl_transcriptid FROM read_parquet(?)',
+                ['.;Select','OLD_TX;MANE_TX',str(db)])
+    con.execute("UPDATE source SET MPC_score='3.4;.'")
+    # POS 2 stays selected on three other predictors, with unavailable MPC.
+    con.execute("UPDATE source SET MPC_rankscore='.' WHERE \"pos(1-based)\"='2'")
+    for col in T_STARS:
+        con.execute(f'UPDATE source SET "{col}"=\'.\' WHERE "pos(1-based)"=\'5\'')
+    db.unlink();con.execute(f'COPY source TO {lit(db)} (FORMAT PARQUET)')
+    meta['dbnsfp']=identity(db);Path(a.metadata).write_text(json.dumps(meta))
+    run(a)
+    rows=con.execute('SELECT POS,MPC_score,MPC_rankscore,n_scored,n_flag,tier FROM read_parquet(?) ORDER BY POS',
+                     [str(Path(a.outdir)/'missense.parquet')]).fetchall()
+    assert rows[0]==(1,3.4,T_STARS['MPC_rankscore'],4,4,'miss_t1')
+    assert rows[1]==(2,3.4,None,3,3,'miss_t2')
+    r=json.loads((Path(a.outdir)/'receipt.json').read_text())['by_allele_class']['sequence']
+    assert r['matched_without_rankscores']==1
+    assert r['dbnsfp_nonmatches']==4
+    assert r['rankscore_missing_counts']['MPC_rankscore']==6
+    assert r['fully_scored_below_thresholds']==0
+    assert r['n_scored_counts']=={'0':5,'1':0,'2':0,'3':1,'4':3}
 
 
 @pytest.mark.parametrize('kind',['empty','duplicate_gene','wrong_pair','changed_resource'])
