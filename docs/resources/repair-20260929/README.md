@@ -83,7 +83,7 @@ releases/v1/
   RESTORE_RECEIPT.json
 ```
 
-The earlier [Expanse/S3 audit](../README.md) remains a dated pre-repair record. The [complete S3 file catalog](../aws-file-catalog.tsv) supplies exact object names, sizes, and runtime hashes. The two staged images are recorded in [containers.json](containers.json); their `.sha256` files use portable basenames.
+The earlier [Expanse/S3 pre-repair audit](../PRE_REPAIR_AUDIT_20260929.md) remains a dated pre-repair record. The [complete S3 file catalog](../aws-file-catalog.tsv) supplies exact object names, sizes, and runtime hashes. The two staged images are recorded in [containers.json](containers.json); their `.sha256` files use portable basenames.
 
 The old full Ensembl VEP cache is not part of the 113-file runtime contract and was not regenerated or restored. This FastVEP/picker/standalone-LOFTEE path uses the consolidated derived resources above and does not rerun Ensembl VEP. Archived broken links may remain in the explicitly marked legacy tree as historical evidence; the active resource trees resolve correctly.
 
