@@ -13,8 +13,9 @@ import time
 import pysam
 
 FIELDS = ['CHROM', 'POS', 'REF', 'ALT', 'Gene', 'Feature', 'SYMBOL', 'sample',
-          'GT', 'GQ', 'DP', 'AD', 'FT', 'alt_dosage', 'site_FILTER']
+          'GT', 'GQ', 'DP', 'AD', 'FT', 'alt_dosage', 'site_FILTER', 'allele_class']
 KEY_FIELDS = ['CHROM', 'POS', 'REF', 'ALT']
+ALLELE_CLASSES = ('sequence', 'spanning_deletion')
 
 
 class ValidationError(ValueError):
@@ -48,8 +49,13 @@ def candidates(path, chromosome):
                 continue
             if chrom(row['CHROM']) != chrom(chromosome):
                 raise ValidationError('HC candidate chromosome disagrees with manifest')
-            if not all(re.fullmatch('[ACGTN]+', row[k]) for k in ['REF', 'ALT']):
-                raise ValidationError('HC candidate must have explicit biallelic sequence alleles')
+            if len(row['ALT'].split(',')) != 1:
+                raise ValidationError('HC candidate must have exactly one ALT')
+            if not re.fullmatch('[ACGTN]+', row['REF']) or not (
+                    row['ALT'] == '*' or re.fullmatch('[ACGTN]+', row['ALT'])):
+                raise ValidationError('HC candidate requires sequence REF and sequence ALT or spanning-deletion *')
+            row['allele_class'] = 'spanning_deletion' if row['ALT'] == '*' else 'sequence'
+            counts[row['allele_class']] += 1
             if row['REF'] == row['ALT'] or int(row['POS']) < 1:
                 raise ValidationError('Invalid HC candidate allele or position')
             if row['Gene'] in ('', '.', '-'):
@@ -81,10 +87,12 @@ def extract(a):
     started = time.perf_counter()
     meta = json.loads(Path(a.metadata).read_text())
     out = Path(a.outdir); out.mkdir(parents=True, exist_ok=True)
-    receipt = dict(status='failed', unit_id=meta['unit_id'], chromosome=meta['chromosome'],
+    receipt = dict(schema_version=2, status='failed', unit_id=meta['unit_id'], chromosome=meta['chromosome'],
                    sources=meta, pysam_version=pysam.__version__,
                    definition='LoF == HC; exact CHROM/POS/REF/ALT; one row per variant/sample carrying ALT index 1',
-                   burden_definition='number of distinct carried HC variants per sample/gene; homozygous ALT counts once',
+                   burden_definition='separate sequence HC variant counts and spanning-deletion HC record counts per sample/gene; homozygous ALT counts once',
+                   aggregate_scope='top-level totals include both allele classes as a raw audit; use by_allele_class for separated counts',
+                   spanning_deletion_policy='retain exact star records separately; no upstream deletion mapping, event deduplication, or combined biological burden',
                    genotype_filter='none; partial calls with a called ALT are included; quality fields preserved',
                    vcf_identity_method='path/size/mtime plus index SHA-256; no full genotype VCF hashing or scanning')
     products = ['carriers.tsv.gz', 'candidates.tsv', 'unmatched.tsv', 'samples.tsv',
@@ -93,7 +101,8 @@ def extract(a):
         identities = {name: file_identity(getattr(a, name), name != 'vcf') for name in ['vcf', 'index', 'loftee']}
         selected, counts = candidates(a.loftee, meta['chromosome'])
         receipt.update(annotation_rows=counts['annotation_rows'], hc_annotation_rows=counts['HC'],
-                       non_hc_annotation_rows=counts['non_HC'], candidate_hc_variants=len(selected))
+                       non_hc_annotation_rows=counts['non_HC'], candidate_hc_variants=len(selected),
+                       by_allele_class={kind: dict(candidate_hc_variants=counts[kind]) for kind in ALLELE_CLASSES})
         if a.expected_hc is not None and len(selected) != a.expected_hc:
             raise ValidationError('HC candidate count does not match expected count')
         found = set()
@@ -101,6 +110,7 @@ def extract(a):
         gene_records = Counter()
         carrier_variants = set()
         partial = dosage_total = carrier_records = 0
+        class_partials, class_dosages = Counter(), Counter()
         with pysam.VariantFile(a.vcf, index_filename=a.index) as vcf:
             # Both aliases in the header are ambiguous; never silently choose one.
             aliases = [c for c in vcf.header.contigs if chrom(c) == chrom(meta['chromosome'])]
@@ -133,6 +143,7 @@ def extract(a):
                             raise ValidationError('Matching source record lacks FORMAT/GT')
                         found.add(key)
                         annotation = selected[key]
+                        kind = annotation['allele_class']
                         for sample, call in record.samples.items():
                             gt = call.get('GT')
                             if gt is None:
@@ -145,38 +156,55 @@ def extract(a):
                             row = dict(CHROM=record.contig, POS=record.pos, REF=record.ref, ALT=record.alts[0],
                                        Gene=annotation['Gene'], Feature=annotation['Feature'],
                                        SYMBOL=annotation.get('SYMBOL', '.'), sample=sample, GT=genotype,
-                                       alt_dosage=gt.count(1), site_FILTER=';'.join(record.filter) or '.')
+                                       allele_class=kind, alt_dosage=gt.count(1), site_FILTER=';'.join(record.filter) or '.')
                             row.update({name: text(call.get(name)) for name in ['GQ', 'DP', 'AD', 'FT']})
                             target.write(('\t'.join(text(row[name]) for name in FIELDS)+'\n').encode())
-                            burdens[sample, annotation['Gene']] += 1
-                            gene_records[annotation['Gene']] += 1
+                            burdens[sample, annotation['Gene'], kind] += 1
+                            gene_records[annotation['Gene'], kind] += 1
+                            class_partials[kind] += None in gt
+                            class_dosages[kind] += gt.count(1)
                             carrier_variants.add(key)
                             carrier_records += 1
                             partial += None in gt
                             dosage_total += gt.count(1)
         for name, keys in [('candidates.tsv', selected), ('unmatched.tsv', selected.keys()-found)]:
             with open(out/name, 'w', newline='') as handle:
-                fields = KEY_FIELDS + ['Gene', 'Feature', 'SYMBOL']
+                fields = KEY_FIELDS + ['Gene', 'Feature', 'SYMBOL', 'allele_class']
                 writer = csv.DictWriter(handle, fieldnames=fields, delimiter='\t', lineterminator='\n', extrasaction='ignore')
                 writer.writeheader()
                 for key in sorted(keys):
                     writer.writerow({k: selected[key].get(k, '.') for k in fields})
+        burden_columns = 'sequence_hc_variant_count\tspanning_deletion_hc_record_count'
         with open(out/'sample_gene_burden.tsv', 'w') as handle:
-            handle.write('sample\tGene\thc_variant_count\n')
-            for (sample, gene), count in sorted(burdens.items()):
-                handle.write(f'{sample}\t{gene}\t{count}\n')
+            handle.write('sample\tGene\t'+burden_columns+'\n')
+            for sample, gene in sorted({(s, g) for s, g, kind in burdens}):
+                handle.write(f'{sample}\t{gene}\t{burdens[sample, gene, "sequence"]}\t{burdens[sample, gene, "spanning_deletion"]}\n')
         totals = Counter()
-        for (sample, gene), count in burdens.items():
-            totals[sample] += count
+        for (sample, gene, kind), count in burdens.items():
+            totals[sample, kind] += count
         with open(out/'sample_burden.tsv', 'w') as handle:
-            handle.write('sample\thc_variant_count\n')
+            handle.write('sample\t'+burden_columns+'\n')
             for sample in samples:
-                handle.write(f'{sample}\t{totals[sample]}\n')
-        gene_sample_counts = Counter(gene for sample, gene in burdens)
+                handle.write(f'{sample}\t{totals[sample, "sequence"]}\t{totals[sample, "spanning_deletion"]}\n')
+        gene_sample_counts = Counter((gene, kind) for sample, gene, kind in burdens)
         with open(out/'gene_burden.tsv', 'w') as handle:
-            handle.write('Gene\tcarrier_records\tcarrier_samples\n')
+            handle.write('Gene\tsequence_carrier_records\tsequence_carrier_samples\tspanning_deletion_carrier_records\tspanning_deletion_carrier_samples\n')
             for gene in sorted({r['Gene'] for r in selected.values()}):
-                handle.write(f'{gene}\t{gene_records[gene]}\t{gene_sample_counts[gene]}\n')
+                values = [value for kind in ALLELE_CLASSES
+                          for value in (gene_records[gene, kind], gene_sample_counts[gene, kind])]
+                handle.write(gene+'\t'+'\t'.join(map(str, values))+'\n')
+        by_class = {}
+        for kind in ALLELE_CLASSES:
+            keys = {key for key, row in selected.items() if row['allele_class'] == kind}
+            by_class[kind] = dict(candidate_hc_variants=len(keys),
+                                 matched_candidate_variants=len(keys & found),
+                                 unmatched_candidate_variants=len(keys - found),
+                                 matched_variants_without_carriers=len((keys & found) - carrier_variants),
+                                 carrier_records=sum(n for (gene, c), n in gene_records.items() if c == kind),
+                                 samples_with_hc_plof=len({s for s, g, c in burdens if c == kind}),
+                                 genes_with_hc_plof=len({g for s, g, c in burdens if c == kind}),
+                                 partial_call_carrier_records=class_partials[kind],
+                                 observed_alt_alleles=class_dosages[kind])
         for name in identities:
             now = file_identity(getattr(a, name), False)
             if any(now[k] != identities[name][k] for k in now):
@@ -187,7 +215,8 @@ def extract(a):
                        unmatched_candidate_variants=len(selected)-len(found),
                        matched_variants_without_carriers=len(found-carrier_variants),
                        carrier_records=carrier_records, samples_in_source=len(samples),
-                       samples_with_hc_plof=len(totals), genes_with_hc_plof=len(gene_records),
+                       samples_with_hc_plof=len({s for s, kind in totals}),
+                       genes_with_hc_plof=len({g for g, kind in gene_records}), by_allele_class=by_class,
                        partial_call_carrier_records=partial, observed_alt_alleles=dosage_total,
                        contig_alias=dict(annotation=meta['chromosome'], source=contig),
                        outputs={name: file_identity(out/name, True) for name in products})
@@ -202,7 +231,7 @@ def extract(a):
         receipt['wall_seconds'] = time.perf_counter()-started
         (out/'receipt.json').write_text(json.dumps(receipt, indent=2, sort_keys=True)+'\n')
     print(json.dumps({k: receipt[k] for k in ['status', 'unit_id', 'candidate_hc_variants',
-          'unmatched_candidate_variants', 'carrier_records', 'samples_with_hc_plof', 'genes_with_hc_plof']}))
+          'unmatched_candidate_variants', 'carrier_records', 'samples_with_hc_plof', 'genes_with_hc_plof', 'by_allele_class']}))
 
 
 if __name__ == '__main__':

@@ -74,8 +74,8 @@ def test_exact_alleles_genotypes_and_counts(tmp_path, index, capsys):
     assert receipt['matched_variants_without_carriers'] == 2
     assert receipt['carrier_records'] == 4 and receipt['samples_with_hc_plof'] == 2 and receipt['genes_with_hc_plof'] == 1
     assert receipt['partial_call_carrier_records'] == 1 and receipt['observed_alt_alleles'] == 5
-    assert 'S1\tGENE1\t2\n' in (out/'sample_gene_burden.tsv').read_text()
-    assert 'S3\t0\n' in (out/'sample_burden.tsv').read_text()
+    assert 'S1\tGENE1\t2\t0\n' in (out/'sample_gene_burden.tsv').read_text()
+    assert 'S3\t0\t0\n' in (out/'sample_burden.tsv').read_text()
     assert len((out/'samples.tsv').read_text().splitlines()) == 5
     assert all(p.read_bytes() == value for p, value in before.items())
     assert 'S1' not in capsys.readouterr().out
@@ -111,7 +111,7 @@ def test_empty_hc_set(tmp_path):
 
 @pytest.mark.skipif(not shutil.which('nextflow'), reason='Nextflow required')
 def test_nextflow_real_extraction_subset_resume(tmp_path):
-    a = fixture(tmp_path/'block12'); b = fixture(tmp_path/'block19', index='csi')
+    a = star_fixture(tmp_path/'block12'); b = fixture(tmp_path/'block19', index='csi')
     manifest = tmp_path/'manifest.tsv'
     manifest.write_text('unit_id\tchromosome\tloftee\tvcf\tindex\n'+''.join(
         f'{unit}\tchr22\t{args.loftee}\t{args.vcf}\t{args.index}\n' for unit, args in [('block12',a),('block19',b)]))
@@ -132,7 +132,7 @@ def test_nextflow_real_extraction_subset_resume(tmp_path):
     assert {r['name']:r['status'] for r in second} == {'EXACT_HC_CARRIERS (block12)':'CACHED','EXACT_HC_CARRIERS (block19)':'COMPLETED'}
     assert all(r['status']=='CACHED' for r in run('subset','block19',True))
     out = tmp_path/'published/carriers/block12'
-    assert json.loads((out/'receipt.json').read_text())['carrier_records'] == 4
+    assert json.loads((out/'receipt.json').read_text())['carrier_records'] == 7
     shutil.rmtree(tmp_path/'work')
     assert (out/'carriers.tsv.gz').is_file() and not (out/'carriers.tsv.gz').is_symlink()
 
@@ -150,3 +150,72 @@ def test_optional_format_headers_absent(tmp_path):
     with gzip.open(Path(args.outdir)/'carriers.tsv.gz','rt') as handle:
         row = next(csv.DictReader(handle, delimiter='\t'))
     assert all(row[k]=='.' for k in ['GQ','DP','AD','FT'])
+
+
+def star_fixture(tmp_path, index='tbi'):
+    args = fixture(tmp_path, index=index, extra=(
+        'chr22\t59\t.\tAAA\tA\t.\tPASS\t.\tGT\t0/1\t0/1\t0/1\t0/1\n'
+        'chr22\t60\t.\tAT\t*\t.\tPASS\t.\tGT:AD\t0/1:5,5\t1|1:0,10\t1/.:0,5\t./.:.\n'
+        'chr22\t60\t.\tAT\tATT\t.\tPASS\t.\tGT\t0/0\t0/0\t0/0\t1/1\n'
+        'chr22\t60\t.\tA\t*\t.\tPASS\t.\tGT\t0/0\t0/0\t0/0\t0/1\n'
+        'chr22\t61\t.\tC\tT\t.\tPASS\t.\tGT\t0/1\t0/1\t0/1\t0/1\n'
+        'chr22\t62\t.\tGG\t*\t.\tPASS\t.\tGT\t0/0\t0/0\t0/0\t./.\n'))
+    with open(args.loftee, 'a') as handle:
+        handle.write('22\t60\tAT\t*\tGENE1\tTX1\tG1\tHC\n'
+                     '22\t61\tC\t*\tGENE4\tTX4\tG4\tHC\n'
+                     '22\t62\tGG\t*\tGENE2\tTX2\tG2\tHC\n')
+    return args
+
+
+@pytest.mark.parametrize('index', ['tbi','csi'])
+def test_spanning_deletions_exact_matching_and_separate_burdens(tmp_path, index):
+    args = star_fixture(tmp_path, index)
+    args.expected_hc = 9  # guard includes both classes, without discarding stars
+    extract.extract(args)
+    out = Path(args.outdir)
+    with gzip.open(out/'carriers.tsv.gz', 'rt') as handle:
+        rows = list(csv.DictReader(handle, delimiter='\t'))
+    stars = [r for r in rows if r['allele_class'] == 'spanning_deletion']
+    assert len(rows) == 7 and len(stars) == 3
+    assert {r['sample'] for r in stars} == {'S1','S2','S3'}
+    assert all(r['POS']=='60' and r['REF']=='AT' and r['ALT']=='*' for r in stars)
+    assert {r['GT'] for r in stars} == {'0/1','1|1','1/.'}
+    assert stars[1]['alt_dosage'] == '2' and stars[1]['AD'] == '0,10'
+    receipt = json.loads((out/'receipt.json').read_text())
+    assert receipt['schema_version'] == 2
+    assert receipt['candidate_hc_variants'] == 9 and receipt['carrier_records'] == 7
+    assert receipt['samples_with_hc_plof'] == 3 and receipt['genes_with_hc_plof'] == 1
+    seq, star = (receipt['by_allele_class'][k] for k in ['sequence','spanning_deletion'])
+    assert seq['candidate_hc_variants'] == 6 and seq['carrier_records'] == 4
+    assert star == dict(candidate_hc_variants=3, matched_candidate_variants=2,
+                        unmatched_candidate_variants=1, matched_variants_without_carriers=1,
+                        carrier_records=3, samples_with_hc_plof=3, genes_with_hc_plof=1,
+                        partial_call_carrier_records=1, observed_alt_alleles=4)
+    assert 'S1\tGENE1\t2\t1\n' in (out/'sample_gene_burden.tsv').read_text()
+    assert 'S3\tGENE1\t0\t1\n' in (out/'sample_gene_burden.tsv').read_text()
+    assert 'S4\t0\t0\n' in (out/'sample_burden.tsv').read_text()
+    assert 'GENE1\t4\t2\t3\t3\n' in (out/'gene_burden.tsv').read_text()
+    with (out/'unmatched.tsv').open() as handle:
+        unmatched = list(csv.DictReader(handle, delimiter='\t'))
+    assert [(r['POS'],r['ALT']) for r in unmatched if r['allele_class']=='spanning_deletion'] == [('61','*')]
+    with (out/'candidates.tsv').open() as handle:
+        audit = list(csv.DictReader(handle, delimiter='\t'))
+    assert sum(r['allele_class']=='spanning_deletion' for r in audit) == 3
+
+
+def test_multiallelic_source_with_star_still_fails(tmp_path):
+    args = fixture(tmp_path, extra='chr22\t50\t.\tG\tC,*\t.\tPASS\t.\tGT\t0/2\t0/1\t0/0\t0/0\n')
+    with open(args.loftee, 'a') as handle:
+        handle.write('22\t50\tG\t*\tGENE4\tTX4\tG4\tHC\n')
+    with pytest.raises(extract.ValidationError, match='Multiallelic source'):
+        extract.extract(args)
+    assert not (Path(args.outdir)/'carriers.tsv.gz').exists()
+
+
+@pytest.mark.parametrize('alt', ['<*>','<DEL>','G,*','.',''])
+def test_other_symbolic_or_multiple_candidate_alts_not_conflated_with_star(tmp_path, alt):
+    args = fixture(tmp_path)
+    with open(args.loftee,'a') as handle:
+        handle.write(f'22\t60\tA\t{alt}\tGENE1\tTX1\tG1\tHC\n')
+    with pytest.raises(extract.ValidationError):
+        extract.extract(args)

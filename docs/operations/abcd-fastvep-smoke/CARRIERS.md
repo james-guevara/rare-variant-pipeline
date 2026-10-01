@@ -2,8 +2,9 @@
 
 This separate `carriers.nf` entrypoint consumes completed LOFTEE TSVs and original
 indexed genotype-bearing VCFs. It does not invoke or modify the sites catalog or
-FastVEP/picker/LOFTEE annotation workflows. No real ABCD carrier extraction has been
-run by Codex. NBDC execution remains with the operator; start only block12.
+FastVEP/picker/LOFTEE annotation workflows. The operator's first real block12 attempt
+exposed the ALT=`*` validator bug; the updated implementation has not been rerun on
+NBDC by Codex. NBDC execution remains with the operator; start only block12.
 
 ## Data flow and definitions
 
@@ -29,7 +30,12 @@ Scientific rules are deliberately explicit:
 - Only `LoF == HC`; no additional allele frequency, genotype-quality, site FILTER,
   or FT threshold. This is a raw carrier audit, not a final QC-filtered rare burden.
 - One candidate is one exact sequence allele. Duplicate HC keys fail instead of
-  double-counting transcripts. HC candidates must be biallelic sequence alleles.
+  double-counting transcripts. Exactly one ALT is required: a sequence allele or
+  the literal `*` spanning-deletion allele. REF remains a sequence allele. Other
+  symbolic forms, including `<*>`, are not treated as `*` and remain unsupported.
+  See the [VCF specification, ALT definition](https://samtools.github.io/hts-specs/VCFv4.5.pdf).
+  Carrier, candidate, and unmatched tables include `allele_class` (`sequence` or
+  `spanning_deletion`). All HC `*` candidates are retained in the raw audit.
 - `22` and `chr22` are allowed naming aliases. If both exist in the source header,
   selection fails rather than silently choosing one. REF/ALT and POS must match
   exactly; no allele normalization or position-only matching is performed here.
@@ -43,21 +49,31 @@ Scientific rules are deliberately explicit:
   invalid GT allele index, or a duplicate exact source record fails explicitly.
 - An HC allele absent from the source is reported as unmatched. A matched allele
   with no observed carriers is a separate category, not an unmatched allele.
-- Preliminary sample×gene burden = number of distinct carried HC variants in that
-  block, not ALT dosage. This definition is not presumed to match ABCD's matrix.
+- Preliminary sample×gene outputs separate `sequence_hc_variant_count` from
+  `spanning_deletion_hc_record_count`; neither is ALT dosage. No combined burden
+  column is emitted. A star record is not assumed to be an independent deletion
+  event: no upstream-event mapping or deduplication is attempted. Its eventual
+  biological burden treatment remains undecided.
 
 ## Block12 expected versus observed
 
 Operator-reported annotation baselines:
 
-| Quantity | Expected for real block12 | Observed by Codex |
+| Quantity | Expected for real block12 | Available evidence |
 |---|---:|---|
 | LOFTEE rows | 332 | Not measured on NBDC |
-| HC rows / unique candidates | 302 | Not measured on NBDC |
+| HC rows / unique candidates | 302 | Operator reports 302 |
+| Sequence HC candidates | 203 | Operator reports 203 |
+| Spanning-deletion HC candidates (`*`) | 99 | Operator reports 99 |
 | LC rows | 30 | Not measured on NBDC |
 | Carrier records | Unknown until extraction | Not measured on NBDC |
 | Samples / genes with HC carriers | Unknown until extraction | Not measured on NBDC |
 | Unmatched exact candidates | Measure and investigate | Not measured on NBDC |
+
+The reported 99 stars comprise 29 `C/*`, 28 `G/*`, 18 `A/*`, 9 `T/*`, and
+15 longer-REF `/*` records. This is aggregate operator evidence, not a new Codex
+measurement. The old implementation rejected these candidates; the revised
+`--expected_hc 302` guard includes both classes (203 + 99), not just sequence alleles.
 
 The operator also reports all 23 chr22 annotation blocks complete (3,502,058 picked
 sites; 6,721 LOFTEE rows). That does not establish genotype/carrier counts.
@@ -118,14 +134,22 @@ r = json.load(open(sys.argv[1]))
 assert r['status'] == 'passed'
 assert r['annotation_rows'] == 332 and r['candidate_hc_variants'] == 302
 assert r['non_hc_annotation_rows'] == 30
+assert r['by_allele_class']['sequence']['candidate_hc_variants'] == 203
+assert r['by_allele_class']['spanning_deletion']['candidate_hc_variants'] == 99
 keys = ['candidate_hc_variants','matched_candidate_variants','unmatched_candidate_variants',
         'matched_variants_without_carriers','carrier_records','samples_in_source',
-        'samples_with_hc_plof','genes_with_hc_plof','partial_call_carrier_records']
+        'samples_with_hc_plof','genes_with_hc_plof','partial_call_carrier_records', 'by_allele_class']
 print(json.dumps({k:r[k] for k in keys}, indent=2))
 PY
 ```
 
-Repeat this command with a new trace filename and `-resume` to confirm caching.
+Before rerunning, update `feat/exact-allele-carriers` using `git pull --ff-only`.
+The implementation change invalidates the carrier task cache; the failed attempt
+will execute the corrected script. The sites and annotation workflows are untouched.
+Keep `--expected_hc 302`. Use a fresh trace filename for the retry.
+
+Repeat the successful corrected command with another new trace filename and
+`-resume` to confirm caching.
 Keep the manifest, source paths, launch directory, and work directory stable. The
 standard Nextflow path cache uses size/mtime for the large VCF and index; the receipt
 also hashes the index, LOFTEE TSV, and all output products. The multi-GB genotype
@@ -149,10 +173,24 @@ Each block publishes under `<outdir>/carriers/<unit_id>/`:
 | `candidates.tsv` | All unique HC allele keys and their picked gene/transcript |
 | `unmatched.tsv` | Exact candidate keys not found in the source |
 | `samples.tsv` | Full source sample roster, including zero-carrier samples |
-| `sample_gene_burden.tsv` | Nonzero sample×gene carried-variant counts |
-| `sample_burden.tsv` | Per-sample counts, including zero counts |
-| `gene_burden.tsv` | Per-gene carrier records and unique carrier samples, including zero-carrier candidate genes |
+| `sample_gene_burden.tsv` | Sample×gene rows with either class nonzero; separate sequence variant and spanning-deletion record counts |
+| `sample_burden.tsv` | Separate class counts per sample, including zero counts |
+| `gene_burden.tsv` | Carrier records and unique carrier samples separately for each class; includes zero-carrier candidate genes |
 | `receipt.json` | Aggregate counts, definitions, paths, identities, hashes, runtime, status |
+
+Receipt schema version 2 includes `by_allele_class.sequence` and
+`by_allele_class.spanning_deletion`, each with candidate/matched/unmatched,
+carrier-record, unique-sample/gene, partial-call, and ALT-copy counts. Top-level
+counts remain raw audit totals across both classes for reconciliation; the legacy
+`samples_with_hc_plof` / `genes_with_hc_plof` names describe HC-labelled input records
+in that audit, not a decision that each star is an independent biological pLoF.
+A sample/gene present in both classes counts only once in the top-level unique total.
+
+**Schema change:** sample and sample×gene tables replace `hc_variant_count` with
+`sequence_hc_variant_count` and `spanning_deletion_hc_record_count`. Gene tables use
+`sequence_carrier_records`, `sequence_carrier_samples`,
+`spanning_deletion_carrier_records`, and `spanning_deletion_carrier_samples`.
+Do not add these columns together to infer a deduplicated biological burden.
 
 The TSV products contain protected sample or variant information and belong on
 NBDC. Only aggregate receipt fields are printed by the process. Source parser
@@ -178,11 +216,13 @@ between these annotation systems are not automatically errors.
 ## Local validation
 
 `uv run --with pytest --with pysam python -m pytest -q tests/test_exact_carriers.py tests/test_sites_annotation.py tests/test_sites_catalog.py`
-passed 22 tests (10 new carrier tests plus 12 existing regression tests), using real
+passed 30 tests (18 carrier tests plus 12 existing regression tests), using real
 pysam indexed VCF reads and real Nextflow execution for the carrier stage. Carrier
 tests cover exact REF/ALT matching, same-position ALTs, overlapping records,
 HC/LC selection, phased/homozygous/haploid/partial GTs, optional FORMAT values and
 headers, TBI and CSI, duplicate/multiallelic failure, empty HC sets, expected-HC
-guards, subset/resume caching, and durable outputs. They use synthetic data;
+guards, subset/resume caching, and durable outputs. Star-specific tests cover
+longer REF/*, phased/homozygous/partial star GTs, different-ALT/different-REF
+exclusion, multiallelic `C,*` rejection, `<*>` rejection, and separated burden counts. They use synthetic data;
 there has been no carrier run on real ABCD data by Codex. NBDC configuration parsing,
 Python compilation, and diff whitespace checks also passed.
