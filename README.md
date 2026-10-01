@@ -611,4 +611,4 @@ MIT
 
 ## Resource locations and deployment audit
 
-See the [verified Expanse/S3 resource map](docs/resources/README.md) for the consolidated v1 release, exact file catalog/checksums, Expanse symlink targets and missing resources, and the [ABCD FastVEP smoke-test handoff](docs/operations/abcd-fastvep-smoke/README.md). The September consolidated release is preserved in S3 and has been restored to Expanse. See the [restoration receipts and validation](docs/resources/repair-20260929/README.md) for the current verified state.
+Start with the [current resource guide](docs/resources/README.md): canonical Expanse and S3 paths, resource families, containers, NBDC paths, and checksum evidence. The v1 release was restored and verified on Expanse on 2026-09-29. Earlier broken-link reports are historical pre-repair evidence, not the current resource layout. See the [ABCD annotation runbook](docs/operations/abcd-fastvep-smoke/NEXTFLOW.md) for NBDC execution.
