@@ -14,6 +14,8 @@ For persistent sites-only catalogs, the separate [FastVEP/picker → standalone 
 entrypoint](docs/operations/abcd-fastvep-smoke/NEXTFLOW.md) runs independent block tasks
 with immutable shared resources, durable products, and an isolated NBDC Slurm profile.
 Start with the documented block12 regression gate before expanding the run.
+The separate [exact-allele HC carrier stage](docs/operations/abcd-fastvep-smoke/CARRIERS.md)
+queries original indexed genotype VCFs after annotation; its first execution gate is block12.
 
 This pipeline processes VCF files through variant annotation (VEP), filters for consequential variants (HIGH/MODERATE impact), and queries family genotypes to identify rare variants segregating in families.
 
