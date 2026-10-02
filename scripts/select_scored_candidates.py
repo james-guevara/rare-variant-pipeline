@@ -44,11 +44,13 @@ def run(a):
                    selection='missense consequence token and n_flag >= 1; all HC LoF rows retained',
                    allele_policy='sequence and spanning_deletion labelled separately; no biological star-burden decision',
                    genebayes_join='Gene == ensg, exact; no symbol fallback or gene-ID rewriting',
-                   dbnsfp_policy='expanded_mane_select row subset; exact allele join; no picked-transcript or gene match; no unfiltered fallback',
+                   dbnsfp_policy='unfiltered parquet_expanded; no MANE inclusion filter; exact allele join; no picked-transcript or gene match',
                    score_policy='reuse join_scores.SCORES/extract_expr; ranks scalar; raw list MAX except popEVE MIN; duplicate exact keys aggregate as existing code')
     start = time.perf_counter()
     con = None
     try:
+        if meta.get('dbnsfp_representation') != 'parquet_expanded':
+            raise ValueError('Candidate scoring requires a rebuilt unfiltered parquet_expanded lock')
         for resource in [meta['dbnsfp'], meta['genebayes']]: check(resource)
         con = duckdb.connect()
         con.execute(f'SET threads={int(a.threads)}')

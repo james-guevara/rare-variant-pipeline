@@ -65,27 +65,37 @@ single combined tier. No genotype scans or new carrier implementation are added;
 a future missense carrier adapter should feed these exact keys into the existing
 indexed exact-allele machinery, preserving the HC extractor's current contract.
 
-## Reconciliation with the existing analysis (2026-10-01)
+## MANE policy: transcript preference, never variant inclusion (corrected 2026-10-02)
 
-The MANE resource filter and raw-score list reduction were deliberate choices in
-prior work, not newly discovered issues or an accidental substitution for
-transcript matching. The April 21 analysis notes in `Rare Variant Postprocessing`
-reported chr22 MPC coverage of **53.0% at the MANE position versus 73.5% with
-list-max**. Those are historical measurements, not new ABCD results. The same notes
-and later sensitivity analyses considered non-MANE genes/transcripts, including
-SHANK3. Later LoF work removed the MANE requirement. This candidate stage likewise
-has **no MANE requirement on HC rows** and applies no SHANK3 exception or gene list.
+**Use `parquet_expanded`, not `parquet_expanded_mane_select`.** Earlier versions of
+this PR incorrectly used a reference already filtered to MANE-containing rows.
+The initial brief named that filtered resource, but the current v3 policy and the
+operator's clarification require no MANE inclusion filter. Removing a filter on
+picked annotations alone cannot recover rows removed during resource preparation.
 
-The checked-in historical
-[per-variant scoring analysis](https://github.com/james-guevara/rare-variant-postprocessing/blob/main/steps/missense_counts_pervariant.py)
-and [composite scoring analysis](https://github.com/james-guevara/rare-variant-postprocessing/blob/main/steps/missense_counts_composite.py)
-explicitly use `parquet_expanded_mane_select`. The
+The earlier April notes and
+[historical per-variant analysis](https://github.com/james-guevara/rare-variant-postprocessing/blob/main/steps/missense_counts_pervariant.py)
+used the filtered resource. They do not override the later v3 policy. The canonical
+v3 notes explicitly remove MANE inclusion filtering and the older SHANK3 exception.
+The March investigation also distinguished off-MANE variants in genes that do
+have MANE transcripts from genes with no MANE transcript. Neither case is grounds
+for exclusion here. No gene whitelist or MANE/canonical fallback filter is applied.
+
+The existing
 [resource builder](https://github.com/james-guevara/rare-variant-postprocessing/blob/main/scripts/regen_dbnsfp_expanded.py)
-creates both the unfiltered and MANE-filtered representations. The established
-four-rankscore model and current `join_scores.py` are preserved here; switching to
-MANE-position MPC or silently switching the reference universe would change that
-policy. Prior observations do not guarantee every ABCD picked transcript agrees
-with every score source; this stage does not claim that agreement.
+already produces the required unfiltered expanded resource. The score reducers
+remain unchanged: use raw-score MAX across transcript lists (MIN for popEVE), and
+the supplied rankscores for the four flags. This retains MPC values stored at a
+non-MANE transcript position. Historical whole-chr22 MPC coverage was 53.0% at the
+MANE position versus 73.5% with list-max; these are prior measurements, not ABCD
+results and not the separate cohort-specific coverage denominator.
+
+MANE remains a preference in the existing upstream transcript picker; this stage
+neither repicks transcripts nor filters on picked MANE status. HC/GeneBayes has no
+MANE restriction either. A gene or allele absent from dbNSFP, or with genuinely
+missing predictor values, is not assigned fabricated scores. Unscored missense
+rows remain counted but do not acquire a tier. Changing resource coverage can
+change candidate counts; old MANE-filtered candidate results are not equivalent.
 
 Existing alternatives were inspected read-only at:
 
@@ -95,27 +105,25 @@ Existing alternatives were inspected read-only at:
 
 | Product | Existing semantics | Used here? |
 |---|---|---|
-| `parquet_expanded_mane_select` | Expanded columns, rows with `MANE LIKE '%Select%'`; transcript lists remain intact | Yes, canonical locked v1 copy |
-| `parquet_expanded` | Same expanded columns without the MANE row filter | No |
-| `parquet_mpc` | Gene-keyed preferred row, MANE-position and maximum MPC, transcript IDs, `has_mane_select`; retains a non-MANE row when needed | No |
-| `parquet_am` | Analogous MANE-position/maximum AlphaMissense representation | No |
-| `parquet_scores_af` | Earlier scores and AF; its builder does not include ClinPred | No |
+| `parquet_expanded` | Expanded predictor columns without a MANE row filter | **Yes** |
+| `parquet_expanded_mane_select` | Rows with `MANE LIKE '%Select%'`, transcript lists intact | **No; superseded in this PR** |
+| `parquet_mpc` | Gene-keyed preferred row, MANE and maximum MPC, transcript IDs, `has_mane_select`; retains a non-MANE row when needed | No |
+| `parquet_am` | Analogous MANE/maximum AlphaMissense representation | No |
+| `parquet_scores_af` | Earlier scores and AF; builder lacks ClinPred | No |
 | `parquet_af` | Allele-frequency columns | No |
 
-The specialized products' builder is `build_dbnsfp_split_parquets.py` beside those
-resources. It picks one row per position/REF/ALT/first Ensembl gene ID, preferring
-MANE-containing rows; it is not a strict MANE-only filter. This is a separate
-representation from the expanded resource. Existence of these alternatives was
-verified on Expanse, not on NBDC. They have not been added to the canonical v1 lock
-or staged by this PR. No new resource transfer is required for the current pilot.
+`build_dbnsfp_split_parquets.py` beside those resources builds the specialized
+MPC/AlphaMissense products. They are not needed for this pilot because the
+unfiltered expanded product contains the required score columns. Their earlier
+existence is not evidence that a different resource was used in every later run.
 
-`n_scored` counts available numeric rankscores among the four tier predictors;
-`n_flag` still counts threshold passes. Receipts report both distributions, missing
-counts for each predictor, matched rows with no rankscores, and fully scored rows
-below every threshold. These distinguish reference nonmatches, score missingness,
-and below-threshold scores without changing tiers. A missing score is not evidence
-of benignity. Nonmatches cannot be attributed specifically to the MANE filter from
-this resource alone. There is no automatic fallback to the unfiltered product.
+`n_scored` counts available rankscores among the four predictors; `n_flag` counts
+threshold passes. Receipts include both distributions, each predictor's missing
+count, matched rows with no rankscores, and fully scored rows below all thresholds.
+Missing scores are not evidence of benignity. Joins remain exact CHROM/POS/REF/ALT;
+gene/transcript identities are not added to the score join in this correction.
+Duplicate resource rows still reduce independently per score. Scores are therefore
+not asserted to be transcript-matched to the picked consequence.
 
 ## Output retention and spanning deletions
 
@@ -150,25 +158,48 @@ and can spill temporary data within the work directory.
 
 ## Resource inspection and identity
 
-Read-only inspection of the canonical Expanse release confirmed:
-
-- Expanded-MANE chr22 Parquet: 1,615,190 rows, documented four key columns and all
-  eleven score source columns present, stored as strings.
-- GeneBayes header contains `ensg`, `hgnc`, and the six expected metric columns.
-- The already-staged pinned LOFTEE SIF contains DuckDB **1.5.5** (confirmed on Expanse).
-
-Canonical v1 file identities, also reported verified by the operator on NBDC:
+Read-only Expanse inspection on 2026-10-02 confirmed the unfiltered chr22
+Parquet contains **1,799,075 rows** and all eleven score columns. The old filtered
+file contains 1,615,190 rows. These are resource row counts, not ABCD candidate counts.
+GeneBayes and the pinned LOFTEE SIF (DuckDB 1.5.5) are unchanged.
 
 | File | Bytes | SHA-256 |
 |---|---:|---|
-| chr22 expanded-MANE Parquet | 298748270 | `7ca84d9bf85627ab66aa86f3fe91a0e28630a7307a92caa3284589ccb21d50a9` |
+| **Unfiltered** chr22 expanded Parquet | 310791513 | `ecb7a6594c7db0c4b8d0ebdf9b1e8a152f633dc3d0c282ccd54b50eb3d6dbfb1` |
 | GeneBayes TSV | 1572515 | `d5a88129246bb8a1f157c29d6bb566a81234fc752a3b1dd05fce0a422d7e49f3` |
 
-The lock helper verifies these against the repository's canonical inventory and
-checks the pinned SIF hash. It records resolved paths, sizes, timestamps, and hashes
-once. Subsequent launches/tasks check metadata and use the immutable identities in
-Nextflow cache keys. Resource symlinks escaping the read-only root are rejected.
-Keep resources immutable; deliberate replacements require a freshly verified lock.
+The new [candidate inventory](../../resources/candidate-resource-hashes.json)
+pins unfiltered chr22 and the existing GeneBayes identity. It does not relabel or
+modify the historical v1 release. Only chr22 is pinned for this pilot; other
+chromosomes require their unfiltered files and verified inventory entries before
+use. There is no chromosome-specific scientific logic.
+
+The lock helper verifies SHA-256, records metadata and the pinned SIF identity,
+and emits schema 2 with `dbnsfp_representation=parquet_expanded`. Old schema-1
+MANE-filtered locks are rejected before tasks run. Rebuild the lock; replacing or
+renaming the old filtered file will fail its expected hash. Resources stay read-only
+and are not copied into individual task work directories.
+
+**One new file must be staged on NBDC.** Codex verified the source on Expanse but
+has not transferred it or accessed NBDC:
+
+```text
+Source:
+/expanse/projects/sebat1/s3/data/sebat/resources/dbNSFP/5.3.1a/parquet_expanded/chr22.parquet
+
+Destination:
+/home/ood-guevara-james/abcd-fastvep-smoke/resources/dbNSFP/5.3.1a/parquet_expanded/chr22.parquet
+```
+
+Use the established permitted transfer route between your environments. Keep the
+old filtered resource separately; do not overwrite it. After transfer, run on NBDC:
+
+```bash
+BASE=/home/ood-guevara-james/abcd-fastvep-smoke
+printf '%s  %s\n' \
+  ecb7a6594c7db0c4b8d0ebdf9b1e8a152f633dc3d0c282ccd54b50eb3d6dbfb1 \
+  "$BASE/resources/dbNSFP/5.3.1a/parquet_expanded/chr22.parquet" | sha256sum -c -
+```
 
 ## Proposed block12 commands on NBDC
 
@@ -251,14 +282,24 @@ receipt before using outputs.
 
 ## Tests and limits
 
+After the initial chromosome runs, review the pipeline with the operator stage
+by stage against actual commands and resource builders: inputs, every inclusion
+and exclusion rule, transcript/gene assignment, missing-value handling, joins,
+and retained outputs. Passing regression tests does not by itself validate those
+scientific choices. This review is planned after those runs, not a requirement to
+repeat already-completed preparation or annotation now.
+
 Synthetic tests exercise actual DuckDB joins and Nextflow tasks, including exact
 chromosome/position/REF/ALT matching, missing resource annotations, threshold
 boundaries, duplicate resource keys, missing GeneBayes matches, stars, empty inputs,
 wrong input pairing, canonical hash verification, caching, and durable publication.
 A regression invokes the original `tier_variants.py` and compares its tier labels
-against both new products. These are not real NBDC block12 results.
+against both new products. Additional regressions cover genes with no MANE,
+variants off a gene's MANE transcript, non-MANE MPC scores, genuinely unscored
+non-MANE alleles, and rejection of old filtered locks. These are not real NBDC
+block12 results.
 
-Local validation: **39 tests passed** (9 candidate tests plus the existing exact
+Local validation: **42 tests passed** (12 candidate tests plus the existing exact
 carrier, sites annotation, and sites catalog suites):
 
 ```bash

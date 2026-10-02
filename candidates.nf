@@ -11,7 +11,7 @@ workflow {
     if (params.candidate_resource_root != lock.resource_root)
         error 'Resource root must match lock and read-only bind'
     def entries=Channel.fromList(rows).map { row ->
-        def meta=row+[dbnsfp:lock.dbnsfp[row.chromosome],genebayes:lock.genebayes,container:lock.container]
+        def meta=row+[dbnsfp_representation:lock.dbnsfp_representation,dbnsfp:lock.dbnsfp[row.chromosome],genebayes:lock.genebayes,container:lock.container]
         tuple(meta,file(row.picked),file(row.loftee))
     }
     SCORE_CANDIDATES(entries,

@@ -1,0 +1,16 @@
+{
+  "description": "Candidate-stage inventory: unfiltered chr22 dbNSFP SHA-256 verified read-only on Expanse 2026-10-02; GeneBayes identity inherited from verified v1. This does not modify or relabel the historical MANE-filtered v1 release. Other chromosomes require verified inventory entries before use.",
+  "files": [
+    {
+      "path": "dbNSFP/5.3.1a/parquet_expanded/chr22.parquet",
+      "bytes": 310791513,
+      "sha256": "ecb7a6594c7db0c4b8d0ebdf9b1e8a152f633dc3d0c282ccd54b50eb3d6dbfb1",
+      "source": "/expanse/projects/sebat1/s3/data/sebat/resources/dbNSFP/5.3.1a/parquet_expanded/chr22.parquet"
+    },
+    {
+      "path": "targeted-annotation/GeneBayes.Supplementary_Table_1.tsv",
+      "bytes": 1572515,
+      "sha256": "d5a88129246bb8a1f157c29d6bb566a81234fc752a3b1dd05fce0a422d7e49f3"
+    }
+  ]
+}

@@ -31,7 +31,8 @@ class CandidateManifest {
     }
     static Map resources(def path, List rows) {
         def data=new JsonSlurper().parseText(path.text)
-        if (data.schema!=1) throw new IllegalArgumentException('Unsupported candidate lock')
+        if (data.schema!=2 || data.dbnsfp_representation!='parquet_expanded')
+            throw new IllegalArgumentException('Rebuild candidate lock with unfiltered parquet_expanded resources; old MANE-filtered locks are unsupported')
         def items=[data.genebayes,data.container]
         rows*.chromosome.unique().each { chrom ->
             if (!data.dbnsfp[chrom]) throw new IllegalArgumentException('No locked dbNSFP for '+chrom)

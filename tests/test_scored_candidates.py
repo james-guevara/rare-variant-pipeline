@@ -56,7 +56,7 @@ def fixture(tmp_path):
     gene.write_text('ensg\thgnc\tobs_lof\texp_lof\tprior_mean\tpost_mean\tpost_lower_95\tpost_upper_95\n'+''.join(
         f'{g}\tSAME\t1\t2\t0.1\t{value}\t0.01\t0.5\n' for g,value in [('ENSG1',0.18),('ENSG2',0.03),('ENSG3',0.02999),('ENSG4',0.17999)]))
     sif=tmp_path/'image.sif';sif.write_text('synthetic image')
-    meta=dict(unit_id='block12',chromosome='chr22',picked=str(tmp_path/'picked.tsv'),loftee=str(tmp_path/'loftee.tsv'),
+    meta=dict(dbnsfp_representation='parquet_expanded',unit_id='block12',chromosome='chr22',picked=str(tmp_path/'picked.tsv'),loftee=str(tmp_path/'loftee.tsv'),
               dbnsfp=identity(db),genebayes=identity(gene),container=identity(sif))
     metadata=tmp_path/'unit.json';metadata.write_text(json.dumps(meta))
     return Namespace(picked=meta['picked'],loftee=meta['loftee'],metadata=str(metadata),
@@ -115,6 +115,38 @@ def test_mpc_non_mane_value_and_missing_rankscore_policy(tmp_path):
     assert r['n_scored_counts']=={'0':5,'1':0,'2':0,'3':1,'4':3}
 
 
+@pytest.mark.parametrize('kind',['gene_without_mane','variant_off_mane','unscored_non_mane'])
+def test_no_mane_inclusion_filter_for_missense_or_hc(tmp_path,kind):
+    a=fixture(tmp_path)
+    # Both the picked and HC transcripts lack MANE. No named-gene exception.
+    for path in [Path(a.picked),Path(a.loftee)]:
+        lines=path.read_text().splitlines()
+        path.write_text(lines[0]+'\tMANE_SELECT\n'+''.join(line+'\t.\n' for line in lines[1:]))
+    meta=json.loads(Path(a.metadata).read_text());db=Path(meta['dbnsfp']['path'])
+    con=duckdb.connect()
+    con.execute('CREATE TABLE source AS SELECT *, ? AS MANE, ? AS Ensembl_geneid, ? AS Ensembl_transcriptid FROM read_parquet(?)',
+                ['.','ENSG1','TX1',str(db)])
+    if kind=='variant_off_mane':
+        # The same gene has MANE at a different allele; this allele must survive
+        # even though its own dbNSFP row and picked transcript have no MANE.
+        con.execute("INSERT INTO source SELECT * REPLACE ('100' AS \"pos(1-based)\", 'Select' AS MANE, 'MANE_TX' AS Ensembl_transcriptid) FROM source LIMIT 1")
+    if kind=='unscored_non_mane':
+        for col in T_STARS:
+            con.execute(f'UPDATE source SET "{col}"=\'.\' WHERE "pos(1-based)"=\'1\'')
+    db.unlink();con.execute(f'COPY source TO {lit(db)} (FORMAT PARQUET)')
+    meta['dbnsfp']=identity(db);Path(a.metadata).write_text(json.dumps(meta));run(a)
+    r=json.loads((Path(a.outdir)/'receipt.json').read_text())
+    assert r['by_allele_class']['sequence']['dbnsfp_matches']==5
+    assert r['hc_rows']==r['outputs']['lof_hc.parquet']['rows']==5
+    selected=con.execute('SELECT n_flag FROM read_parquet(?) WHERE POS=1',
+                         [str(Path(a.outdir)/'missense.parquet')]).fetchall()
+    if kind=='unscored_non_mane':
+        assert selected==[]
+        assert r['by_allele_class']['sequence']['matched_without_rankscores']==1
+    else:
+        assert selected==[(4,)]
+
+
 @pytest.mark.parametrize('kind',['empty','duplicate_gene','wrong_pair','changed_resource'])
 def test_edge_inputs(tmp_path,kind):
     a=fixture(tmp_path)
@@ -144,7 +176,7 @@ def test_nextflow_pilot_resume_publication(tmp_path):
     a=fixture(tmp_path/'a');b=fixture(tmp_path/'b')
     # Share immutable resources but keep separate block inputs.
     meta=json.loads(Path(a.metadata).read_text())
-    lock=dict(schema=1,resource_root=str(tmp_path/'a/resources'),dbnsfp={'chr22':meta['dbnsfp']},genebayes=meta['genebayes'],container=meta['container'])
+    lock=dict(schema=2,dbnsfp_representation='parquet_expanded',resource_root=str(tmp_path/'a/resources'),dbnsfp={'chr22':meta['dbnsfp']},genebayes=meta['genebayes'],container=meta['container'])
     resource_lock=tmp_path/'lock.json';resource_lock.write_text(json.dumps(lock))
     manifest=tmp_path/'blocks.tsv';manifest.write_text('unit_id\tchromosome\tpicked\tloftee\n'+''.join(
         f'{unit}\tchr22\t{x.picked}\t{x.loftee}\n' for unit,x in [('block12',a),('block19',b)]))
@@ -158,6 +190,12 @@ def test_nextflow_pilot_resume_publication(tmp_path):
         r=subprocess.run(cmd,cwd=tmp_path,capture_output=True,text=True,timeout=120)
         assert r.returncode==0,r.stdout+r.stderr
         return list(csv.DictReader((tmp_path/(label+'.trace')).open(),delimiter='\t'))
+    # Old MANE-filtered locks must fail before any selected task can run.
+    resource_lock.write_text(json.dumps({**lock,'schema':1,'dbnsfp_representation':'parquet_expanded_mane_select'}))
+    rejected=subprocess.run(base+['--select_units','block12'],cwd=tmp_path,capture_output=True,text=True,timeout=120)
+    assert rejected.returncode!=0
+    assert 'Rebuild candidate lock with unfiltered' in rejected.stdout+rejected.stderr
+    resource_lock.write_text(json.dumps(lock))
     assert len(execute('one','block12'))==1
     second=execute('two','all',True)
     assert {r['name']:r['status'] for r in second}=={'SCORE_CANDIDATES (block12)':'CACHED','SCORE_CANDIDATES (block19)':'COMPLETED'}
@@ -195,18 +233,18 @@ def test_resource_lock_canonical_hash_enforcement(tmp_path,monkeypatch):
     import lock_candidate_resources as lock
     a=fixture(tmp_path)
     meta=json.loads(Path(a.metadata).read_text())
-    root=tmp_path/'bundle';dbdir=root/'dbNSFP/5.3.1a/parquet_expanded_mane_select';dbdir.mkdir(parents=True)
+    root=tmp_path/'bundle';dbdir=root/'dbNSFP/5.3.1a/parquet_expanded';dbdir.mkdir(parents=True)
     genedir=root/'GeneBayes';genedir.mkdir()
     shutil.copy(meta['dbnsfp']['path'],dbdir/'chr22.parquet')
     shutil.copy(meta['genebayes']['path'],genedir/'GeneBayes.Supplementary_Table_1.tsv')
     old_lock=tmp_path/'annotation-lock.json';old_lock.write_text(json.dumps({'containers':{'loftee':meta['container']}}))
     canonical=tmp_path/'canonical.json'
     canonical.write_text(json.dumps({'files':[
-        {**meta['dbnsfp'],'path':'dbNSFP/5.3.1a/parquet_expanded_mane_select/chr22.parquet'},
+        {**meta['dbnsfp'],'path':'dbNSFP/5.3.1a/parquet_expanded/chr22.parquet'},
         {**meta['genebayes'],'path':'targeted-annotation/GeneBayes.Supplementary_Table_1.tsv'}]}))
     monkeypatch.setattr(lock,'LOF_SIF',meta['container']['sha256'])
     data=lock.build(root,['22'],old_lock,canonical)
     assert data['dbnsfp']['chr22']['sha256']==meta['dbnsfp']['sha256']
     (genedir/'GeneBayes.Supplementary_Table_1.tsv').write_text('changed')
-    with pytest.raises(ValueError,match='canonical v1'):
+    with pytest.raises(ValueError,match='verified inventory'):
         lock.build(root,['22'],old_lock,canonical)
