@@ -16,6 +16,8 @@ with immutable shared resources, durable products, and an isolated NBDC Slurm pr
 Start with the documented block12 regression gate before expanding the run.
 The separate [exact-allele HC carrier stage](docs/operations/abcd-fastvep-smoke/CARRIERS.md)
 queries original indexed genotype VCFs after annotation; its first execution gate is block12.
+The independent [candidate-scoring stage](docs/operations/abcd-fastvep-smoke/CANDIDATES.md)
+joins selected missense/HC annotations to dbNSFP and GeneBayes and publishes compact Parquet products.
 
 This pipeline processes VCF files through variant annotation (VEP), filters for consequential variants (HIGH/MODERATE impact), and queries family genotypes to identify rare variants segregating in families.
 

@@ -116,3 +116,14 @@ Historical files and archived links remain under `legacy/registry-before-2026092
 for compatibility. New runs should use the versioned release above. Historical
 `/fsx/rare-variant-resources/v1/` paths do not establish a currently mounted AWS
 filesystem; use the durable S3 release for transfers.
+
+## Candidate-scoring resource addition (2026-10-02)
+
+The ABCD candidate stage requires **unfiltered**
+`dbNSFP/5.3.1a/parquet_expanded/chr22.parquet`. The historical v1
+`parquet_expanded_mane_select` product is not a substitute. The
+[candidate inventory](candidate-resource-hashes.json) records its Expanse-verified
+identity; this additional file has not been confirmed staged on NBDC or copied
+into the consolidated v1 release/S3. See the
+[candidate runbook](../operations/abcd-fastvep-smoke/CANDIDATES.md#resource-inspection-and-identity)
+for the exact source, destination, hash, and lock migration.
