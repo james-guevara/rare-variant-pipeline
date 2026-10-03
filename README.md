@@ -614,3 +614,6 @@ MIT
 ## Resource locations and deployment audit
 
 Start with the [current resource guide](docs/resources/README.md): canonical Expanse and S3 paths, resource families, containers, NBDC paths, and checksum evidence. The v1 release was restored and verified on Expanse on 2026-09-29. Earlier broken-link reports are historical pre-repair evidence, not the current resource layout. See the [ABCD annotation runbook](docs/operations/abcd-fastvep-smoke/NEXTFLOW.md) for NBDC execution.
+
+Pre-carrier cohort AF, gnomAD POPmax, and problematic-region filtering is a separate
+[`pre_carrier.nf` stage](docs/operations/abcd-fastvep-smoke/PRE_CARRIER.md) that preserves candidate inputs.
