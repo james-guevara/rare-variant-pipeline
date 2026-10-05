@@ -14,6 +14,9 @@ verified separately. Historical repair reports retain their original scope.
 | Purpose | Path |
 |---|---|
 | Expanse scientific release | `/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/` |
+| Shared ddp195 copy (Tobias / Rady) | `/expanse/lustre/projects/ddp195/j3guevar/rare-variant-pipeline/releases/v1/` |
+| Shared ddp195 containers | `/expanse/lustre/projects/ddp195/j3guevar/rare-variant-pipeline/containers/v1/` |
+| Shared ddp195 bindings | `/expanse/lustre/projects/ddp195/j3guevar/rare-variant-pipeline/deployments/ddp195-v1/resources.json` and `resources.env` |
 | Expanse convenience alias | `/expanse/projects/sebat1/resources/rare-variant-pipeline/current` → `releases/v1/` |
 | Expanse pinned SIF containers | `/expanse/projects/sebat1/resources/rare-variant-pipeline/containers/v1/` |
 | Expanse resource bindings | `/expanse/projects/sebat1/resources/rare-variant-pipeline/deployments/expanse-v1/resources.json` and `resources.env` |
@@ -141,3 +144,7 @@ aws s3 cp \
 The S3 prefix is an authenticated storage location, not a public download link.
 Access must be arranged separately; no bucket permissions were changed by this
 consolidation. Downloading the full release prefix also includes these files.
+
+For Expanse collaborators in `ddp195`, the shared copy in the table above avoids
+the restricted Sebat project parent. It has its own verification receipt and
+local bindings; see the [copy/access record](consolidation-20261005/README.md#shared-ddp195-deployment).

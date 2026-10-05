@@ -52,11 +52,23 @@ to `upload.py` over SSH. Credentials and signed URLs are not recorded here.
 `publish_manifests.py` archives the original S3 manifests and publishes the
 expanded manifests with conditional writes.
 
-## Access
+## Shared ddp195 deployment
 
-Storage consolidation does not grant account access. The Sebat project parent
-requires group membership or an appropriate ACL even though the resource files
-are readable. On 2026-10-05, `toedwards` belonged to `ddp195` and `sds154`, not
-`jsebat-group`; the Sebat project parent blocked traversal. The proposed ddp195
-copy was deferred because the group quota reported usage above its hard limit.
-No access permissions were changed as part of this consolidation.
+A separate verified copy for ddp195 collaborators is installed at:
+`/expanse/lustre/projects/ddp195/j3guevar/rare-variant-pipeline/`.
+It includes the full release under `releases/v1/`, both SIFs under
+`containers/v1/`, and local resource bindings under `deployments/ddp195-v1/`.
+See [the copy receipt](ddp195-copy-receipt.json) and
+[the copy verification script](verify_shared.py).
+
+The directories and files are readable by ddp195 members, including `toedwards`.
+The account's membership and the full access path were inspected; this is not
+an impersonated login test. The copy was verified against all 137 runtime
+checksums, auxiliary file bytes, both SIF checksums, and cache timestamp ordering.
+
+Direct access through the canonical Sebat parent remains restricted. A
+user-specific traversal ACL was attempted with the owner's authorization,
+but the filesystem returned `Operation not supported`. No broader parent
+permissions were granted. Direct access there requires administrator assistance.
+The ddp195 quota report alone was not treated as definitive: the owner confirmed
+that copying should proceed, and the copy/write results establish its outcome.
