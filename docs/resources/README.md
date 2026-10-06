@@ -117,13 +117,19 @@ for compatibility. New runs should use the versioned release above. Historical
 `/fsx/rare-variant-resources/v1/` paths do not establish a currently mounted AWS
 filesystem; use the durable S3 release for transfers.
 
-## Candidate-scoring resource addition (2026-10-02)
+## Unfiltered candidate resources — current coverage
 
-The ABCD candidate stage requires **unfiltered**
-`dbNSFP/5.3.1a/parquet_expanded/chr22.parquet`. The historical v1
-`parquet_expanded_mane_select` product is not a substitute. The
-[candidate inventory](candidate-resource-hashes.json) records its Expanse-verified
-identity; this additional file has not been confirmed staged on NBDC or copied
-into the consolidated v1 release/S3. See the
+The candidate stage requires **unfiltered** `dbNSFP/5.3.1a/parquet_expanded/`.
+The [candidate inventory](candidate-resource-hashes.json) includes chr1–22/X/Y
+plus the unchanged GeneBayes identity, imported from the completed canonical
+Expanse/S3 consolidation in [PR #14](https://github.com/james-guevara/rare-variant-pipeline/pull/14).
+The September 113-file verification above predates these 24 additions.
+`parquet_expanded_mane_select` remains a historical product, not a substitute.
+
+The same relative paths now exist within both canonical v1 roots. NBDC coverage
+outside the reported chr22 pilot must be established by the execution operator;
+no local path or missing transfer is inferred here. See the
+[generic autosome readiness guide](../operations/abcd-fastvep-smoke/AUTOSOME_READINESS.md)
+for stage contracts and lock coverage, and the
 [candidate runbook](../operations/abcd-fastvep-smoke/CANDIDATES.md#resource-inspection-and-identity)
-for the exact source, destination, hash, and lock migration.
+for the validated chr22 setup.
