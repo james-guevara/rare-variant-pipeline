@@ -627,3 +627,6 @@ Apply fixed per-row genotype/site QC to completed filtered carriers with the sep
 
 Gather completed post-QC blocks into chromosome-wide association and distinct-allele
 burdens using [`gather_post_qc.nf`](docs/operations/abcd-fastvep-smoke/GATHER_POST_QC.md).
+
+For expansion beyond the validated chr22 pilot, see the
+[generic autosome readiness and manifest contracts](docs/operations/abcd-fastvep-smoke/AUTOSOME_READINESS.md).

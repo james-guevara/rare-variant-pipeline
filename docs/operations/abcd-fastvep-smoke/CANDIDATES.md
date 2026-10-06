@@ -168,11 +168,13 @@ GeneBayes and the pinned LOFTEE SIF (DuckDB 1.5.5) are unchanged.
 | **Unfiltered** chr22 expanded Parquet | 310791513 | `ecb7a6594c7db0c4b8d0ebdf9b1e8a152f633dc3d0c282ccd54b50eb3d6dbfb1` |
 | GeneBayes TSV | 1572515 | `d5a88129246bb8a1f157c29d6bb566a81234fc752a3b1dd05fce0a422d7e49f3` |
 
-The new [candidate inventory](../../resources/candidate-resource-hashes.json)
-pins unfiltered chr22 and the existing GeneBayes identity. It does not relabel or
-modify the historical v1 release. Only chr22 is pinned for this pilot; other
-chromosomes require their unfiltered files and verified inventory entries before
-use. There is no chromosome-specific scientific logic.
+The [candidate inventory](../../resources/candidate-resource-hashes.json) now
+pins unfiltered chr1–22/X/Y and the unchanged GeneBayes identity, imported from
+the completed consolidation in PR #14. These files are in the canonical v1
+Expanse/S3 roots; historical MANE-filtered files are retained. Execution-host
+staging and lock coverage are separate from canonical availability. See the
+[autosome readiness guide](AUTOSOME_READINESS.md). There is no chromosome-specific
+scientific logic.
 
 The lock helper verifies SHA-256, records metadata and the pinned SIF identity,
 and emits schema 2 with `dbnsfp_representation=parquet_expanded`. Old schema-1
