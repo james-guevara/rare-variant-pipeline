@@ -624,3 +624,6 @@ The existing HC-only TSV entrypoint remains available.
 
 Apply fixed per-row genotype/site QC to completed filtered carriers with the separate
 [`post_carrier_qc.nf` stage](docs/operations/abcd-fastvep-smoke/POST_CARRIER_QC.md), preserving all raw outputs.
+
+Gather completed post-QC blocks into chromosome-wide association and distinct-allele
+burdens using [`gather_post_qc.nf`](docs/operations/abcd-fastvep-smoke/GATHER_POST_QC.md).
