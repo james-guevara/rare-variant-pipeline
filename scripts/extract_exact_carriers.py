@@ -83,6 +83,55 @@ def file_identity(path, hashed=False):
     return data
 
 
+def source_header(vcf, chromosome):
+    aliases = [c for c in vcf.header.contigs if chrom(c) == chrom(chromosome)]
+    if len(aliases) != 1:
+        raise ValidationError('Source VCF must have one unambiguous declared chromosome alias')
+    contig = aliases[0]
+    samples = list(vcf.header.samples)
+    if not samples or len(samples) != len(set(samples)):
+        raise ValidationError('Expected genotype-bearing VCF with unique samples')
+    next(vcf.fetch(contig, 0, 1), None)  # Require index even with no candidates.
+    return contig, samples
+
+
+def exact_records(vcf, contig, selected):
+    """Shared indexed exact-allele lookup; region overlap alone never matches."""
+    found = set()
+    for position in sorted({key[1] for key in selected}):
+        for record in vcf.fetch(contig, position-1, position):
+            if record.pos != position:
+                continue
+            if len(record.alts or ()) != 1:
+                raise ValidationError('Multiallelic source record at candidate position; normalize upstream')
+            key = (chrom(record.contig), record.pos, record.ref, record.alts[0])
+            if key not in selected:
+                continue
+            if key in found:
+                raise ValidationError('Duplicate exact source allele record')
+            if 'GT' not in record.format:
+                raise ValidationError('Matching source record lacks FORMAT/GT')
+            found.add(key)
+            yield key, record
+
+
+def carrier_calls(record):
+    """Shared no-QC genotype semantics, including haploid and partial ALT calls."""
+    for sample, call in record.samples.items():
+        gt = call.get('GT')
+        if gt is None:
+            continue
+        if any(allele not in (None, 0, 1) for allele in gt):
+            raise ValidationError('Non-biallelic genotype allele index')
+        if 1 not in gt:
+            continue
+        row = dict(CHROM=record.contig, POS=record.pos, REF=record.ref, ALT=record.alts[0],
+                   sample=sample, GT=('|' if call.phased else '/').join(text(x) for x in gt),
+                   alt_dosage=gt.count(1), site_FILTER=';'.join(record.filter) or '.')
+        row.update({name: text(call.get(name)) for name in ['GQ', 'DP', 'AD', 'FT']})
+        yield row, None in gt
+
+
 def extract(a):
     started = time.perf_counter()
     meta = json.loads(Path(a.metadata).read_text())
@@ -112,61 +161,27 @@ def extract(a):
         partial = dosage_total = carrier_records = 0
         class_partials, class_dosages = Counter(), Counter()
         with pysam.VariantFile(a.vcf, index_filename=a.index) as vcf:
-            # Both aliases in the header are ambiguous; never silently choose one.
-            aliases = [c for c in vcf.header.contigs if chrom(c) == chrom(meta['chromosome'])]
-            if len(aliases) != 1:
-                raise ValidationError('Source VCF must have one unambiguous declared chromosome alias')
-            contig = aliases[0]
-            samples = list(vcf.header.samples)
-            if not samples or len(samples) != len(set(samples)):
-                raise ValidationError('Expected genotype-bearing VCF with unique samples')
-            # Force an indexed access even for an empty candidate set.
-            iterator = vcf.fetch(contig, 0, 1)
-            next(iterator, None)
+            contig, samples = source_header(vcf, meta['chromosome'])
             with open(out/'samples.tsv', 'w') as handle:
                 handle.write('sample\n' + ''.join(s+'\n' for s in samples))
             with pysam.BGZFile(str(out/'carriers.tsv.gz'), 'w') as target:
                 target.write(('\t'.join(FIELDS)+'\n').encode())
-                for position in sorted({key[1] for key in selected}):
-                    for record in vcf.fetch(contig, position-1, position):
-                        # Region overlap alone is insufficient (including overlapping deletions).
-                        if record.pos != position:
-                            continue
-                        if len(record.alts or ()) != 1:
-                            raise ValidationError('Multiallelic source record at candidate position; normalize upstream')
-                        key = (chrom(record.contig), record.pos, record.ref, record.alts[0])
-                        if key not in selected:
-                            continue
-                        if key in found:
-                            raise ValidationError('Duplicate exact source allele record')
-                        if 'GT' not in record.format:
-                            raise ValidationError('Matching source record lacks FORMAT/GT')
-                        found.add(key)
-                        annotation = selected[key]
-                        kind = annotation['allele_class']
-                        for sample, call in record.samples.items():
-                            gt = call.get('GT')
-                            if gt is None:
-                                continue
-                            if any(allele not in (None, 0, 1) for allele in gt):
-                                raise ValidationError('Non-biallelic genotype allele index')
-                            if 1 not in gt:
-                                continue
-                            genotype = ('|' if call.phased else '/').join(text(x) for x in gt)
-                            row = dict(CHROM=record.contig, POS=record.pos, REF=record.ref, ALT=record.alts[0],
-                                       Gene=annotation['Gene'], Feature=annotation['Feature'],
-                                       SYMBOL=annotation.get('SYMBOL', '.'), sample=sample, GT=genotype,
-                                       allele_class=kind, alt_dosage=gt.count(1), site_FILTER=';'.join(record.filter) or '.')
-                            row.update({name: text(call.get(name)) for name in ['GQ', 'DP', 'AD', 'FT']})
-                            target.write(('\t'.join(text(row[name]) for name in FIELDS)+'\n').encode())
-                            burdens[sample, annotation['Gene'], kind] += 1
-                            gene_records[annotation['Gene'], kind] += 1
-                            class_partials[kind] += None in gt
-                            class_dosages[kind] += gt.count(1)
-                            carrier_variants.add(key)
-                            carrier_records += 1
-                            partial += None in gt
-                            dosage_total += gt.count(1)
+                for key, record in exact_records(vcf, contig, selected):
+                    found.add(key)
+                    annotation = selected[key]
+                    kind = annotation['allele_class']
+                    for row, is_partial in carrier_calls(record):
+                        row.update(Gene=annotation['Gene'], Feature=annotation['Feature'],
+                                   SYMBOL=annotation.get('SYMBOL', '.'), allele_class=kind)
+                        target.write(('\t'.join(text(row[name]) for name in FIELDS)+'\n').encode())
+                        burdens[row['sample'], annotation['Gene'], kind] += 1
+                        gene_records[annotation['Gene'], kind] += 1
+                        class_partials[kind] += is_partial
+                        class_dosages[kind] += row['alt_dosage']
+                        carrier_variants.add(key)
+                        carrier_records += 1
+                        partial += is_partial
+                        dosage_total += row['alt_dosage']
         for name, keys in [('candidates.tsv', selected), ('unmatched.tsv', selected.keys()-found)]:
             with open(out/name, 'w', newline='') as handle:
                 fields = KEY_FIELDS + ['Gene', 'Feature', 'SYMBOL', 'allele_class']

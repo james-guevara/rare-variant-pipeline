@@ -148,3 +148,19 @@ consolidation. Downloading the full release prefix also includes these files.
 For Expanse collaborators in `ddp195`, the shared copy in the table above avoids
 the restricted Sebat project parent. It has its own verification receipt and
 local bindings; see the [copy/access record](consolidation-20261005/README.md#shared-ddp195-deployment).
+## Unfiltered candidate resources — current coverage
+
+The candidate stage requires **unfiltered** `dbNSFP/5.3.1a/parquet_expanded/`.
+The [candidate inventory](candidate-resource-hashes.json) includes chr1–22/X/Y
+plus the unchanged GeneBayes identity, imported from the completed canonical
+Expanse/S3 consolidation in [PR #14](https://github.com/james-guevara/rare-variant-pipeline/pull/14).
+The September 113-file verification above predates these 24 additions.
+`parquet_expanded_mane_select` remains a historical product, not a substitute.
+
+The same relative paths now exist within both canonical v1 roots. NBDC coverage
+outside the reported chr22 pilot must be established by the execution operator;
+no local path or missing transfer is inferred here. See the
+[generic autosome readiness guide](../operations/abcd-fastvep-smoke/AUTOSOME_READINESS.md)
+for stage contracts and lock coverage, and the
+[candidate runbook](../operations/abcd-fastvep-smoke/CANDIDATES.md#resource-inspection-and-identity)
+for the validated chr22 setup.

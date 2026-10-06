@@ -16,6 +16,8 @@ with immutable shared resources, durable products, and an isolated NBDC Slurm pr
 Start with the documented block12 regression gate before expanding the run.
 The separate [exact-allele HC carrier stage](docs/operations/abcd-fastvep-smoke/CARRIERS.md)
 queries original indexed genotype VCFs after annotation; its first execution gate is block12.
+The independent [candidate-scoring stage](docs/operations/abcd-fastvep-smoke/CANDIDATES.md)
+joins selected missense/HC annotations to dbNSFP and GeneBayes and publishes compact Parquet products.
 
 This pipeline processes VCF files through variant annotation (VEP), filters for consequential variants (HIGH/MODERATE impact), and queries family genotypes to identify rare variants segregating in families.
 
@@ -612,3 +614,19 @@ MIT
 ## Resource locations and deployment audit
 
 Start with the [current resource guide](docs/resources/README.md): canonical Expanse and S3 paths, resource families, containers, NBDC paths, and checksum evidence. The v1 release was restored and verified on Expanse on 2026-09-29. Earlier broken-link reports are historical pre-repair evidence, not the current resource layout. See the [ABCD annotation runbook](docs/operations/abcd-fastvep-smoke/NEXTFLOW.md) for NBDC execution.
+
+Pre-carrier cohort AF, gnomAD POPmax, and problematic-region filtering is a separate
+[`pre_carrier.nf` stage](docs/operations/abcd-fastvep-smoke/PRE_CARRIER.md) that preserves candidate inputs.
+
+For carriers of already-filtered missense and HC-LoF candidates, use the separate
+[`filtered_carriers.nf` entrypoint](docs/operations/abcd-fastvep-smoke/FILTERED_CARRIERS.md).
+The existing HC-only TSV entrypoint remains available.
+
+Apply fixed per-row genotype/site QC to completed filtered carriers with the separate
+[`post_carrier_qc.nf` stage](docs/operations/abcd-fastvep-smoke/POST_CARRIER_QC.md), preserving all raw outputs.
+
+Gather completed post-QC blocks into chromosome-wide association and distinct-allele
+burdens using [`gather_post_qc.nf`](docs/operations/abcd-fastvep-smoke/GATHER_POST_QC.md).
+
+For expansion beyond the validated chr22 pilot, see the
+[generic autosome readiness and manifest contracts](docs/operations/abcd-fastvep-smoke/AUTOSOME_READINESS.md).
