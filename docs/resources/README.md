@@ -1,19 +1,22 @@
 # Current rare-variant resource guide
 
-**Start here for resource locations.** The consolidated v1 release was installed
-and verified on Expanse on **2026-09-29**. Earlier reports of broken active LOFTEE
-or GeneBayes links and an unconsolidated chr22 pilot directory describe the
-**pre-repair** state. They do not describe this release.
+**Start here for resource locations.** The shared Expanse and S3 v1 roots
+include the unfiltered dbNSFP `parquet_expanded` files for **all 24 chromosomes
+(chr1–22/X/Y)**, added on 2026-10-05. They are part of the same release tree,
+not a separate pilot download. See the [addition and verification record](consolidation-20261005/README.md).
 
-This guide summarizes the completed repair and recorded deployment paths; it does
-not claim a new live filesystem audit on every documentation update. For exact
-repair evidence, see the [completed repair report](repair-20260929/README.md).
+The [2026-09-29 repair](repair-20260929/README.md) verified the original 113
+runtime files. The current inventory contains 137 files; the new 24 files were
+verified separately. Historical repair reports retain their original scope.
 
 ## Canonical locations
 
 | Purpose | Path |
 |---|---|
 | Expanse scientific release | `/expanse/projects/sebat1/resources/rare-variant-pipeline/releases/v1/` |
+| Shared ddp195 copy (Tobias / Rady) | `/expanse/lustre/projects/ddp195/j3guevar/rare-variant-pipeline/releases/v1/` |
+| Shared ddp195 containers | `/expanse/lustre/projects/ddp195/j3guevar/rare-variant-pipeline/containers/v1/` |
+| Shared ddp195 bindings | `/expanse/lustre/projects/ddp195/j3guevar/rare-variant-pipeline/deployments/ddp195-v1/resources.json` and `resources.env` |
 | Expanse convenience alias | `/expanse/projects/sebat1/resources/rare-variant-pipeline/current` → `releases/v1/` |
 | Expanse pinned SIF containers | `/expanse/projects/sebat1/resources/rare-variant-pipeline/containers/v1/` |
 | Expanse resource bindings | `/expanse/projects/sebat1/resources/rare-variant-pipeline/deployments/expanse-v1/resources.json` and `resources.env` |
@@ -41,7 +44,8 @@ All paths in this table are relative to `releases/v1/` on Expanse or the S3 v1 r
 | LOFTEE conservation database | `loftee-grch38/loftee.sql` |
 | GeneBayes | `targeted-annotation/GeneBayes.Supplementary_Table_1.tsv` |
 | dbNSFP score/AF Parquets | `dbNSFP/5.3.1a/parquet_scores_af/` |
-| dbNSFP expanded MANE Parquets | `dbNSFP/5.3.1a/parquet_expanded_mane_select/` |
+| dbNSFP unfiltered expanded Parquets, chr1–22/X/Y | `dbNSFP/5.3.1a/parquet_expanded/` |
+| dbNSFP historical expanded MANE Parquets | `dbNSFP/5.3.1a/parquet_expanded_mane_select/` |
 | Problematic-region tracks | `problematic-regions/{genomicSuperDups,rmsk,simpleRepeat}.bed` |
 | Sex-chromosome regions | `sample-qc/grch38-sex-chromosome-regions.json` |
 | Postprocess rules | `postprocess/config.json` |
@@ -51,7 +55,11 @@ All paths in this table are relative to `releases/v1/` on Expanse or the S3 v1 r
 
 `chrN` means chr1–22, chrX, or chrY; braces describe filename patterns.
 The reference and priority table are genome-wide files shared by all chromosomes.
-The two dbNSFP representations are distinct products. Resolve paths in the
+The three dbNSFP representations are distinct products. Use unfiltered
+`parquet_expanded` for current candidate scoring; `parquet_scores_af` supplies
+AF fields. `parquet_expanded_mane_select` is retained for historical
+reproducibility and is not a substitute for unfiltered transcript coverage.
+This consolidation does not change score aggregation or scientific filters. Resolve paths in the
 postprocess JSON relative to that JSON's directory.
 
 ## Containers
@@ -99,7 +107,9 @@ a claim that an uninspected future transfer is already verified.
 - [Completed repair and verification report](repair-20260929/README.md)
 - [Complete deployed Expanse README](repair-20260929/DEPLOYED_README.md)
 - [Post-validation hashes](repair-20260929/post-validation-hashes.json)
-- [Exact 113-file scientific manifest](https://github.com/james-guevara/integrated_genomics_pipeline/blob/main/resources/manifests/rare-resource-files.tsv)
+- [Current 137-file scientific manifest](github-runtime-manifest.tsv)
+- [Candidate-resource hashes, all 24 chromosomes](candidate-resource-hashes.json)
+- [Unfiltered expanded consolidation evidence](consolidation-20261005/README.md)
 - [S3 object catalog with exact paths and sizes](aws-file-catalog.tsv)
 
 ## Historical material — not current deployment guidance
@@ -117,6 +127,27 @@ for compatibility. New runs should use the versioned release above. Historical
 `/fsx/rare-variant-resources/v1/` paths do not establish a currently mounted AWS
 filesystem; use the durable S3 release for transfers.
 
+## Downloading the unfiltered expanded resources
+
+With authorized AWS access, use the same release prefix as the other resources:
+
+```bash
+aws s3 sync \
+  s3://sebat-genomics-work/resources/rare-variant-pipeline/v1/dbNSFP/5.3.1a/parquet_expanded/ \
+  ./resources/dbNSFP/5.3.1a/parquet_expanded/
+aws s3 cp \
+  s3://sebat-genomics-work/resources/rare-variant-pipeline/v1/DBNSFP_SHA256SUMS \
+  ./resources/DBNSFP_SHA256SUMS
+(cd resources && awk '$2 ~ /^dbNSFP\/5[.]3[.]1a\/parquet_expanded\// {print}' DBNSFP_SHA256SUMS | sha256sum -c -)
+```
+
+The S3 prefix is an authenticated storage location, not a public download link.
+Access must be arranged separately; no bucket permissions were changed by this
+consolidation. Downloading the full release prefix also includes these files.
+
+For Expanse collaborators in `ddp195`, the shared copy in the table above avoids
+the restricted Sebat project parent. It has its own verification receipt and
+local bindings; see the [copy/access record](consolidation-20261005/README.md#shared-ddp195-deployment).
 ## Unfiltered candidate resources — current coverage
 
 The candidate stage requires **unfiltered** `dbNSFP/5.3.1a/parquet_expanded/`.

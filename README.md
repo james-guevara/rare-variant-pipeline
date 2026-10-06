@@ -630,3 +630,6 @@ burdens using [`gather_post_qc.nf`](docs/operations/abcd-fastvep-smoke/GATHER_PO
 
 For expansion beyond the validated chr22 pilot, see the
 [generic autosome readiness and manifest contracts](docs/operations/abcd-fastvep-smoke/AUTOSOME_READINESS.md).
+
+The chr22 implementation is finalized; see the
+[validation and deployment handoff](docs/validation/chr22-implementation-finalization.md).
