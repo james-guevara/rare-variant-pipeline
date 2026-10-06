@@ -617,3 +617,7 @@ Start with the [current resource guide](docs/resources/README.md): canonical Exp
 
 Pre-carrier cohort AF, gnomAD POPmax, and problematic-region filtering is a separate
 [`pre_carrier.nf` stage](docs/operations/abcd-fastvep-smoke/PRE_CARRIER.md) that preserves candidate inputs.
+
+For carriers of already-filtered missense and HC-LoF candidates, use the separate
+[`filtered_carriers.nf` entrypoint](docs/operations/abcd-fastvep-smoke/FILTERED_CARRIERS.md).
+The existing HC-only TSV entrypoint remains available.
