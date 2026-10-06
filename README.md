@@ -621,3 +621,6 @@ Pre-carrier cohort AF, gnomAD POPmax, and problematic-region filtering is a sepa
 For carriers of already-filtered missense and HC-LoF candidates, use the separate
 [`filtered_carriers.nf` entrypoint](docs/operations/abcd-fastvep-smoke/FILTERED_CARRIERS.md).
 The existing HC-only TSV entrypoint remains available.
+
+Apply fixed per-row genotype/site QC to completed filtered carriers with the separate
+[`post_carrier_qc.nf` stage](docs/operations/abcd-fastvep-smoke/POST_CARRIER_QC.md), preserving all raw outputs.
