@@ -11,6 +11,7 @@ import time
 import duckdb
 import pysam
 from carrier_psam import load_psam
+from carrier_frequencies import FrequencyCounter, validate_chromosome, SETS, POLICY
 from extract_exact_carriers import (ValidationError, KEY_FIELDS, FIELDS, ALLELE_CLASSES,
                                    chrom, text, file_identity, source_header, exact_records, carrier_calls)
 
@@ -76,9 +77,17 @@ def extract(a):
         vcf_identity_method='path/size/mtime and index SHA-256; no full genotype VCF hash')
     psam=getattr(a,'psam',None)
     if psam: products.append('sample_metadata.tsv')
+    compute_frequencies=getattr(a,'compute_frequencies',False)
+    if compute_frequencies: products+=['variant_frequencies.tsv','frequency_audit.tsv']
     receipt['frequency_status']='deferred; source frequencies are uncorrected; no final rarity decision'
+    if compute_frequencies:
+        receipt['frequency_status']='requested; not completed'
+        receipt['frequency_policy']=POLICY
     receipt['query_batch_bp']=getattr(a,'batch_bp',10000)
     try:
+        if compute_frequencies:
+            if not psam: raise ValidationError('Corrected frequencies require --psam')
+            validate_chromosome(meta['chromosome'])
         paths={k:getattr(a,k) for k in TYPES}
         ids={k:file_identity(getattr(a,k),k!='vcf') for k in ['vcf','index',*TYPES]}
         if psam: ids['psam']=file_identity(psam,True)
@@ -87,6 +96,9 @@ def extract(a):
             if expected is not None and sum(r['candidate_type']==kind for rs in selected.values() for r in rs)!=expected:
                 raise ValidationError('Candidate count differs from expected count for '+kind)
         source_frequencies={}
+        corrected_frequencies={}
+        frequency_audit=[]
+        frequency_counter=None
         found=set();carrier_keys=set();records=Counter();dosages=Counter();partials=Counter()
         burdens=Counter();burden_dosages=Counter();distinct=Counter();samples_by_group=defaultdict(set)
         carrier_counts=Counter()
@@ -104,6 +116,8 @@ def extract(a):
                     representative_flags=sum(r['frequency_representative']=='1' for r in metadata),
                     unrelated_flags=sum(r['unrelated']=='1' for r in metadata),
                     representative_selection_status='not applied; policy deferred')
+            if compute_frequencies:
+                frequency_counter=FrequencyCounter(metadata,meta['chromosome'])
             with pysam.BGZFile(str(out/'carriers.tsv.gz'),'w') as target:
                 target.write(('\t'.join(CARRIER_FIELDS)+'\n').encode())
                 for key,record in exact_records(vcf,contig,selected,batch_bp=getattr(a,'batch_bp',10000)):
@@ -116,6 +130,14 @@ def extract(a):
                     source_frequencies[key]=dict(source_info_ac=text(info.get('AC')),
                         source_info_an=text(info.get('AN')),source_info_af=text(info.get('AF')),
                         source_ac_an=ac/an if valid else None)
+                    if frequency_counter is not None:
+                        values,audit=frequency_counter.count(record,selected[key][0]['allele_class'])
+                        corrected_frequencies[key]=values
+                        for sample_set,reasons in audit.items():
+                            for reason,n in sorted(reasons.items()):
+                                frequency_audit.append({**dict(zip(KEY_FIELDS,key)),
+                                    'allele_class':selected[key][0]['allele_class'],
+                                    'sample_set':sample_set,'reason':reason,'genotypes':n})
                     for call,is_partial in carrier_calls(record):
                         carrier_keys.add(key);carrier_counts[key]+=1
                         kind=selected[key][0]['allele_class']
@@ -131,6 +153,18 @@ def extract(a):
         write_rows(out/'source_frequencies.tsv',frequency_fields,(
             {**dict(zip(KEY_FIELDS,key)),'allele_class':selected[key][0]['allele_class'],
              'matched':key in found,**source_frequencies.get(key,{})} for key in sorted(selected)))
+        if frequency_counter is not None:
+            fields=frequency_fields+[s+'_'+f for s in SETS for f in
+                ['ac','an','af','counted_genotypes','reference_genotypes','excluded_genotypes']]
+            write_rows(out/'variant_frequencies.tsv',fields,(
+                {**dict(zip(KEY_FIELDS,key)),'allele_class':selected[key][0]['allele_class'],
+                 'matched':key in found,**source_frequencies.get(key,{}),**corrected_frequencies.get(key,{})}
+                for key in sorted(selected)))
+            write_rows(out/'frequency_audit.tsv',KEY_FIELDS+['allele_class','sample_set','reason','genotypes'],frequency_audit)
+            receipt['frequencies']=frequency_counter.receipt()
+            receipt['frequency_status']='computed_autosomes_no_genotype_qc; final unrelated rarity filter deferred'
+            receipt['psam']['mode']='frequency representatives selected for counts only; all raw carriers retained'
+            receipt['psam']['representative_selection_status']='cohort=representative; unrelated=representative AND unrelated'
         audit=[{**r,'matched':k in found,'carrier_records':carrier_counts[k]} for k,r in sorted(annotations,key=lambda x:(x[0],x[1]['candidate_type']))]
         write_rows(out/'candidates.tsv',ANNOTATION_FIELDS+['matched','carrier_records'],audit)
         write_rows(out/'unmatched.tsv',ANNOTATION_FIELDS,[r for r in audit if not r['matched']])
@@ -171,7 +205,7 @@ def extract(a):
             distinct_allele_audit_by_class={c:dict(candidate_alleles=sum(rs[0]['allele_class']==c for rs in selected.values()),
                 carrier_variant_sample_records=sum(n for (s,cl),n in distinct.items() if cl==c)) for c in ALLELE_CLASSES},
             contig_alias=dict(annotation=meta['chromosome'],source=contig),
-            code_identities={Path(p).name:file_identity(p,True) for p in [__file__,Path(__file__).with_name('extract_exact_carriers.py'),Path(__file__).with_name('carrier_psam.py')]},
+            code_identities={Path(p).name:file_identity(p,True) for p in [__file__,Path(__file__).with_name('extract_exact_carriers.py'),Path(__file__).with_name('carrier_psam.py'),Path(__file__).with_name('carrier_frequencies.py')]},
             outputs={name:file_identity(out/name,True) for name in products})
     except Exception as exc:
         receipt.update(error_type=type(exc).__name__,error=str(exc) if isinstance(exc,ValidationError) else 'Input or extraction failure; inspect locally')
@@ -187,6 +221,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     for name in ['metadata','missense','lof_hc','vcf','index','outdir']:p.add_argument('--'+name.replace('_','-'),required=True)
     p.add_argument('--psam')
+    p.add_argument('--compute-frequencies',action='store_true')
     p.add_argument('--batch-bp',type=int,default=10000)
     p.add_argument('--expected-missense',type=int);p.add_argument('--expected-hc',type=int)
     try:extract(p.parse_args())
