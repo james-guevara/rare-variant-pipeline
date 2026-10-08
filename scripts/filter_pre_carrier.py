@@ -54,14 +54,14 @@ def read_sites(path, keys):
             info = {}
             for token in fields[7].split(';'):
                 name, sep, value = token.partition('=')
-                if name in ('AC','AN'):
-                    if name in info: raise ValueError('Duplicate AC/AN INFO field')
+                if name in ('AC','AN','AF'):
+                    if name in info: raise ValueError('Duplicate frequency INFO field')
                     info[name] = value if sep else '.'
             ac, an = info.get('AC'), info.get('AN')
             valid = bool(ac and an and re.fullmatch(r'[0-9]+', ac) and re.fullmatch(r'[0-9]+', an))
             ac, an = (int(ac), int(an)) if valid else (None, None)
             valid = valid and an > 0 and ac <= an
-            found[key] = (ac, an, ac/an if valid else None)
+            found[key] = (ac, an, ac/an if valid else None, info.get('AC'), info.get('AN'), info.get('AF'))
     return found
 
 
@@ -90,7 +90,7 @@ def run(a):
     protected = set(inputs.values()) | {Path(r['path']).resolve() for r in resources}
     if any(out/name in protected for name in output_names): raise ValueError('Output would overwrite an input')
     receipt = dict(status='failed', unit_id=meta['unit_id'], chromosome=meta['chromosome'],
-                   policy=dict(cohort='INFO/AC / INFO/AN < 0.001; missing/invalid fails',
+                   policy=dict(cohort='uncorrected INFO/AC / INFO/AN < 0.005; preliminary eligibility only; missing/invalid fails',
                                gnomad=AF+' missing OR < 0.001', regions='BED start < POS <= end; POS only',
                                rmsk_classes=['Simple_repeat','Low_complexity']), sources=meta)
     start = time.perf_counter(); con = None
@@ -112,8 +112,8 @@ def run(a):
         keys = set(con.execute('SELECT * FROM keys').fetchall())
         sites = read_sites(inputs['sites'], keys)
         hashes = {k: sha(v) for k,v in inputs.items()}
-        con.execute('CREATE TABLE sites(c VARCHAR,p BIGINT,r VARCHAR,a VARCHAR,ac BIGINT,an BIGINT,af DOUBLE)')
-        if sites: con.executemany('INSERT INTO sites VALUES (?,?,?,?,?,?,?)', [(*key,*value) for key,value in sites.items()])
+        con.execute('CREATE TABLE sites(c VARCHAR,p BIGINT,r VARCHAR,a VARCHAR,ac BIGINT,an BIGINT,af DOUBLE,source_ac VARCHAR,source_an VARCHAR,source_af VARCHAR)')
+        if sites: con.executemany('INSERT INTO sites VALUES (?,?,?,?,?,?,?,?,?,?)', [(*key,*value) for key,value in sites.items()])
         con.execute(f'''CREATE TABLE pop_raw AS SELECT regexp_replace(d."#chr",'^chr','') AS c,
                        TRY_CAST(d."pos(1-based)" AS BIGINT) AS p,d.ref AS r,d.alt AS a,
                        NULLIF(NULLIF(trim(CAST(d."{AF}" AS VARCHAR)),'.'),'') AS raw
@@ -134,10 +134,11 @@ def run(a):
             union = ' OR '.join('pcf_overlap_'+t for t in TRACKS)
             con.execute(f'''CREATE TABLE {kind}_audit AS WITH joined AS (
                 SELECT v.*,s.c IS NOT NULL AS pcf_site_matched,s.ac AS pcf_cohort_ac,s.an AS pcf_cohort_an,s.af AS pcf_cohort_af,
+                       s.source_ac AS pcf_source_info_ac,s.source_an AS pcf_source_info_an,s.source_af AS pcf_source_info_af,
                        g.c IS NOT NULL AS pcf_gnomad_matched,g.af AS pcf_gnomad_popmax_af,{overlaps}
                 FROM {kind} v LEFT JOIN sites s ON regexp_replace(v.CHROM,'^chr','')=s.c AND CAST(v.POS AS BIGINT)=s.p AND v.REF=s.r AND v.ALT=s.a
                 LEFT JOIN pop g ON regexp_replace(v.CHROM,'^chr','')=g.c AND CAST(v.POS AS BIGINT)=g.p AND v.REF=g.r AND v.ALT=g.a),
-                flags AS (SELECT *,COALESCE(pcf_cohort_af<0.001,FALSE) AS pcf_cohort_pass,
+                flags AS (SELECT *,COALESCE(pcf_cohort_af<0.005,FALSE) AS pcf_cohort_pass,
                           pcf_gnomad_popmax_af IS NULL OR pcf_gnomad_popmax_af<0.001 AS pcf_gnomad_pass,
                           NOT ({union}) AS pcf_region_pass FROM joined)
                 SELECT *,pcf_cohort_pass AND pcf_gnomad_pass AND pcf_region_pass AS pcf_retained FROM flags''')

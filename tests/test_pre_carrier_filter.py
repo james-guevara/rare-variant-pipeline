@@ -29,8 +29,8 @@ def fixture(tmp):
         f.write('##fileformat=VCFv4.2\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n')
         for i in range(1,21):
             info='AC=1;AN=2000;AF=0.99;MLEAF=0.99'
-            if i==2:info='AC=1;AN=1000;AF=0;MLEAF=0'
-            if i==3:info='AC=2;AN=1999'
+            if i==2:info='AC=1;AN=200;AF=0;MLEAF=0'
+            if i==3:info='AC=2;AN=399'
             if i==8:info='AN=2000;AF=0'
             if i==9:info='AC=0;AN=0'
             alt='T' if i==7 else '*' if i==20 else 'G'
@@ -171,3 +171,17 @@ def test_duplicate_identical_population_rows_do_not_multiply_candidates(tmp_path
     meta['popmax']=identity(p);Path(a.metadata).write_text(json.dumps(meta));run(a)
     receipt=json.loads((Path(a.outdir)/'receipt.json').read_text())
     assert all(v['input_candidates']==20 and v['final_retained']==7 for v in receipt['counts'].values())
+
+
+def test_relaxed_screen_preserves_original_info_and_is_not_final_rarity(tmp_path):
+    a=fixture(tmp_path)
+    with gzip.open(a.sites,'rt') as f:s=f.read()
+    s=s.replace('22\t1\t.\tA\tG\t.\tPASS\tAC=1;AN=2000;AF=0.99;MLEAF=0.99',
+                '22\t1\t.\tA\tG\t.\tPASS\tAC=4;AN=1000;AF=0.123;MLEAF=0.9')
+    with gzip.open(a.sites,'wt') as f:f.write(s)
+    run(a)
+    con=duckdb.connect()
+    for name in ['missense','lof_hc']:
+        found=con.execute('SELECT pcf_cohort_af,pcf_source_info_ac,pcf_source_info_an,pcf_source_info_af FROM read_parquet(?) WHERE POS=1',[str(Path(a.outdir)/(name+'.filtered.parquet'))]).fetchone()
+        assert found==(0.004,'4','1000','0.123')
+        assert not con.execute('SELECT * FROM read_parquet(?) WHERE POS=2',[str(Path(a.outdir)/(name+'.filtered.parquet'))]).fetchall()

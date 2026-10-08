@@ -10,6 +10,7 @@ import sys
 import time
 import duckdb
 import pysam
+from carrier_psam import load_psam
 from extract_exact_carriers import (ValidationError, KEY_FIELDS, FIELDS, ALLELE_CLASSES,
                                    chrom, text, file_identity, source_header, exact_records, carrier_calls)
 
@@ -65,7 +66,7 @@ def write_rows(path,fields,rows):
 
 def extract(a):
     start=time.perf_counter();meta=json.loads(Path(a.metadata).read_text());out=Path(a.outdir);out.mkdir(parents=True,exist_ok=True)
-    products=['carriers.tsv.gz','candidates.tsv','unmatched.tsv','samples.tsv','sample_burden.tsv','sample_gene_burden.tsv','gene_burden.tsv','sample_distinct_alleles.tsv']
+    products=['carriers.tsv.gz','candidates.tsv','unmatched.tsv','samples.tsv','sample_burden.tsv','sample_gene_burden.tsv','gene_burden.tsv','sample_distinct_alleles.tsv','source_frequencies.tsv']
     receipt=dict(schema_version=1,status='failed',unit_id=meta['unit_id'],chromosome=meta['chromosome'],sources=meta,
         pysam_version=pysam.__version__,duckdb_version=duckdb.__version__,
         definition='exact allele lookup; one carrier association per candidate type and variant/sample; ALT index 1; no genotype QC',
@@ -73,13 +74,19 @@ def extract(a):
         spanning_deletion_policy='star record audits are separate from sequence variant counts in all summaries including tiers; no deletion-event mapping or combined biological burden',
         genotype_policy='preserve GT/GQ/DP/AD/FT/site FILTER and ALT dosage; include partial and haploid ALT calls; homozygous ALT is one carrier variant',
         vcf_identity_method='path/size/mtime and index SHA-256; no full genotype VCF hash')
+    psam=getattr(a,'psam',None)
+    if psam: products.append('sample_metadata.tsv')
+    receipt['frequency_status']='deferred; source frequencies are uncorrected; no final rarity decision'
+    receipt['query_batch_bp']=getattr(a,'batch_bp',10000)
     try:
         paths={k:getattr(a,k) for k in TYPES}
         ids={k:file_identity(getattr(a,k),k!='vcf') for k in ['vcf','index',*TYPES]}
+        if psam: ids['psam']=file_identity(psam,True)
         selected=load_candidates(paths,meta['chromosome'])
         for kind,expected in [('missense',a.expected_missense),('lof_hc',a.expected_hc)]:
             if expected is not None and sum(r['candidate_type']==kind for rs in selected.values() for r in rs)!=expected:
                 raise ValidationError('Candidate count differs from expected count for '+kind)
+        source_frequencies={}
         found=set();carrier_keys=set();records=Counter();dosages=Counter();partials=Counter()
         burdens=Counter();burden_dosages=Counter();distinct=Counter();samples_by_group=defaultdict(set)
         carrier_counts=Counter()
@@ -88,10 +95,27 @@ def extract(a):
         strata=sorted({group(r) for k,r in annotations} | {(t,c,'untiered') for t in TYPES for c in ALLELE_CLASSES})
         with pysam.VariantFile(a.vcf,index_filename=a.index) as vcf:
             contig,samples=source_header(vcf,meta['chromosome'])
+            if psam:
+                header,metadata,extra=load_psam(psam,samples)
+                write_rows(out/'sample_metadata.tsv',header,metadata)
+                receipt['psam']=dict(mode='metadata only; no sample exclusion or frequency calculation',
+                    source_samples_annotated=len(metadata),extra_psam_samples=extra,
+                    participant_count=len({r['participant_id'] for r in metadata}),
+                    representative_flags=sum(r['frequency_representative']=='1' for r in metadata),
+                    unrelated_flags=sum(r['unrelated']=='1' for r in metadata),
+                    representative_selection_status='not applied; policy deferred')
             with pysam.BGZFile(str(out/'carriers.tsv.gz'),'w') as target:
                 target.write(('\t'.join(CARRIER_FIELDS)+'\n').encode())
-                for key,record in exact_records(vcf,contig,selected):
+                for key,record in exact_records(vcf,contig,selected,batch_bp=getattr(a,'batch_bp',10000)):
                     found.add(key)
+                    info={name:record.info.get(name) for name in ['AC','AN','AF'] if name in record.header.info}
+                    ac,an=info.get('AC'),info.get('AN')
+                    if isinstance(ac,tuple): ac=ac[0] if len(ac)==1 else None
+                    if isinstance(an,tuple): an=an[0] if len(an)==1 else None
+                    valid=isinstance(ac,int) and isinstance(an,int) and an>0 and 0<=ac<=an
+                    source_frequencies[key]=dict(source_info_ac=text(info.get('AC')),
+                        source_info_an=text(info.get('AN')),source_info_af=text(info.get('AF')),
+                        source_ac_an=ac/an if valid else None)
                     for call,is_partial in carrier_calls(record):
                         carrier_keys.add(key);carrier_counts[key]+=1
                         kind=selected[key][0]['allele_class']
@@ -103,6 +127,10 @@ def extract(a):
                             samples_by_group[g].add(call['sample'])
                             b=(call['sample'],*g,annotation['Gene'])
                             burdens[b]+=1;burden_dosages[b]+=call['alt_dosage']
+        frequency_fields=KEY_FIELDS+['allele_class','matched','source_info_ac','source_info_an','source_info_af','source_ac_an']
+        write_rows(out/'source_frequencies.tsv',frequency_fields,(
+            {**dict(zip(KEY_FIELDS,key)),'allele_class':selected[key][0]['allele_class'],
+             'matched':key in found,**source_frequencies.get(key,{})} for key in sorted(selected)))
         audit=[{**r,'matched':k in found,'carrier_records':carrier_counts[k]} for k,r in sorted(annotations,key=lambda x:(x[0],x[1]['candidate_type']))]
         write_rows(out/'candidates.tsv',ANNOTATION_FIELDS+['matched','carrier_records'],audit)
         write_rows(out/'unmatched.tsv',ANNOTATION_FIELDS,[r for r in audit if not r['matched']])
@@ -143,7 +171,7 @@ def extract(a):
             distinct_allele_audit_by_class={c:dict(candidate_alleles=sum(rs[0]['allele_class']==c for rs in selected.values()),
                 carrier_variant_sample_records=sum(n for (s,cl),n in distinct.items() if cl==c)) for c in ALLELE_CLASSES},
             contig_alias=dict(annotation=meta['chromosome'],source=contig),
-            code_identities={Path(p).name:file_identity(p,True) for p in [__file__,Path(__file__).with_name('extract_exact_carriers.py')]},
+            code_identities={Path(p).name:file_identity(p,True) for p in [__file__,Path(__file__).with_name('extract_exact_carriers.py'),Path(__file__).with_name('carrier_psam.py')]},
             outputs={name:file_identity(out/name,True) for name in products})
     except Exception as exc:
         receipt.update(error_type=type(exc).__name__,error=str(exc) if isinstance(exc,ValidationError) else 'Input or extraction failure; inspect locally')
@@ -158,6 +186,8 @@ def extract(a):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     for name in ['metadata','missense','lof_hc','vcf','index','outdir']:p.add_argument('--'+name.replace('_','-'),required=True)
+    p.add_argument('--psam')
+    p.add_argument('--batch-bp',type=int,default=10000)
     p.add_argument('--expected-missense',type=int);p.add_argument('--expected-hc',type=int)
     try:extract(p.parse_args())
     except Exception:sys.exit('Filtered carrier extraction failed; inspect task receipt. No individual records printed.')

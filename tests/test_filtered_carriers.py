@@ -103,18 +103,25 @@ def test_empty_and_invalid_inputs(tmp_path,case):
 
 
 @pytest.mark.skipif(not shutil.which('nextflow'),reason='Nextflow required')
-def test_nextflow_wiring_subset_resume(tmp_path):
+@pytest.mark.parametrize('with_psam',[False,True])
+def test_nextflow_wiring_subset_resume(tmp_path,with_psam):
     a=fixture(tmp_path/'a');b=fixture(tmp_path/'b',index='csi')
     manifest=tmp_path/'manifest.tsv';manifest.write_text('unit_id\tchromosome\tmissense\tlof_hc\tvcf\tindex\n'+''.join(
         f'{unit}\tchr22\t{x.missense}\t{x.lof_hc}\t{x.vcf}\t{x.index}\n' for unit,x in [('block12',a),('block19',b)]))
     config=tmp_path/'python.config';config.write_text('process.beforeScript = "export PATH='+str(Path(sys.executable).parent)+':\\$PATH"\n')
     cmd=['nextflow','-C',str(ROOT/'filtered_carriers.config')+','+str(config),'run',str(ROOT/'filtered_carriers.nf'),'-ansi-log','false',
          '--carrier_manifest',str(manifest),'--outdir',str(tmp_path/'published'),'--carrier_memory','1 GB','--expected_missense','2','--expected_hc','5']
+    if with_psam:
+        metadata=tmp_path/'samples.psam'
+        metadata.write_text('#IID\tSEX\tparticipant_id\tfrequency_representative\tunrelated\n'+''.join(f'S{i}\t0\tP{i}\t1\t1\n' for i in range(1,5)))
+        cmd+=['--psam',str(metadata)]
     for name,units,expected in [('one','block12',{'FILTERED_CARRIERS (block12)':'COMPLETED'}),
                                ('two','all',{'FILTERED_CARRIERS (block12)':'CACHED','FILTERED_CARRIERS (block19)':'COMPLETED'})]:
         r=subprocess.run(cmd+['--select_units',units,'-with-trace',str(tmp_path/(name+'.trace'))]+(['-resume'] if name=='two' else []),cwd=tmp_path,capture_output=True,text=True,timeout=120)
         assert r.returncode==0,r.stdout+r.stderr
         assert {x['name']:x['status'] for x in rows(tmp_path/(name+'.trace'))}==expected
+    if with_psam:
+        assert [r['#IID'] for r in rows(tmp_path/'published/filtered-carriers/block12/sample_metadata.tsv')]==['S1','S2','S3','S4']
     shutil.rmtree(tmp_path/'work')
     p=tmp_path/'published/filtered-carriers/block12/carriers.tsv.gz'
     assert p.is_file() and not p.is_symlink() and len(rows(p))==9
