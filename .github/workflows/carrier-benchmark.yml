@@ -1,0 +1,46 @@
+name: carrier-backend-benchmark-image
+on:
+  push:
+    branches: [feat/carrier-backend-benchmark]
+    paths:
+      - 'benchmarks/carrier/**'
+      - '.github/workflows/carrier-benchmark.yml'
+  workflow_dispatch:
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build isolated benchmark image
+        run: |
+          docker build --platform linux/amd64 \
+            --build-arg BENCHMARK_REVISION="$GITHUB_SHA" \
+            -f benchmarks/carrier/Dockerfile \
+            -t "ghcr.io/${GITHUB_REPOSITORY_OWNER}/rare-carrier-benchmark:${GITHUB_SHA}" .
+      - name: Synthetic record and summary parity inside image
+        run: |
+          docker run --rm --entrypoint python \
+            "ghcr.io/${GITHUB_REPOSITORY_OWNER}/rare-carrier-benchmark:${GITHUB_SHA}" \
+            -m unittest discover -s /opt/rvp/benchmarks/carrier/tests -v
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish separate image and digest
+        run: |
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER}/rare-carrier-benchmark:${GITHUB_SHA}"
+          docker push "$image"
+          docker inspect --format '{{json .RepoDigests}}' "$image" > carrier-benchmark-digests.json
+          docker run --rm --entrypoint python "$image" -c \
+            'import importlib.metadata as m,json,sys; print(json.dumps({"python":sys.version,"packages":{p:m.version(p) for p in ["pysam","cyvcf2","numpy","duckdb"]}},indent=2))' \
+            > carrier-benchmark-versions.json
+          cat carrier-benchmark-digests.json >> "$GITHUB_STEP_SUMMARY"
+          cat carrier-benchmark-versions.json >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: carrier-benchmark-image-identity
+          path: carrier-benchmark-*.json

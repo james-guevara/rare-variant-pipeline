@@ -160,3 +160,5 @@ No real ABCD/NBDC benchmark has been performed by Codex. Inspect runtime/counts 
 ## Local validation
 
 The command wrapper was checked with synthetic data using real bcftools and the repository Rust picker, with FastVEP stubbed. Checks covered old CSQ removal, contig alias conversion, two-record/two-row parity, receipt generation, and temporary-file cleanup. Python and shell snippets passed syntax checks. This is not an ABCD annotation or container validation.
+
+Standalone carrier performance experiment: [pysam/cyvcf2 benchmark](CARRIER_BENCHMARK.md) (separate pinned image; no production backend change).
