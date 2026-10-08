@@ -1,5 +1,9 @@
 # Pysam batching and preliminary frequency screen
 
+For the subsequent opt-in autosomal frequency-counting implementation, see
+[CARRIER_FREQUENCIES.md](CARRIER_FREQUENCIES.md). The pinned commands and deferral
+status below describe the earlier batching revision.
+
 ## Scope and policy
 
 Production code pin: `ea937a70125292d35a6d5a8f50fe5cb361c151c7`.
