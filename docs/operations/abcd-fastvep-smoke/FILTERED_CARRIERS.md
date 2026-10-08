@@ -186,3 +186,7 @@ uv run --with pytest --with duckdb==1.5.5 --with pysam python -m pytest -q \
 
 Result: **30 tests passed** (12 new and 18 existing). NBDC config rendering and
 Python compilation are checked locally. Real NBDC carrier counts remain pending.
+
+## Preliminary screening and batching update
+
+The filtered extractor now defaults to 10 kb query spans and one CPU per block. See [the updated runbook](CARRIER_BATCHING.md) for relaxed-screen inputs, optional PSAM metadata, and the explicit deferral of corrected frequencies. Historical candidate counts and pinned commands above describe the previous screen.
