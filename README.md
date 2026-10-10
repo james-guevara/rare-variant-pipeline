@@ -633,3 +633,5 @@ For expansion beyond the validated chr22 pilot, see the
 
 The chr22 implementation is finalized; see the
 [validation and deployment handoff](docs/validation/chr22-implementation-finalization.md).
+
+For saved final-rarity carriers, use the separate [post-rarity sex/PAR-aware QC stage](docs/operations/abcd-fastvep-smoke/POST_RARITY_QC.md). Its runbook includes the downstream gathering compatibility boundary.
