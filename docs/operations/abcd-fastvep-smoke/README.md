@@ -163,4 +163,4 @@ The command wrapper was checked with synthetic data using real bcftools and the 
 
 Updated production extraction: [10 kb pysam batching and preliminary source AF <0.005](CARRIER_BATCHING.md). Corrected frequencies remain deferred.
 
-Corrected autosomal counting: [carrier frequencies](CARRIER_FREQUENCIES.md), including reference calls and the representative/unrelated intersection. Final rarity and X/Y PAR counting remain separate.
+Corrected autosomal counting: [carrier frequencies](CARRIER_FREQUENCIES.md), including reference calls and the representative/unrelated intersection. Final rarity remains separate; [explicit GRCh38 X-only PAR counting](SEX_CHROMOSOME_FREQUENCIES.md) is now available for X/Y.

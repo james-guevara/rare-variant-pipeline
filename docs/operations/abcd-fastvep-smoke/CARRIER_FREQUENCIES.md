@@ -1,5 +1,9 @@
 # Corrected autosomal frequencies during carrier extraction
 
+X/Y counting is now available with the explicitly selected
+[GRCh38 X-only PAR policy](SEX_CHROMOSOME_FREQUENCIES.md). The autosomal pin and
+commands below remain historical; do not rerun the 951 completed autosomal blocks.
+
 Code pin: `89a7dfd72a0c1c0657ad25e5251e23afa3ea6594`.
 Branch: `feat/carrier-corrected-frequencies`, stacked on the batching/preliminary
 screen update. This adds counting; it does not apply the final rarity filter.
@@ -39,22 +43,16 @@ record already fetched for extraction; there is no second genotype VCF scan.
 The pure counting helper also tests the agreed expected-haploid rules: literal
 `0` **or** `1` counts one allele; `0/0` and `1/1` collapse to one allele;
 heterozygous `0/1` and partial calls are excluded and audited. These rules are
-**not yet applied to X/Y records** because their expected ploidy/PAR assignment
-is unresolved. Invalid allele indices are excluded by the counting primitive;
+**applied to X/Y only with the explicit policy in the linked X/Y extension**. Invalid allele indices are excluded by the counting primitive;
 VCF decoding otherwise follows the existing pysam behavior and exact-source
 validation, including rejection of multiallelic source records.
 
-## Explicit X/Y boundary
+## X/Y extension
 
-With counting enabled, Python and the Nextflow entrypoint reject X/Y before
-extraction. No PAR intervals, X/Y duplicate-locus treatment or sex-code mapping
-are guessed. Confirm ABCD genome build, PAR location on X/Y, and whether equivalent
-PAR records occur on both before enabling sex-aware counting. The agreed unknown
-sex rule will exclude/audit X/Y when that path is added. Raw X/Y extraction remains
-available with `--compute_frequencies false`.
-
-The user agreed to discuss the PAR representation later. This restriction does
-not block autosome counting and does not certify any X/Y frequency results.
+The original autosomal code pin above blocks X/Y counting. The subsequent
+[sex-chromosome runbook](SEX_CHROMOSOME_FREQUENCIES.md) supplies the new code pin,
+explicit policy, boundaries, operator evidence, and X/Y-only commands. Final
+rarity remains a separate stage.
 
 ## Products and reconciliation
 
@@ -85,7 +83,7 @@ to candidates/carriers by exact allele without repeating extraction or reading
 reference genotypes again. It must recompute downstream summaries after selection.
 
 This revision supersedes the earlier deferral of autosomal counting in
-[CARRIER_BATCHING.md](CARRIER_BATCHING.md). PAR/X/Y counting remains deferred.
+[CARRIER_BATCHING.md](CARRIER_BATCHING.md). X/Y counting is available through the separately selected policy linked above.
 
 ## Pinned NBDC block12 command
 
@@ -154,7 +152,7 @@ No real candidate, carrier, representative or unrelated count is predicted here.
 Repeat with a different trace filename and identical parameters/work directory
 plus `-resume`; require CACHED. Changing PSAM must rerun counting. After block12
 and resume pass, expand the explicit manifests to blocks 0/12/19, then all desired
-autosomal blocks. Keep X/Y out of the counting selection until PAR is resolved.
+autosomal blocks. This is a historical rollout; the 951 completed autosomal blocks must not be rerun. Use the separate X/Y-only runbook for sex chromosomes.
 
 ## Validation limits
 
@@ -167,4 +165,4 @@ Haploid policy is unit-tested without assigning source X/Y ploidy.
 
 No NBDC job or real-data frequency validation was performed by Codex. The existing
 container dependencies suffice, but this revision has not been executed in the
-production SIF on NBDC. Final rarity filtering and X/Y/PAR counting are not included.
+production SIF on NBDC. Final rarity filtering is not included. X/Y policy validation is documented in the linked extension.
