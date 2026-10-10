@@ -19,11 +19,12 @@ process FILTERED_CARRIERS {
     script:
     def encoded=groovy.json.JsonOutput.toJson(meta).bytes.encodeBase64().toString()
     def frequencyArg=meta.compute_frequencies ? '--compute-frequencies' : ''
+    def sexPolicyArg=meta.compute_frequencies && meta.sex_chromosome_policy ? "--sex-chromosome-policy ${meta.sex_chromosome_policy}" : ''
     def psamArg=psam ? "--psam '${psam}'" : ''
     def expectedHc=params.expected_hc==null ? '' : "--expected-hc ${params.expected_hc as Integer}"
     def expectedMiss=params.expected_missense==null ? '' : "--expected-missense ${params.expected_missense as Integer}"
     """
     printf '%s' '${encoded}' | base64 -d > unit.json
-    python '${runner}' --metadata unit.json --missense '${missense}' --lof-hc '${lof_hc}' --vcf '${vcf}' --index '${index}' --outdir . --batch-bp ${params.carrier_batch_bp as Integer} ${expectedHc} ${expectedMiss} ${psamArg} ${frequencyArg} 2> private-input.log
+    python '${runner}' --metadata unit.json --missense '${missense}' --lof-hc '${lof_hc}' --vcf '${vcf}' --index '${index}' --outdir . --batch-bp ${params.carrier_batch_bp as Integer} ${expectedHc} ${expectedMiss} ${psamArg} ${frequencyArg} ${sexPolicyArg} 2> private-input.log
     """
 }

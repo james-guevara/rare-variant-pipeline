@@ -20,10 +20,12 @@ workflow {
     }
     def rows = AnnotationResources.select(
         FilteredCarrierManifest.load(file(params.carrier_manifest, checkIfExists: true)), params.select_units)
-    if (frequencyEnabled && rows.any { !(it.chromosome ==~ /chr(?:[1-9]|1[0-9]|2[0-2])/) })
-        error 'Corrected X/Y frequencies blocked pending PAR policy; select autosomes or disable frequency counting for raw extraction'
+    if (params.sex_chromosome_policy && params.sex_chromosome_policy != 'grch38_x_only_par')
+        error 'Unsupported sex chromosome frequency policy'
+    if (frequencyEnabled && rows.any { it.chromosome in ['chrX','chrY'] } && params.sex_chromosome_policy != 'grch38_x_only_par')
+        error 'Corrected X/Y frequencies require --sex_chromosome_policy grch38_x_only_par'
     def entries = Channel.fromList(rows).map { row ->
-        def meta = row + [container: params.carrier_container, container_identity: containerIdentity, expected_hc: params.expected_hc, expected_missense: params.expected_missense, psam: params.psam, compute_frequencies: frequencyEnabled]
+        def meta = row + [container: params.carrier_container, container_identity: containerIdentity, expected_hc: params.expected_hc, expected_missense: params.expected_missense, psam: params.psam, compute_frequencies: frequencyEnabled, sex_chromosome_policy: params.sex_chromosome_policy]
         tuple(meta, file(row.missense), file(row.lof_hc), file(row.vcf), file(row.index))
     }
     FILTERED_CARRIERS(entries, Channel.value(file("${projectDir}/scripts/extract_filtered_carriers.py")),

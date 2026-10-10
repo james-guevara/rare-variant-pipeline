@@ -11,7 +11,7 @@ import time
 import duckdb
 import pysam
 from carrier_psam import load_psam
-from carrier_frequencies import FrequencyCounter, validate_chromosome, SETS, POLICY
+from carrier_frequencies import FrequencyCounter, validate_chromosome, SETS, policy_for, validate_candidate_regions, SEX_POLICY
 from extract_exact_carriers import (ValidationError, KEY_FIELDS, FIELDS, ALLELE_CLASSES,
                                    chrom, text, file_identity, source_header, exact_records, carrier_calls)
 
@@ -78,20 +78,22 @@ def extract(a):
     psam=getattr(a,'psam',None)
     if psam: products.append('sample_metadata.tsv')
     compute_frequencies=getattr(a,'compute_frequencies',False)
+    sex_policy=getattr(a,'sex_chromosome_policy',None)
     if compute_frequencies: products+=['variant_frequencies.tsv','frequency_audit.tsv']
     receipt['frequency_status']='deferred; source frequencies are uncorrected; no final rarity decision'
     if compute_frequencies:
         receipt['frequency_status']='requested; not completed'
-        receipt['frequency_policy']=POLICY
+        receipt['frequency_policy']=policy_for(meta['chromosome'],sex_policy)
     receipt['query_batch_bp']=getattr(a,'batch_bp',10000)
     try:
         if compute_frequencies:
             if not psam: raise ValidationError('Corrected frequencies require --psam')
-            validate_chromosome(meta['chromosome'])
+            validate_chromosome(meta['chromosome'],sex_policy)
         paths={k:getattr(a,k) for k in TYPES}
         ids={k:file_identity(getattr(a,k),k!='vcf') for k in ['vcf','index',*TYPES]}
         if psam: ids['psam']=file_identity(psam,True)
         selected=load_candidates(paths,meta['chromosome'])
+        if compute_frequencies: validate_candidate_regions(selected,meta['chromosome'],sex_policy)
         for kind,expected in [('missense',a.expected_missense),('lof_hc',a.expected_hc)]:
             if expected is not None and sum(r['candidate_type']==kind for rs in selected.values() for r in rs)!=expected:
                 raise ValidationError('Candidate count differs from expected count for '+kind)
@@ -117,7 +119,7 @@ def extract(a):
                     unrelated_flags=sum(r['unrelated']=='1' for r in metadata),
                     representative_selection_status='not applied; policy deferred')
             if compute_frequencies:
-                frequency_counter=FrequencyCounter(metadata,meta['chromosome'])
+                frequency_counter=FrequencyCounter(metadata,meta['chromosome'],sex_policy)
             with pysam.BGZFile(str(out/'carriers.tsv.gz'),'w') as target:
                 target.write(('\t'.join(CARRIER_FIELDS)+'\n').encode())
                 for key,record in exact_records(vcf,contig,selected,batch_bp=getattr(a,'batch_bp',10000)):
@@ -156,13 +158,15 @@ def extract(a):
         if frequency_counter is not None:
             fields=frequency_fields+[s+'_'+f for s in SETS for f in
                 ['ac','an','af','counted_genotypes','reference_genotypes','excluded_genotypes']]
+            if frequency_counter.sex_chromosome: fields+=['frequency_region']
             write_rows(out/'variant_frequencies.tsv',fields,(
                 {**dict(zip(KEY_FIELDS,key)),'allele_class':selected[key][0]['allele_class'],
                  'matched':key in found,**source_frequencies.get(key,{}),**corrected_frequencies.get(key,{})}
                 for key in sorted(selected)))
             write_rows(out/'frequency_audit.tsv',KEY_FIELDS+['allele_class','sample_set','reason','genotypes'],frequency_audit)
             receipt['frequencies']=frequency_counter.receipt()
-            receipt['frequency_status']='computed_autosomes_no_genotype_qc; final unrelated rarity filter deferred'
+            scope='sex_chromosomes_grch38_x_only_par' if frequency_counter.sex_chromosome else 'autosomes'
+            receipt['frequency_status']=f'computed_{scope}_no_genotype_qc; final unrelated rarity filter deferred'
             receipt['psam']['mode']='frequency representatives selected for counts only; all raw carriers retained'
             receipt['psam']['representative_selection_status']='cohort=representative; unrelated=representative AND unrelated'
         audit=[{**r,'matched':k in found,'carrier_records':carrier_counts[k]} for k,r in sorted(annotations,key=lambda x:(x[0],x[1]['candidate_type']))]
@@ -222,6 +226,7 @@ if __name__=='__main__':
     for name in ['metadata','missense','lof_hc','vcf','index','outdir']:p.add_argument('--'+name.replace('_','-'),required=True)
     p.add_argument('--psam')
     p.add_argument('--compute-frequencies',action='store_true')
+    p.add_argument('--sex-chromosome-policy',choices=[SEX_POLICY])
     p.add_argument('--batch-bp',type=int,default=10000)
     p.add_argument('--expected-missense',type=int);p.add_argument('--expected-hc',type=int)
     try:extract(p.parse_args())
