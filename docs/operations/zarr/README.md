@@ -147,3 +147,13 @@ the physical chunks intersecting a selection; selected output alone is not the
 peak memory requirement. Tests verify carrier/frequency parity and sample-chunk
 bounded AD selections. The first whole-FORMAT pilot exceeded 16 GB; the bounded
 reader is benchmarked at the same allocation, retaining preliminary counts.
+
+### Site FILTER policy for post-rarity QC
+
+`post_rarity_qc.nf` defaults to `--site_filter_policy pass`, preserving the
+existing PASS-only policy. For sources without site filtering, explicitly use
+`--site_filter_policy pass_or_missing`. This accepts `PASS` and `.` only; named
+failure filters still fail. Raw FILTER values are retained and the selected
+policy is recorded in the QC receipt. GQ, DP, AD/allele balance, ploidy, rarity,
+and sample-selection rules are unchanged. This setting is explicit, not inferred
+from the cohort name or existing output files.
