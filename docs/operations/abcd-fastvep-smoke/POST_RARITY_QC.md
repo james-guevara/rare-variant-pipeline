@@ -1,5 +1,9 @@
 # Post-rarity QC with explicit GRCh38 X-only PAR handling
 
+Current validation status: the operator reports completed NBDC validation through
+976-block/24-chromosome gathering. See the [finalization record](../../validation/abcd-post-rarity-finalization.md).
+Historical code pins and stage-specific instructions below remain unchanged.
+
 Code pin: `a107a6e920ac18ddc7dee56be72a8d1f9b9b30d8`, branch
 `feat/post-rarity-qc`, stacked on `feat/final-rarity` (PR #20).
 Entrypoint: `post_rarity_qc.nf`; config: `post_rarity_qc.config`.
@@ -176,16 +180,17 @@ and Nextflow cache durable; do not remove the work directory before resuming.
 
 ## Downstream gathering compatibility
 
-Do not feed these products directly into the legacy `gather_post_qc.nf` yet.
+Use the separate [post-rarity gathering adapter](GATHER_POST_RARITY_QC.md)
+for these products. Do not feed them into the legacy `gather_post_qc.nf`.
 Its reader requires the old `post_extraction_qc` stage and chromosome-blind policy;
 it intentionally rejects these receipts (tested). It also sums raw dosage.
 The per-block table keys, carrier filename and receipt strata remain structurally
-compatible, but a separate gather adapter must validate the new stage/policy,
-check consistent PSAM identities, use `qc_effective_alt_dosage` for allele totals,
-and include ploidy metadata in cross-type genotype consistency checks. Preserve
+compatible, but the new gather adapter validates the new stage/policy,
+checks consistent PSAM identities, uses `qc_effective_alt_dosage` for allele totals,
+and includes ploidy metadata in cross-type genotype consistency checks. Preserve
 cross-block duplicate detection, all source samples, distinct allele/sample
-unions and separate stars; do not mix old/new QC policies. This PR documents
-that boundary and does not invoke or change chromosome gathering.
+unions and separate stars; do not mix old/new QC policies. The QC entrypoint never invokes gathering; its separate runbook provides the
+new chromosome gathering commands.
 
 ## Local validation
 
