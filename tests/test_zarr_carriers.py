@@ -201,3 +201,41 @@ def test_sex_count_does_not_hide_other_alt_heterozygosity():
     values,audit=counter.count(record,'sequence')
     assert values['unrelated_an']==0
     assert audit['unrelated']['excluded_haploid_heterozygous']==1
+
+
+def test_padded_info_sites_and_carriers(tmp_path):
+    from zarr_sites import export
+    from zarr_carrier_source import Source
+    a=fixture(tmp_path);store=tmp_path/'padded.zarr';g=to_zarr(a.vcf,store)
+    n=g['variant_position'].shape[0]
+    ac=np.full((n,31),-2,dtype='i4');ac[:,0]=5
+    af=np.full((n,31),np.nan,dtype='f4');af[:,0]=0.005
+    g.create_array('variant_AC',data=ac);g.create_array('variant_AF',data=af)
+    g.create_array('variant_AN',data=np.full(n,1000,dtype='i4'))
+    out=tmp_path/'sites.vcf.gz';export(store,'chr22',out,tmp_path/'receipt.json')
+    with pysam.VariantFile(out) as f:
+        records=list(f)
+        assert len(records)==n
+        assert all(r.info['AC']==(5,) for r in records)
+        assert all(r.info['AF'][0]==pytest.approx(.005) for r in records)
+    with Source(store,'chr22') as source:
+        record=next(source.records({('22',10,'A','G'):[]}))[1]
+        assert record.info['AC']==(5,)
+        assert record.info['AF']==pytest.approx((.005,))
+
+
+@pytest.mark.parametrize('raw,n,expected',[
+    (np.array([1,5,-2]),2,(1,5)),
+    (np.array([-1,5,-2]),2,(None,5)),
+    (np.array([np.nan,.2,np.nan]),2,(None,.2)),
+])
+def test_allele_info_preserves_alt_positions(raw,n,expected):
+    from zarr_carrier_source import allele_info
+    assert allele_info(raw,n)==expected
+
+
+@pytest.mark.parametrize('raw,n',[(np.array([1,2]),1),(np.array([.1,.2]),1),(np.array([1]),2),(np.array([-2,1]),2)])
+def test_allele_info_rejects_invalid_padding(raw,n):
+    from zarr_carrier_source import allele_info
+    from extract_exact_carriers import ValidationError
+    with pytest.raises(ValidationError):allele_info(raw,n)

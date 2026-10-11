@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 import pysam
 import zarr
-from zarr_carrier_source import value,identity
+from zarr_carrier_source import value,identity,allele_info
 from extract_exact_carriers import file_identity,ValidationError,chrom
 
 
@@ -44,7 +44,7 @@ def export(store,chromosome,output,receipt):
                         if on and f!='.':r.filter.add(f)
                     for key in ['AC','AN','AF']:
                         if 'variant_'+key not in block:continue
-                        v=value(block['variant_'+key][j])
+                        v=(allele_info(block['variant_'+key][j],len(als)-1) if key in ['AC','AF'] else value(block['variant_'+key][j]))
                         if key in ['AC','AF']:
                             if not isinstance(v,tuple):v=(v,)
                             if len(v)!=len(als)-1:raise ValidationError('INFO Number=A mismatch')

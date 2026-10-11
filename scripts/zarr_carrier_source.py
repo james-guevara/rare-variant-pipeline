@@ -32,6 +32,25 @@ def value(raw):
     return v
 
 
+def allele_info(raw, n_alt):
+    """Decode Number=A by allele count; only trailing VCZ fill is padding."""
+    a=np.asarray(raw).reshape(-1)
+    if len(a)<n_alt:
+        raise ValidationError('Source INFO Number=A shorter than ALT count')
+    tail=a[n_alt:]
+    if np.issubdtype(a.dtype,np.integer):
+        valid=np.all(tail == -2)
+        if np.any(a[:n_alt] == -2):
+            raise ValidationError('Source INFO Number=A padding inside active ALTs')
+    elif np.issubdtype(a.dtype,np.floating):
+        valid=np.all(np.isnan(tail))
+    else:
+        valid=not len(tail)
+    if not valid:
+        raise ValidationError('Source INFO Number=A has non-padding values beyond ALT count')
+    return tuple(value(x) for x in a[:n_alt])
+
+
 class Calls(Mapping):
     def __init__(self,record):self.record=record
     def __iter__(self):return iter(self.record.source.samples)
@@ -97,7 +116,7 @@ class Source:
                 if np.any(gt < -2) or np.any(gt >= n_alleles):raise ValidationError('Non-biallelic genotype allele index')
                 # Padding must be trailing; preserve haploid versus partial calls.
                 if gt.shape[1]>1 and np.any((gt[:,:-1]==-2)&(gt[:,1:]!=-2)):raise ValidationError('Non-trailing genotype padding')
-                info={name:value(g['variant_'+name][start+j]) for name in ['AC','AN','AF'] if 'variant_'+name in g}
+                info={name:(allele_info(g['variant_'+name][start+j],n_alleles-1) if name in ['AC','AF'] else value(g['variant_'+name][start+j])) for name in ['AC','AN','AF'] if 'variant_'+name in g}
                 for name in ['AC','AF']:
                     if name in info and isinstance(info[name],tuple):
                         if len(info[name])!=n_alleles-1:raise ValidationError('Source INFO Number=A mismatch')
