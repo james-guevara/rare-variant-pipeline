@@ -24,6 +24,15 @@ POLICY=dict(core.POLICY,version='post-rarity-grch38-x-only-par-qc-v1',
     sample_selection='QC all source samples regardless of representative/unrelated flags; retain zeros')
 
 
+def policy_for_run(a):
+    mode=getattr(a,'site_filter_policy','pass')
+    if mode not in ('pass','pass_or_missing'):
+        raise core.ValidationError('Unsupported site FILTER policy')
+    if mode=='pass':return POLICY
+    return dict(POLICY,version='post-rarity-grch38-x-only-par-qc-v2',
+                site_FILTER='PASS or .',site_filter_policy=mode)
+
+
 def validate_source(source,meta):
     if source.get('stage')!='final_rarity' or source.get('policy')!=RARITY_POLICY or not source.get('reconciliation',{}).get('passed'):
         raise core.ValidationError('Passed final-rarity receipt with fixed rarity policy required')
@@ -37,6 +46,8 @@ def validate_source(source,meta):
 
 class Context:
     def __init__(self,a,source,samples,meta):
+        self.site_filter_policy=getattr(a,'site_filter_policy','pass')
+        policy_for_run(a)
         self.chromosome=meta['chromosome']
         policy=getattr(a,'sex_chromosome_policy',None)
         try:
@@ -53,6 +64,8 @@ class Context:
         except ValueError as exc:raise core.ValidationError(str(exc)) from exc
         sex=self.sex[row['sample']];ploidy,excluded=expected_ploidy(region,sex)
         ab,bad=core.evaluate(row);bad=list(bad);ploidy_bad=[]
+        if getattr(self,'site_filter_policy','pass')=='pass_or_missing' and row['site_FILTER']=='.':
+            bad=[x for x in bad if x!='site_filter']
         if excluded:ploidy_bad.append('unknown_sex' if excluded=='excluded_unknown_sex' else 'female_y')
         gt=row['GT'];alleles=re.split(r'[/|]',gt)
         if '.' in alleles:ploidy_bad.append('partial_call')
@@ -83,6 +96,7 @@ class Context:
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     for n in ['carriers','samples','source-receipt','psam','metadata','outdir']:p.add_argument('--'+n,required=True)
+    p.add_argument('--site-filter-policy',choices=['pass','pass_or_missing'],default='pass')
     p.add_argument('--sex-chromosome-policy',choices=[SEX_POLICY])
     try:core.run(p.parse_args(),adapter=sys.modules[__name__])
     except Exception:sys.exit('Post-rarity QC failed; inspect local receipt. No protected records printed.')
