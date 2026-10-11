@@ -111,3 +111,28 @@ The adapter supports FORMAT/AD; LAD/LAA-only stores need an explicit allele-dept
 adapter before use. PL is not required. Sites retain the original allele spelling;
 if upstream normalization changes keys, an explicit source-pointer mapping is
 required. The provided sites/annotation route preserves source keys.
+
+## Explicit genotype-derived preliminary frequencies
+
+When source INFO AC/AN is absent, use `zarr_pre_carrier.nf` (with
+`zarr_pre_carrier.config`) instead of `pre_carrier.nf`. Its filter manifest adds
+an absolute `zarr` path to `unit_id,chromosome,missense,lof_hc,sites`; `--psam` is
+required. Resource locks and population/region filters remain the same.
+
+This opt-in route computes candidate-ALT AC/AN using **all source samples**, ignoring
+participant-representative and unrelated selection flags for this preliminary
+count only. It reads GT/mask chunks, with no genotype-quality filtering. The shared
+sex/PAR counting rules require an explicit policy for X/Y. Reference and partial
+calls follow the shared counting rules; zero AN and unmatched alleles cannot pass.
+Counts are saved as `preliminary-frequencies.tsv` with a provenance/audit JSON.
+The filter verifies the table checksum and candidate input hashes before use.
+`pcf_source_info_*` remains the original source INFO (including missing values);
+`pcf_cohort_*` contains the derived counts and AF. The threshold remains strictly
+AF <0.005. Later representative/family-based frequencies and final unrelated
+AF <0.001 are unchanged. This is an explicit frequency-source choice, never a
+silent missing-INFO fallback.
+
+The first real SPARK pilot using source INFO completed technically but retained
+zero candidates because source AC/AN was missing for all candidate alleles. Those
+empty outputs do not validate real carrier extraction. The genotype-derived rerun
+uses a separate downstream output/work root and reuses annotation/candidates.

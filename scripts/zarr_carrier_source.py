@@ -78,7 +78,8 @@ class Call(dict):pass
 
 
 class Source:
-    def __init__(self,path,chromosome):
+    def __init__(self,path,chromosome,genotype_only=False):
+        self.genotype_only=genotype_only
         self.root=zarr.open_group(str(path),mode='r');self.chromosome=chrom(chromosome)
         required=['sample_id','variant_position','variant_allele','variant_contig','contig_id','call_genotype','call_genotype_mask','variant_filter','filter_id']
         if any(k not in self.root for k in required):raise ValidationError('Zarr lacks required genotype/site arrays')
@@ -112,6 +113,7 @@ class Source:
                     seen.add(key);matches.append((j,key,alt_index,len(als)))
             if not matches:continue
             fields=['call_genotype','call_genotype_mask','call_genotype_phased','call_GQ','call_DP','call_AD','call_FT']
+            if self.genotype_only:fields=['call_genotype','call_genotype_mask']
             block={f:np.asarray(g[f][start:stop]) for f in fields if f in g};self.chunk_reads+=1
             for j,key,alt_index,n_alleles in matches:
                 gt=block['call_genotype'][j];mask=block['call_genotype_mask'][j]
