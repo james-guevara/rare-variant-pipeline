@@ -62,15 +62,15 @@ class Calls(Mapping):
         r=self.record;i=r.source.sample_index[sample];raw=r.gt[i]
         gt=tuple(None if x == -1 else int(x) for x in raw if x != -2)
         fields={'GT':gt}
+        extra=r.formats.get(i,{})
         for name in ['GQ','DP','AD','FT']:
-            if 'call_'+name in r.block:
-                v=value(r.block['call_'+name][r.offset,i])
+            if 'call_'+name in extra:
+                v=value(extra['call_'+name])
                 if name=='AD':
                     v=(v[0],v[r.alt_index]) if isinstance(v,tuple) and len(v)>r.alt_index else None
                 fields[name]=v
         result=Call(fields)
-        phased=r.block.get('call_genotype_phased')
-        result.phased=bool(phased[r.offset,i]) if phased is not None else False
+        result.phased=bool(extra.get('call_genotype_phased',False))
         return result
 
 
@@ -112,9 +112,30 @@ class Source:
                     if key in seen:raise ValidationError('Duplicate exact source allele record')
                     seen.add(key);matches.append((j,key,alt_index,len(als)))
             if not matches:continue
-            fields=['call_genotype','call_genotype_mask','call_genotype_phased','call_GQ','call_DP','call_AD','call_FT']
-            if self.genotype_only:fields=['call_genotype','call_genotype_mask']
-            block={f:np.asarray(g[f][start:stop]) for f in fields if f in g};self.chunk_reads+=1
+            fields=['call_genotype','call_genotype_mask']
+            block={f:np.asarray(g[f][start:stop]) for f in fields};self.chunk_reads+=1
+            formats={}
+            if not self.genotype_only:
+                # Group exact candidate rows and carrier sample indices by physical
+                # sample chunk. Decode at most one sample chunk per array call.
+                targets={}
+                for j,_,alt_index,_ in matches:targets.setdefault(j,set()).add(alt_index)
+                carriers={j:np.flatnonzero(np.any(np.isin(block['call_genotype'][j],list(alts)),axis=1)) for j,alts in targets.items()}
+                formats={j:{int(i):{} for i in ids} for j,ids in carriers.items()}
+                for name in ['call_genotype_phased','call_GQ','call_DP','call_AD','call_FT']:
+                    if name not in g:continue
+                    array=g[name];sample_width=array.chunks[1]
+                    groups=sorted({int(i)//sample_width for ids in carriers.values() for i in ids})
+                    for group in groups:
+                        group_samples={j:ids[(ids//sample_width)==group] for j,ids in carriers.items()}
+                        group_samples={j:ids for j,ids in group_samples.items() if len(ids)}
+                        rows=sorted(group_samples);ids=np.unique(np.concatenate(list(group_samples.values())))
+                        selection=([start+j for j in rows],ids.tolist())+(slice(None),)*(array.ndim-2)
+                        data=np.asarray(array.oindex[selection])
+                        columns={int(i):c for c,i in enumerate(ids)}
+                        for row,j in enumerate(rows):
+                            for i in group_samples[j]:formats[j][int(i)][name]=np.array(data[row,columns[int(i)]],copy=True)
+                        del data
             for j,key,alt_index,n_alleles in matches:
                 gt=block['call_genotype'][j];mask=block['call_genotype_mask'][j]
                 if gt.shape!=mask.shape or not np.array_equal(mask,gt<0):raise ValidationError('GT and missingness mask disagree')
@@ -128,7 +149,7 @@ class Source:
                         info[name]=(info[name][alt_index-1],)
                 fl=np.asarray(g['variant_filter'][start+j])
                 projected=np.where(gt<0,gt,(gt==alt_index).astype(gt.dtype))
-                r=SimpleNamespace(source=self,offset=j,block=block,gt=projected,source_gt=gt,alt_index=alt_index,variant_index=start+j,contig=self.contig,pos=key[1],ref=key[2],alts=(key[3],),
+                r=SimpleNamespace(source=self,offset=j,block=block,formats=formats.get(j,{}),gt=projected,source_gt=gt,alt_index=alt_index,variant_index=start+j,contig=self.contig,pos=key[1],ref=key[2],alts=(key[3],),
                     info=info,header=SimpleNamespace(info=info),filter=[f for f,on in zip(self.filters,fl) if on])
                 r.samples=Calls(r)
                 yield key,r
@@ -141,9 +162,9 @@ class Source:
             i=self.sample_index[row['sample']]
             sep='|' if samples[row['sample']].phased else '/'
             row['source_GT']=sep.join('.' if x==-1 else str(int(x)) for x in record.source_gt[i] if x!=-2)
-            raw_ad=record.block.get('call_AD')
+            raw_ad=record.formats.get(i,{}).get('call_AD')
             from extract_exact_carriers import text
-            row['source_AD']=text(value(raw_ad[record.offset,i])) if raw_ad is not None else '.'
+            row['source_AD']=text(value(raw_ad)) if raw_ad is not None else '.'
             row['source_variant_index']=record.variant_index
             row['source_alt_index']=record.alt_index
             yield row,partial

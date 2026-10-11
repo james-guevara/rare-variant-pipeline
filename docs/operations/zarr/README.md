@@ -136,3 +136,14 @@ The first real SPARK pilot using source INFO completed technically but retained
 zero candidates because source AC/AN was missing for all candidate alleles. Those
 empty outputs do not validate real carrier extraction. The genotype-derived rerun
 uses a separate downstream output/work root and reuses annotation/candidates.
+
+### Bounded FORMAT reads
+
+Carrier extraction reads GT/mask for frequency counts across all samples. AD,
+DP, GQ, FT and phasing are selected only for candidate rows and carrier samples,
+with reads grouped by each FORMAT array's sample-chunk boundaries. These fields
+are not materialized as whole variant-block-by-cohort arrays. Zarr still decodes
+the physical chunks intersecting a selection; selected output alone is not the
+peak memory requirement. Tests verify carrier/frequency parity and sample-chunk
+bounded AD selections. The first whole-FORMAT pilot exceeded 16 GB; the bounded
+reader is benchmarked at the same allocation, retaining preliminary counts.

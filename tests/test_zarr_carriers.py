@@ -260,3 +260,24 @@ def test_missing_info_export_and_carrier(tmp_path):
     with Source(store,'chr22') as source:
         record=next(source.records({('22',10,'A','G'):[]}))[1]
         assert record.info['AC']==(None,)
+
+
+def test_quality_reads_are_bounded_to_carriers_and_sample_chunks(tmp_path,monkeypatch):
+    from zarr_carrier_source import Source
+    a=fixture(tmp_path);store=tmp_path/'bounded.zarr';g=to_zarr(a.vcf,store)
+    ad=g['call_AD'][:];del g['call_AD'];g.create_array('call_AD',data=ad,chunks=(2,2,2))
+    actual=zarr.Array.get_orthogonal_selection;reads=[]
+    def checked(array,selection,*args,**kwargs):
+        if array.name.endswith('/call_AD'):
+            rr,ss=selection[:2];assert not isinstance(rr,slice) and not isinstance(ss,slice)
+            assert len({i//array.chunks[1] for i in ss})==1
+            assert list(rr)==[0]
+            gt=g['call_genotype'][0]
+            assert all(np.any(gt[i]==1) for i in ss)
+            reads.append((rr,ss))
+        return actual(array,selection,*args,**kwargs)
+    monkeypatch.setattr(zarr.Array,'get_orthogonal_selection',checked)
+    with Source(store,'chr22') as source:
+        rec=next(source.records({('22',10,'A','G'):[]}))[1]
+        assert list(source.calls(rec))
+    assert reads
