@@ -1,5 +1,9 @@
 # Pysam batching and preliminary frequency screen
 
+Current validation status: the operator reports completed NBDC validation through
+976-block/24-chromosome gathering. See the [finalization record](../../validation/abcd-post-rarity-finalization.md).
+Historical code pins and stage-specific instructions below remain unchanged.
+
 For the subsequent opt-in autosomal frequency-counting implementation, see
 [CARRIER_FREQUENCIES.md](CARRIER_FREQUENCIES.md). The pinned commands and deferral
 status below describe the earlier batching revision.

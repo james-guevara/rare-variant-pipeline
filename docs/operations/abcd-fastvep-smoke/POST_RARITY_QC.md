@@ -1,5 +1,9 @@
 # Post-rarity QC with explicit GRCh38 X-only PAR handling
 
+Current validation status: the operator reports completed NBDC validation through
+976-block/24-chromosome gathering. See the [finalization record](../../validation/abcd-post-rarity-finalization.md).
+Historical code pins and stage-specific instructions below remain unchanged.
+
 Code pin: `a107a6e920ac18ddc7dee56be72a8d1f9b9b30d8`, branch
 `feat/post-rarity-qc`, stacked on `feat/final-rarity` (PR #20).
 Entrypoint: `post_rarity_qc.nf`; config: `post_rarity_qc.config`.

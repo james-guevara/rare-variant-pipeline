@@ -1,5 +1,9 @@
 # Chromosome gathering after final rarity and sex/PAR-aware QC
 
+Current validation status: the operator reports completed NBDC validation through
+976-block/24-chromosome gathering. See the [finalization record](../../validation/abcd-post-rarity-finalization.md).
+Historical code pins and stage-specific instructions below remain unchanged.
+
 Branch: `feat/gather-post-rarity-qc`, stacked on PR #21.
 Code pin: `aed4008eab38073110896f5d1e170ae698c9e9ca`.
 Entrypoint/config: `gather_post_rarity_qc.nf` / `gather_post_rarity_qc.config`.

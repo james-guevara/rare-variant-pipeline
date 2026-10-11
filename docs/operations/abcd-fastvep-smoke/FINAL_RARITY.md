@@ -1,5 +1,9 @@
 # Final rarity from saved extraction products
 
+Current validation status: the operator reports completed NBDC validation through
+976-block/24-chromosome gathering. See the [finalization record](../../validation/abcd-post-rarity-finalization.md).
+Historical code pins and stage-specific instructions below remain unchanged.
+
 Code pin: `3edbec9613cb05ad564961b3a022f55f4d8f9d6b` on `feat/final-rarity`,
 stacked on PR #19. Entrypoint: `final_rarity.nf`, config: `final_rarity.config`.
 
