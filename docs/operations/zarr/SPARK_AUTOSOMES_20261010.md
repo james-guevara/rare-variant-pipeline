@@ -63,3 +63,26 @@ inventory job 54829417. Production root:
 - Recovery scripts, configs, and pins: `/expanse/projects/sebat1/j3guevar/operations/rare-fixes-20261011/`. Diagnostic/private evidence: sibling `fastvep-fix-20261011/`. Earlier failed packaging and config attempts remain as diagnostic logs; only the tested `r2` image and controller above are active.
 
 The FastVEP fix changes frameshift HGVSp construction for incomplete CDS starts. Previously completed chromosomes retain their original annotation pin; they have not been reannotated by this targeted recovery. Phase-zero construction is unchanged.
+
+### Understanding the incomplete CDS issue
+
+Saved for later scientific and implementation review, 2026-10-11.
+
+“Incomplete coding sequence” here concerns a reference transcript model. It does not establish that any SPARK sample has missing DNA or that its Zarr genotypes are damaged. More precisely, the affected cached transcript has a nonzero starting coding phase: its CDS coordinate system includes two virtual bases before the available coding sequence. FastVEP represents those bases with `N` characters to maintain codon alignment.
+
+The diagnostic identified reference transcript `ENST00000528837` with `codon_table_start_phase=2`. At the triggering deletion, cDNA position 1000 maps to CDS position 1002. The available sequence from the CDS start had 1000 bases; its correctly padded representation has 1002. The old frameshift calculation tried to delete at zero-based index 1001 from the unpadded 1000-base sequence and panicked. CDS coordinates and the edited sequence therefore had different origins.
+
+The fix uses one shared `cds_sequence_with_utr()` helper in both the CLI and annotation library. It prepends the same phase padding used by `cdna_to_cds()` and the translated sequence, while retaining the downstream untranslated sequence used to search for a new stop codon. It does not add bases to the cohort VCF/Zarr, change genotypes, or discard the deletion. Its intended scope is the sequence construction used for frameshift protein HGVS annotation.
+
+A terminology detail matters: FastVEP's internal phase value is not numerically identical to the GFF3 phase field. Its parser maps GFF phase 1 to internal padding 2, and GFF phase 2 to padding 1. A nonzero phase on an internal CDS exon can simply describe a codon crossing an exon boundary. Here the relevant value is the transcript's *starting* CDS phase. The cached value and coordinate mismatch were directly checked; the exact source annotation's completeness flags and biological reason for its partial start remain useful follow-up questions.
+
+Later review should:
+
+1. Inspect this transcript's original Ensembl 115 GFF3, completeness tags (including whether `cds_start_NF` is present), exon structure, strand, and cached sequence. Separate what the model specifies from any claim about the sample.
+2. Compare the affected HGVSp annotation with reference VEP, including incomplete-start and reverse-strand examples. Passing the crash regression does not by itself establish exhaustive VEP parity.
+3. Assess whether non-crashing incomplete-CDS annotations from earlier chromosomes need review. Those chromosomes retain their previous binary pin; this recovery did not reannotate them.
+4. Review and merge FastVEP PR #1, then update the appropriate pipeline container/build pin and provenance with regression validation. **Deferred at the user's request.** The patch is already committed on its repair branch and tested in the chr11 recovery container; this is distinct from adopting it as the repository's standard runtime.
+
+Code reference: https://github.com/james-guevara/fastVEP/commit/b1b79335af455a4f300c9bd6fa68274f2bfb94ae
+
+Private diagnostic details remain under the Expanse operations paths above; no cohort variant records are included in this note.
