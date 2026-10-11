@@ -4,7 +4,7 @@ process GATHER_POST_RARITY_QC {
     memory { params.gather_memory }
     time { params.gather_time }
     container params.gather_container
-    publishDir { "${params.outdir}/post-rarity-qc-gather/${meta.chromosome}/${meta.gather_id}" }, mode:'copy',overwrite:true
+    publishDir { "${params.outdir}/post-rarity-qc-gather/${meta.chromosome}/${meta.gather_id}" }, mode:params.gather_publish_mode,overwrite:true
     input:
     tuple val(meta),path(carriers,stageAs:'units??/carriers.qc.tsv.gz'),path(samples,stageAs:'units??/samples.tsv'),path(receipts,stageAs:'units??/receipt.json')
     path runner

@@ -142,3 +142,14 @@ def test_nextflow_pilot_resume_mixed_full_and_global_psam(tmp_path):
     assert p.returncode!=0 and 'PSAM identities differ' in p.stdout+p.stderr
     shutil.rmtree(tmp_path/'work')
     assert json.loads((tmp_path/'published/post-rarity-qc-gather/chrX/all/receipt.json').read_text())['full_manifest_selected']
+
+
+def test_explicit_pass_or_missing_gather_policy(tmp_path):
+    a=make(tmp_path,chrom='chr22')
+    policy=qc_post_rarity.policy_for_run(Namespace(site_filter_policy='pass_or_missing'))
+    for path in a.receipts:
+        p=Path(path);r=json.loads(p.read_text());r['policy']=policy;p.write_text(json.dumps(r))
+    with pytest.raises(ValidationError,match='policy'):gather(a,adapter)
+    meta=json.loads(Path(a.metadata).read_text());meta['site_filter_policy']='pass_or_missing'
+    Path(a.metadata).write_text(json.dumps(meta));gather(a,adapter)
+    assert json.loads((Path(a.outdir)/'receipt.json').read_text())['policy']==policy

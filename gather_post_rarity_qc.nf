@@ -26,7 +26,7 @@ workflow {
     if (identities.size()!=1) error 'PSAM identities differ across selected chromosomes/blocks'
     def groups = selected.groupBy { it.chromosome }.collect { chrom, units ->
         units = units.sort { it.unit_id }
-        def meta = [psam_identity:identities[0],chromosome:chrom,gather_id:params.gather_id,units:units,
+        def meta = [site_filter_policy:params.site_filter_policy,psam_identity:identities[0],chromosome:chrom,gather_id:params.gather_id,units:units,
                     manifest_units:allRows.findAll{it.chromosome==chrom}.collect{it.unit_id}.sort(),
                     container:params.gather_container,container_identity:containerIdentity]
         tuple(meta,units.collect{file(it.carriers)},units.collect{file(it.samples)},units.collect{file(it.source_receipt)})
