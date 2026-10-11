@@ -37,6 +37,9 @@ def allele_info(raw, n_alt):
     a=np.asarray(raw).reshape(-1)
     if len(a)<n_alt:
         raise ValidationError('Source INFO Number=A shorter than ALT count')
+    # VCZ broadcasts a wholly missing integer field across its fixed width.
+    if np.issubdtype(a.dtype,np.integer) and np.all(a == -1):
+        return (None,) * n_alt
     tail=a[n_alt:]
     if np.issubdtype(a.dtype,np.integer):
         valid=np.all(tail == -2)

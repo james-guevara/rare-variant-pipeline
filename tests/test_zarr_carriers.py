@@ -239,3 +239,24 @@ def test_allele_info_rejects_invalid_padding(raw,n):
     from zarr_carrier_source import allele_info
     from extract_exact_carriers import ValidationError
     with pytest.raises(ValidationError):allele_info(raw,n)
+
+
+@pytest.mark.parametrize('n_alt',[1,2,31])
+def test_whole_missing_number_a_broadcast(n_alt):
+    from zarr_carrier_source import allele_info
+    assert allele_info(np.full(31,-1,dtype='i1'),n_alt)==(None,)*n_alt
+
+
+def test_missing_info_export_and_carrier(tmp_path):
+    from zarr_sites import export
+    from zarr_carrier_source import Source
+    a=fixture(tmp_path);store=tmp_path/'missing.zarr';g=to_zarr(a.vcf,store)
+    n=g['variant_position'].shape[0]
+    g.create_array('variant_AC',data=np.full((n,31),-1,dtype='i1'))
+    g.create_array('variant_AN',data=np.full(n,-1,dtype='i4'))
+    out=tmp_path/'sites.vcf.gz';export(store,'chr22',out,tmp_path/'receipt.json')
+    with pysam.VariantFile(out) as f:
+        assert all(r.info['AC']==(None,) and r.info['AN'] is None for r in f)
+    with Source(store,'chr22') as source:
+        record=next(source.records({('22',10,'A','G'):[]}))[1]
+        assert record.info['AC']==(None,)
