@@ -22,5 +22,7 @@ workflow {
         tuple(meta, file(row.missense), file(row.lof_hc), file(row.vcf), file(row.index))
     }
     FILTERED_CARRIERS(entries, Channel.value(file("${projectDir}/scripts/extract_filtered_carriers.py")),
-        Channel.value(file("${projectDir}/scripts/extract_exact_carriers.py")))
+        Channel.value(file("${projectDir}/scripts/extract_exact_carriers.py")),
+        Channel.value(file("${projectDir}/scripts/carrier_psam.py")),
+        Channel.value(params.psam ? file(params.psam,checkIfExists:true) : []))
 }

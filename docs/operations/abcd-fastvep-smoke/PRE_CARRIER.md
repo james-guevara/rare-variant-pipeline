@@ -11,7 +11,7 @@ sites → annotation → score/select → pre-carrier filter → carrier extract
 ## Exact policy
 
 - Cohort: exact allele match to the per-block **sites-only** VCF; compute
-  `INFO/AC / INFO/AN < 0.001`. Never use INFO/AF or MLEAF. Missing exact matches,
+  `INFO/AC / INFO/AN < 0.005` for preliminary eligibility (uncorrected). Never use INFO/AF or MLEAF for selection. Original INFO AC/AN/AF strings are retained in `pcf_source_info_*` alongside the AC/AN ratio. Missing exact matches,
   absent/malformed AC/AN, zero AN, negative values, or AC > AN fail the cohort
   criterion and are counted. AC and AN must be single nonnegative integers.
 - Population: exact allele join to `parquet_scores_af`, using only
@@ -170,3 +170,5 @@ Local result: **54 tests passed**, including 12 pre-carrier tests and all 42
 candidate/annotation/carrier/sites regression tests. NBDC config rendering,
 Python compilation, and diff whitespace checks also passed. These are synthetic
 validation results; the real NBDC pilot remains to be run by the operator.
+
+The historical chr22 counts above used the earlier 0.001 cohort screen. They are not expected counts for the relaxed 0.005 screen. See [production batching and preliminary screening](CARRIER_BATCHING.md) before rerunning into a new destination. Corrected unrelated rarity is deferred.

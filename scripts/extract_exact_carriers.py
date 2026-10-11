@@ -95,12 +95,29 @@ def source_header(vcf, chromosome):
     return contig, samples
 
 
-def exact_records(vcf, contig, selected):
+def candidate_windows(selected, batch_bp=1):
+    """Nonoverlapping spans, at most batch_bp bases, anchored at a candidate."""
+    if not isinstance(batch_bp, int) or isinstance(batch_bp, bool) or batch_bp < 1:
+        raise ValidationError('Candidate batch span must be a positive integer')
+    start = end = None
+    for position in sorted({key[1] for key in selected}):
+        if start is None:
+            start = position
+        elif position - start >= batch_bp:
+            yield start - 1, end
+            start = position
+        end = position
+    if start is not None:
+        yield start - 1, end
+
+
+def exact_records(vcf, contig, selected, batch_bp=1):
     """Shared indexed exact-allele lookup; region overlap alone never matches."""
     found = set()
-    for position in sorted({key[1] for key in selected}):
-        for record in vcf.fetch(contig, position-1, position):
-            if record.pos != position:
+    positions = {key[1] for key in selected}
+    for start, end in candidate_windows(selected, batch_bp):
+        for record in vcf.fetch(contig, start, end):
+            if not start < record.pos <= end or record.pos not in positions:
                 continue
             if len(record.alts or ()) != 1:
                 raise ValidationError('Multiallelic source record at candidate position; normalize upstream')
