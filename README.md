@@ -635,3 +635,7 @@ The chr22 implementation is finalized; see the
 [validation and deployment handoff](docs/validation/chr22-implementation-finalization.md).
 
 For saved final-rarity carriers, use the separate [post-rarity sex/PAR-aware QC stage](docs/operations/abcd-fastvep-smoke/POST_RARITY_QC.md). Its runbook includes the downstream gathering compatibility boundary.
+
+Gather the new QC outputs with [post-rarity chromosome gathering](docs/operations/abcd-fastvep-smoke/GATHER_POST_RARITY_QC.md), which validates PSAM/ploidy provenance and uses effective allele dosage.
+
+ABCD validation through final rarity, sex/PAR-aware QC and all 24 chromosome gathers is complete; see the [NBDC finalization record](docs/validation/abcd-post-rarity-finalization.md).

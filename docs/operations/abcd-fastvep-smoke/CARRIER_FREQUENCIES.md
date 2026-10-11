@@ -1,5 +1,9 @@
 # Corrected autosomal frequencies during carrier extraction
 
+Current validation status: the operator reports completed NBDC validation through
+976-block/24-chromosome gathering. See the [finalization record](../../validation/abcd-post-rarity-finalization.md).
+Historical code pins and stage-specific instructions below remain unchanged.
+
 X/Y counting is now available with the explicitly selected
 [GRCh38 X-only PAR policy](SEX_CHROMOSOME_FREQUENCIES.md). The autosomal pin and
 commands below remain historical; do not rerun the 951 completed autosomal blocks.
