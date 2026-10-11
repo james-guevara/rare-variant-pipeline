@@ -66,6 +66,11 @@ def write_rows(path,fields,rows):
 
 
 def extract(a):
+    zarr_path=getattr(a,"zarr",None)
+    if zarr_path:
+        from zarr_carrier_source import Source, identity as zarr_identity
+        from zarr_frequencies import ZarrFrequencyCounter
+    carrier_fields=CARRIER_FIELDS+(['source_GT','source_AD','source_variant_index','source_alt_index'] if zarr_path else [])
     start=time.perf_counter();meta=json.loads(Path(a.metadata).read_text());out=Path(a.outdir);out.mkdir(parents=True,exist_ok=True)
     products=['carriers.tsv.gz','candidates.tsv','unmatched.tsv','samples.tsv','sample_burden.tsv','sample_gene_burden.tsv','gene_burden.tsv','sample_distinct_alleles.tsv','source_frequencies.tsv']
     receipt=dict(schema_version=1,status='failed',unit_id=meta['unit_id'],chromosome=meta['chromosome'],sources=meta,
@@ -90,7 +95,9 @@ def extract(a):
             if not psam: raise ValidationError('Corrected frequencies require --psam')
             validate_chromosome(meta['chromosome'],sex_policy)
         paths={k:getattr(a,k) for k in TYPES}
-        ids={k:file_identity(getattr(a,k),k!='vcf') for k in ['vcf','index',*TYPES]}
+        ids={k:file_identity(getattr(a,k),True) for k in TYPES}
+        if zarr_path: ids['zarr']=zarr_identity(zarr_path)
+        else: ids.update({k:file_identity(getattr(a,k),k!='vcf') for k in ['vcf','index']})
         if psam: ids['psam']=file_identity(psam,True)
         selected=load_candidates(paths,meta['chromosome'])
         if compute_frequencies: validate_candidate_regions(selected,meta['chromosome'],sex_policy)
@@ -107,8 +114,8 @@ def extract(a):
         annotations=[(k,r) for k,rs in selected.items() for r in rs]
         def group(row):return (row['candidate_type'],row['allele_class'],row['tier'])
         strata=sorted({group(r) for k,r in annotations} | {(t,c,'untiered') for t in TYPES for c in ALLELE_CLASSES})
-        with pysam.VariantFile(a.vcf,index_filename=a.index) as vcf:
-            contig,samples=source_header(vcf,meta['chromosome'])
+        with (Source(zarr_path,meta['chromosome']) if zarr_path else pysam.VariantFile(a.vcf,index_filename=a.index)) as vcf:
+            contig,samples=(vcf.contig,vcf.samples) if zarr_path else source_header(vcf,meta['chromosome'])
             if psam:
                 header,metadata,extra=load_psam(psam,samples)
                 write_rows(out/'sample_metadata.tsv',header,metadata)
@@ -119,10 +126,10 @@ def extract(a):
                     unrelated_flags=sum(r['unrelated']=='1' for r in metadata),
                     representative_selection_status='not applied; policy deferred')
             if compute_frequencies:
-                frequency_counter=FrequencyCounter(metadata,meta['chromosome'],sex_policy)
+                frequency_counter=(ZarrFrequencyCounter(metadata,meta['chromosome'],samples,sex_policy) if zarr_path else FrequencyCounter(metadata,meta['chromosome'],sex_policy))
             with pysam.BGZFile(str(out/'carriers.tsv.gz'),'w') as target:
-                target.write(('\t'.join(CARRIER_FIELDS)+'\n').encode())
-                for key,record in exact_records(vcf,contig,selected,batch_bp=getattr(a,'batch_bp',10000)):
+                target.write(('\t'.join(carrier_fields)+'\n').encode())
+                for key,record in (vcf.records(selected) if zarr_path else exact_records(vcf,contig,selected,batch_bp=getattr(a,'batch_bp',10000))):
                     found.add(key)
                     info={name:record.info.get(name) for name in ['AC','AN','AF'] if name in record.header.info}
                     ac,an=info.get('AC'),info.get('AN')
@@ -140,13 +147,13 @@ def extract(a):
                                 frequency_audit.append({**dict(zip(KEY_FIELDS,key)),
                                     'allele_class':selected[key][0]['allele_class'],
                                     'sample_set':sample_set,'reason':reason,'genotypes':n})
-                    for call,is_partial in carrier_calls(record):
+                    for call,is_partial in (vcf.calls(record) if zarr_path else carrier_calls(record)):
                         carrier_keys.add(key);carrier_counts[key]+=1
                         kind=selected[key][0]['allele_class']
                         distinct[call['sample'],kind]+=1
                         for annotation in selected[key]:
                             g=group(annotation);row={**call,**{k:annotation.get(k,'.') for k in ['Gene','Feature','SYMBOL','allele_class','candidate_type','tier']}}
-                            target.write(('\t'.join(text(row[k]) for k in CARRIER_FIELDS)+'\n').encode())
+                            target.write(('\t'.join(text(row[k]) for k in carrier_fields)+'\n').encode())
                             records[g]+=1;dosages[g]+=call['alt_dosage'];partials[g]+=is_partial
                             samples_by_group[g].add(call['sample'])
                             b=(call['sample'],*g,annotation['Gene'])
@@ -201,8 +208,13 @@ def extract(a):
                 cls=[(k,r) for k,r in sub if r['allele_class']==c]
                 by_type[t]['by_allele_class'][c]={**summarize(cls),'by_tier':{tier:summarize([(k,r) for k,r in cls if r['tier']==tier]) for tier in sorted({'untiered'}|{r['tier'] for k,r in cls})}}
         for name,old in ids.items():
-            current=file_identity(getattr(a,name),name!='vcf')
+            current=zarr_identity(zarr_path) if name=='zarr' else file_identity(getattr(a,name),name!='vcf')
             if current!=old:raise ValidationError('Input changed during extraction')
+        if zarr_path:
+            receipt.update(source_backend='zarr',genotype_chunk_reads=vcf.chunk_reads,vcf_identity_method=None,
+                genotype_policy='GT/AD are candidate-ALT-specific; non-target called ALTs project to 0; source_GT/source_AD and zero-based row/one-based ALT index retained; no genotype QC',
+                definition='exact source REF/ALT match; one association per candidate type and variant/sample; multiallelic ALTs handled independently')
+            receipt['zarr_backend_code']={n:file_identity(Path(__file__).with_name(n),True) for n in ['zarr_carrier_source.py','zarr_frequencies.py']}
         receipt.update(status='passed',input_identities=ids,samples_in_source=len(samples),by_candidate_type=by_type,
             candidate_annotation_records=len(annotations),distinct_candidate_alleles=len(selected),overlapping_type_alleles=sum(len(rs)>1 for rs in selected.values()),
             carrier_annotation_records=sum(records.values()),
@@ -223,11 +235,17 @@ def extract(a):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
-    for name in ['metadata','missense','lof_hc','vcf','index','outdir']:p.add_argument('--'+name.replace('_','-'),required=True)
+    for name in ['metadata','missense','lof_hc','outdir']:p.add_argument('--'+name.replace('_','-'),required=True)
+    source=p.add_mutually_exclusive_group(required=True)
+    source.add_argument('--vcf');source.add_argument('--zarr')
+    p.add_argument('--index')
     p.add_argument('--psam')
     p.add_argument('--compute-frequencies',action='store_true')
     p.add_argument('--sex-chromosome-policy',choices=[SEX_POLICY])
     p.add_argument('--batch-bp',type=int,default=10000)
     p.add_argument('--expected-missense',type=int);p.add_argument('--expected-hc',type=int)
-    try:extract(p.parse_args())
+    a=p.parse_args()
+    if a.vcf and not a.index:p.error('--vcf requires --index')
+    if a.zarr and a.index:p.error('--index is not used with --zarr')
+    try:extract(a)
     except Exception:sys.exit('Filtered carrier extraction failed; inspect task receipt. No individual records printed.')
