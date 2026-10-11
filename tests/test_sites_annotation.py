@@ -222,6 +222,25 @@ pathlib.Path(sys.argv[sys.argv.index('--output')+1]).write_text('header\\n'+''.j
     assert receipt['resources'] == data['chromosomes']['chr22']
     assert receipt['source_vcf'] == str(source) and receipt['unit_id'] == 'block12'
     assert source.read_bytes() == before
+    # Rebuilt binaries must have explicit matching provenance, propagated to the receipt.
+    build = dict(schema=1, source_commit='b'*40, binary_sha256=stage.sha(fast))
+    build_path = tmp_path/'fastvep-build.json'
+    build_path.write_text(json.dumps(build))
+    meta['containers']['fastvep']['build_manifest'] = str(build_path)
+    (tmp_path/'unit.json').write_text(json.dumps(meta))
+    result = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout+result.stderr
+    receipt = json.loads((tmp_path/'receipt.json').read_text())
+    assert receipt['documented_fastvep_commit'] == 'b'*40
+    assert receipt['fastvep_build'] == build
+    assert receipt['documented_oci_digest'] is None
+    build['binary_sha256'] = '0'*64
+    build_path.write_text(json.dumps(build))
+    result = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True)
+    assert result.returncode != 0
+    assert json.loads((tmp_path/'receipt.json').read_text())['status'] == 'failed'
+    del meta['containers']['fastvep']['build_manifest']
+    (tmp_path/'unit.json').write_text(json.dumps(meta))
     # Nonzero FastVEP must fail even when the downstream picker exits successfully.
     fast.write_text('#!'+sys.executable+'\nimport sys\nsys.exit(7)\n'); fast.chmod(0o755)
     # Retry in the same work directory, including prior benchmark products.
