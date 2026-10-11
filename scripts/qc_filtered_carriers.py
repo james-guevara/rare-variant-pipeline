@@ -85,11 +85,11 @@ def row_key(r):return (r['CHROM'].removeprefix('chr'),int(r['POS']),r['REF'],r['
 def group(r):return (r['candidate_type'],r['allele_class'],r['tier'])
 
 
-def summaries(out,all_rows,passed,samples):
+def summaries(out,all_rows,passed,samples,dosage_field='alt_dosage'):
     strata=sorted({group(r) for r in all_rows}|{(t,c,'untiered') for t in TYPES for c in CLASSES})
     cells=Counter();dosages=Counter();distinct=set()
     for r in passed:
-        cell=(r['sample'],*group(r),r['Gene']);cells[cell]+=1;dosages[cell]+=int(r['alt_dosage'])
+        cell=(r['sample'],*group(r),r['Gene']);cells[cell]+=1;dosages[cell]+=int(r[dosage_field])
         distinct.add((row_key(r),r['allele_class']))
     totals=Counter();total_dosage=Counter();gene_counts=Counter();gene_samples=Counter()
     for (s,t,c,tier,gene),n in cells.items():
@@ -108,20 +108,23 @@ def summaries(out,all_rows,passed,samples):
     return {c:dict(distinct_variant_sample_records=sum(cl==c for key,cl in distinct),samples_with_carriers=sum(n>0 for (s,cl),n in counts.items() if cl==c)) for c in CLASSES}
 
 
-def run(a):
+def run(a,adapter=None):
     out=Path(a.outdir).resolve();out.mkdir(parents=True,exist_ok=True)
     meta=json.loads(Path(a.metadata).read_text());start=time.perf_counter()
     products=['carriers.qc.tsv.gz','qc_audit.tsv.gz','samples.tsv','sample_burden.tsv','sample_gene_burden.tsv','gene_burden.tsv','sample_distinct_alleles.tsv']
-    inputs={k:Path(getattr(a,k)).resolve() for k in ['carriers','samples','source_receipt']}
+    reasons=adapter.REASONS if adapter else REASONS
+    policy=adapter.POLICY if adapter else POLICY
+    inputs={k:Path(getattr(a,k)).resolve() for k in ['carriers','samples','source_receipt']+(['psam'] if adapter else [])}
     if any(out/n in inputs.values() for n in products+['receipt.json']):raise ValidationError('Separate QC output directory required')
-    receipt=dict(schema_version=1,status='failed',stage='post_extraction_qc',unit_id=meta['unit_id'],sources=meta,policy=POLICY,
+    receipt=dict(schema_version=1,status='failed',stage='post_rarity_qc' if adapter else 'post_extraction_qc',unit_id=meta['unit_id'],sources=meta,policy=policy,
                  summary_policy='candidate-type associations kept separately; distinct allele/sample union within allele class; never combine star records with sequence burdens',
                  failure_count_policy='independent reason flags may overlap; mutually exclusive combinations partition failed rows; PASS combination contains passing rows')
     try:
         ids={k:identity(p) for k,p in inputs.items()}
         source=json.loads(inputs['source_receipt'].read_text())
         if source.get('status')!='passed' or source.get('unit_id')!=meta['unit_id']:raise ValidationError('Source extraction receipt does not match passed unit')
-        for arg,name in [('carriers','carriers.tsv.gz'),('samples','samples.tsv')]:
+        if adapter:adapter.validate_source(source,meta)
+        for arg,name in [('carriers','carriers.rare.tsv.gz' if adapter else 'carriers.tsv.gz'),('samples','samples.tsv')]:
             if source['outputs'][name]['sha256']!=ids[arg]['sha256']:raise ValidationError('Input differs from extraction receipt')
         with open(inputs['samples']) as f:
             reader=csv.DictReader(f,delimiter='\t')
@@ -130,6 +133,7 @@ def run(a):
         sample_set=set(samples)
         if not samples or any(not s or s=='.' for s in samples) or len(samples)!=len(sample_set):raise ValidationError('Expected unique nonempty source samples')
         if source['samples_in_source']!=len(samples):raise ValidationError('Source sample count disagrees with receipt')
+        context=adapter.Context(a,source,samples,meta) if adapter else None
         all_rows=[];passed=[];audits=[];counts=defaultdict(Counter);independent=Counter();combinations=Counter()
         seen=set();genotypes={}
         with gzip.open(inputs['carriers'],'rt',newline='') as f:
@@ -152,7 +156,9 @@ def run(a):
                 signature=tuple(r[k] for k in ['GT','GQ','DP','AD','FT','site_FILTER','alt_dosage'])
                 if key in genotypes and genotypes[key]!=signature:raise ValidationError('Conflicting genotypes across candidate types')
                 genotypes[key]=signature
-                ab,bad=evaluate(r);g=group(r);counts[g]['input']+=1;counts[g]['fail' if bad else 'pass']+=1
+                if context:ab,bad,extra=context.evaluate(r)
+                else:ab,bad=evaluate(r);extra={}
+                g=group(r);counts[g]['input']+=1;counts[g]['fail' if bad else 'pass']+=1
                 combo='|'.join(bad) if bad else 'PASS';combinations[combo]+=1
                 counts[g]['combination:'+combo]+=1
                 for reason in bad:independent[reason]+=1;counts[g]['reason:'+reason]+=1
@@ -160,13 +166,13 @@ def run(a):
                     # Validate bookkeeping only for supported passing GT; genotype
                     # failures (including partial GT) remain row-level QC failures.
                     if r['alt_dosage']!=str(r['GT'].replace('|','/').split('/').count('1')):raise ValidationError('ALT dosage disagrees with supported genotype')
-                    passed.append({**r,'qc_AB':ab})
+                    passed.append({**r,'qc_AB':ab,**extra})
                 all_rows.append(r)
-                audits.append({**r,'qc_AB':ab,'qc_pass':not bad,'qc_failure_combination':combo})
-        if source['carrier_annotation_records']!=len(all_rows):raise ValidationError('Carrier row count disagrees with extraction receipt')
+                audits.append({**r,'qc_AB':ab,'qc_pass':not bad,'qc_failure_combination':combo,**extra})
+        if (source['carrier_annotations']['pass_count'] if adapter else source['carrier_annotation_records'])!=len(all_rows):raise ValidationError('Carrier row count disagrees with extraction receipt')
         def report(counter):
             return dict(input_rows=counter['input'],pass_rows=counter['pass'],fail_rows=counter['fail'],
-                        independent_failures={r:counter['reason:'+r] for r in REASONS},
+                        independent_failures={r:counter['reason:'+r] for r in reasons},
                         failure_combinations={k.removeprefix('combination:'):v for k,v in sorted(counter.items()) if k.startswith('combination:')})
         by_type={}
         for t in TYPES:
@@ -179,18 +185,21 @@ def run(a):
                 classes[c]={**report(subtotal),'by_tier':{tier:report(counts[t,c,tier]) for tier in tiers}}
                 total.update(subtotal)
             by_type[t]={**report(total),'by_allele_class':classes}
-        write_table(out/'carriers.qc.tsv.gz',fields+['qc_AB'],passed)
+        extra_fields=adapter.EXTRA_FIELDS if adapter else []
+        write_table(out/'carriers.qc.tsv.gz',fields+['qc_AB']+extra_fields,passed)
         audit_fields=KEYS+['sample','candidate_type','allele_class','tier','Gene','Feature','qc_AB','qc_pass','qc_failure_combination']
-        write_table(out/'qc_audit.tsv.gz',audit_fields,audits)
+        if adapter:audit_fields+=['GT','alt_dosage']
+        write_table(out/'qc_audit.tsv.gz',audit_fields+extra_fields,audits)
         write_table(out/'samples.tsv',['sample'],(dict(sample=s) for s in samples))
-        distinct=summaries(out,all_rows,passed,samples)
+        distinct=summaries(out,all_rows,passed,samples,'qc_effective_alt_dosage' if adapter else 'alt_dosage')
         if ids!={k:identity(p) for k,p in inputs.items()}:raise ValidationError('Input changed during QC')
         reconciled=(len(all_rows)==len(passed)+sum(v for k,v in combinations.items() if k!='PASS')==sum(combinations.values())
                     and all(c['input']==c['pass']+c['fail'] for c in counts.values()))
         if not reconciled:raise ValidationError('QC count reconciliation failed')
+        if context:receipt.update(context.receipt(passed))
         receipt.update(status='passed',input_identities=ids,source_stage=source.get('schema_version'),samples_in_source=len(samples),
                        input_rows=len(all_rows),pass_rows=len(passed),fail_rows=len(all_rows)-len(passed),
-                       independent_failures={r:independent[r] for r in REASONS},failure_combinations=dict(sorted(combinations.items())),
+                       independent_failures={r:independent[r] for r in reasons},failure_combinations=dict(sorted(combinations.items())),
                        by_candidate_type=by_type,post_qc_distinct_alleles_by_class=distinct,
                        reconciliation=dict(passed=True,input_equals_pass_plus_fail=True,combinations_partition_input=True),
                        script_identity=identity(__file__),outputs={n:identity(out/n) for n in products})

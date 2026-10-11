@@ -134,7 +134,13 @@ stage is launched by these commands. Inspect every receipt after successful
 Nextflow completion; the manifest contains all expected units but does not imply
 that all final-rarity tasks have already completed.
 
-## X/Y changes required before downstream QC wiring
+## X/Y downstream QC
+
+The [post-rarity QC adapter](POST_RARITY_QC.md) now implements the requirements
+below as a separate entrypoint. The description below records the legacy
+entrypoint limitations; do not wire its chromosome-blind QC directly to X/Y.
+
+### Requirements identified during final-rarity implementation
 
 The current `scripts/qc_filtered_carriers.py` is chromosome-blind. Its `HET` set
 accepts `0/1`/phased heterozygotes, and its `HOM` set accepts both diploid ALT
