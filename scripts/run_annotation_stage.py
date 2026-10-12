@@ -53,6 +53,8 @@ def run(a):
                        '--resources', meta['annotation_root'], '--chromosome', meta['chromosome'],
                        '--outdir', 'benchmark-output', '--sif-sha256', meta['containers']['fastvep']['sha256'],
                        '--resource-identities', 'fastvep-resources.json']
+            if meta['containers']['fastvep'].get('build_manifest'):
+                command += ['--fastvep-build-manifest', meta['containers']['fastvep']['build_manifest']]
             with open('private-failure.log', 'w') as log:
                 subprocess.run(command, check=True, stdout=log, stderr=log)
             data = json.loads(Path('benchmark-output/receipt.json').read_text())

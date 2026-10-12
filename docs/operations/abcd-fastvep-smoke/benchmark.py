@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import resource
+import re
 import shutil
 import subprocess
 import tempfile
@@ -19,6 +20,7 @@ p.add_argument('--chromosome', default='chr22', help='Resource filename componen
 p.add_argument('--outdir', required=True)
 p.add_argument('--sif-sha256', required=True)
 p.add_argument('--resource-identities', help='Optional checksum lock from the Nextflow adapter; immutable resources only')
+p.add_argument('--fastvep-build-manifest', help='Explicit in-container provenance for a rebuilt FastVEP binary')
 a = p.parse_args()
 root, source, out = Path(a.resources), Path(a.input), Path(a.outdir)
 out.mkdir(parents=True, exist_ok=True)
@@ -57,6 +59,14 @@ def sha(path):
         for chunk in iter(lambda: f.read(8 * 1024 * 1024), b''):
             h.update(chunk)
     return h.hexdigest()
+
+build = None
+if a.fastvep_build_manifest:
+    build = json.loads(Path(a.fastvep_build_manifest).read_text())
+    if (build.get('schema') != 1 or
+        not re.fullmatch(r'[a-f0-9]{40}', build.get('source_commit', '')) or
+        build.get('binary_sha256') != sha(bins['fastvep'])):
+        raise SystemExit('FastVEP build manifest does not match the executable')
 
 def inspect(path):
     opener = gzip.open if str(path).endswith('.gz') else open
@@ -155,10 +165,11 @@ with open(stats, 'w') as f:
                 input_sha256=sha(source), output_sha256=sha(picked), source_vcf=str(source),
                 removed_input_csq=has_csq, contig_renames=rename, timing=timing,
                 rss_scope='largest individual child RSS; not summed concurrent pipeline RSS',
-                documented_fastvep_commit='cb8113d7bab2db42cb06bb2b2a40c57b60ea2561',
+                documented_fastvep_commit=build['source_commit'] if build else 'cb8113d7bab2db42cb06bb2b2a40c57b60ea2561',
+                fastvep_build=build,
                 documented_picker_version='0.1.0',
                 documented_picker_source_commit='1671c5a76c369da50c64320d7dc3c719ac2ab95a',
-                documented_oci_digest='sha256:7d5b76a28e2427ca97af6ebec1d5e38aec63b93609419c0cc77c063e48e2917d',
+                documented_oci_digest=None if build else 'sha256:7d5b76a28e2427ca97af6ebec1d5e38aec63b93609419c0cc77c063e48e2917d',
                 supplied_sif_sha256=a.sif_sha256,
                 identity_note='Documented revisions require a SIF built from the pinned OCI image; hashes below identify actual files.',
                 binaries={k: dict(path=v, sha256=sha(v)) for k, v in bins.items()},

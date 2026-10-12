@@ -3,6 +3,7 @@ include { POST_RARITY_QC } from './modules/post_rarity_qc'
 
 workflow {
     if (!params.post_rarity_qc_manifest) error 'Required: --post_rarity_qc_manifest and --select_units'
+    if (!(params.site_filter_policy in ['pass','pass_or_missing'])) error 'Unsupported site_filter_policy'
     if (!params.psam) error 'Required: --psam'
     if (params.sex_chromosome_policy && params.sex_chromosome_policy!='grch38_x_only_par') error 'Unsupported sex chromosome policy'
     def containerIdentity = null
@@ -21,7 +22,7 @@ workflow {
         CarrierQcManifest.load(file(params.post_rarity_qc_manifest, checkIfExists: true)), params.select_units)
     if (rows.any { it.chromosome in ['chrX','chrY'] } && params.sex_chromosome_policy!='grch38_x_only_par') error 'X/Y QC requires --sex_chromosome_policy grch38_x_only_par'
     def entries = Channel.fromList(rows).map { row ->
-        def meta = row + [container: params.post_rarity_qc_container, container_identity: containerIdentity, psam: params.psam, sex_chromosome_policy: params.sex_chromosome_policy]
+        def meta = row + [container: params.post_rarity_qc_container, container_identity: containerIdentity, psam: params.psam, sex_chromosome_policy: params.sex_chromosome_policy, site_filter_policy: params.site_filter_policy]
         tuple(meta, file(row.carriers), file(row.samples), file(row.source_receipt))
     }
     POST_RARITY_QC(entries, Channel.value(file("${projectDir}/scripts/qc_post_rarity.py")),

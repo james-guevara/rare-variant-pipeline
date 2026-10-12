@@ -20,6 +20,6 @@ process POST_RARITY_QC {
     def policy=meta.sex_chromosome_policy ? "--sex-chromosome-policy ${meta.sex_chromosome_policy}" : ''
     """
     printf '%s' '${encoded}' | base64 -d > unit.json
-    python '${runner}' --metadata unit.json --carriers '${carriers}' --samples '${samples}' --source-receipt '${source_receipt}' --psam '${psam}' --outdir . ${policy} 2> private-input.log
+    python '${runner}' --metadata unit.json --carriers '${carriers}' --samples '${samples}' --source-receipt '${source_receipt}' --psam '${psam}' --outdir . --site-filter-policy ${meta.site_filter_policy} ${policy} 2> private-input.log
     """
 }

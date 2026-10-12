@@ -1,5 +1,9 @@
 # GRCh38 X-only PAR frequency counting
 
+Current validation status: the operator reports completed NBDC validation through
+976-block/24-chromosome gathering. See the [finalization record](../../validation/abcd-post-rarity-finalization.md).
+Historical code pins and stage-specific instructions below remain unchanged.
+
 Code pin: `a1cec12a6404afe120dc79563be77146277d69b6` on
 `feat/carrier-corrected-frequencies` (PR #19, including PR #18).
 
