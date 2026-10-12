@@ -40,3 +40,24 @@ make a redundant concatenated carrier file. Source receipts and file hashes are
 recorded in the genome receipt. Publication mode defaults to copy; link is
 available for shared filesystems. Nextflow caches the declared chromosome inputs,
 and the wrapper/resume path is covered by synthetic tests.
+
+## SPARK WGS 2026_08 validation, 2026-10-11
+
+Executed code `f5cd5d2` with Nextflow 26.04.6 on Expanse. Synthetic tests: 9
+passed, including wrapper execution and cached resume. Production controller
+54856544 and worker 54856546 completed with exit 0. Worker elapsed 2m26s;
+Slurm peak RSS 260260 KiB, with 1 CPU / 4 GB allocated. Temporary SQLite data
+used node-local TMPDIR; final files were published with hardlinks.
+
+All 22 autosomes, 1,125 source units and 45,178 samples reconciled:
+2,269,459 sequence carrier-annotation records, 1,012,802 distinct sequence
+alleles, and 16,353 genes with carriers. No spanning-deletion carrier records
+were present in these inputs. Eight published summary/manifest TSVs total
+220,220,683 bytes. Every published output size and SHA-256 was checked against
+the passed genome receipt after Nextflow publication.
+
+Final directory:
+`/expanse/projects/sebat1/j3guevar/SPARK-WGS-2026_08/rare/results/genome/`.
+The parent `dataset-index.json` records the scope and locations of genome,
+chromosome and block products; `README.txt` describes interpretation. Work,
+reports, trace and timeline are retained under `rare/genome-gather-20261011/`.
