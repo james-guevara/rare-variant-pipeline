@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Filter existing candidate Parquets using sites-only AC/AN, POPmax, and BEDs."""
 import argparse
+import csv
 import gzip
 import hashlib
 import json
@@ -111,6 +112,29 @@ def run(a):
         con.execute("CREATE TABLE keys AS SELECT regexp_replace(CHROM,'^chr','') AS c,CAST(POS AS BIGINT) AS p,REF AS r,ALT AS a FROM missense UNION SELECT regexp_replace(CHROM,'^chr',''),CAST(POS AS BIGINT),REF,ALT FROM lof_hc")
         keys = set(con.execute('SELECT * FROM keys').fetchall())
         sites = read_sites(inputs['sites'], keys)
+        if getattr(a,'cohort_frequencies',None):
+            if not getattr(a,'frequency_receipt',None):raise ValueError('Frequency receipt required')
+            inputs['cohort_frequencies']=Path(a.cohort_frequencies).resolve()
+            inputs['frequency_receipt']=Path(a.frequency_receipt).resolve()
+            fr=json.loads(inputs['frequency_receipt'].read_text())
+            if fr['status']!='passed' or fr['frequency_source']!='zarr_genotypes_all_source_samples' or fr['output']['sha256']!=sha(inputs['cohort_frequencies']):raise ValueError('Invalid frequency provenance')
+            for kind in ['missense','lof_hc']:
+                if fr['input_identities'][kind]['sha256']!=sha(inputs[kind]):raise ValueError('Frequency candidate identity mismatch')
+            frequencies={}
+            with inputs['cohort_frequencies'].open() as f:
+                for row in csv.DictReader(f,delimiter='\t'):
+                    k=(chrom(row['CHROM']),int(row['POS']),row['REF'],row['ALT'])
+                    if k in frequencies:raise ValueError('Duplicate frequency allele')
+                    if row['matched'] not in ('0','1'):raise ValueError('Invalid match flag')
+                    ac,an=(int(row['AC']),int(row['AN'])) if row['matched']=='1' else (None,None)
+                    if ac is not None and not 0<=ac<=an:raise ValueError('Invalid genotype counts')
+                    frequencies[k]=(ac,an)
+            if set(frequencies)!=keys:raise ValueError('Frequency allele set differs from candidates')
+            for k,(ac,an) in frequencies.items():
+                if k not in sites:raise ValueError('Candidate missing from original sites export')
+                sites[k]=(ac,an,ac/an if an else None,*sites[k][3:])
+            receipt['policy']['cohort']='all-source-sample genotype AC/AN < 0.005; no genotype QC; missing/zero AN fails'
+            receipt['preliminary_frequency_provenance']=fr
         hashes = {k: sha(v) for k,v in inputs.items()}
         con.execute('CREATE TABLE sites(c VARCHAR,p BIGINT,r VARCHAR,a VARCHAR,ac BIGINT,an BIGINT,af DOUBLE,source_ac VARCHAR,source_an VARCHAR,source_af VARCHAR)')
         if sites: con.executemany('INSERT INTO sites VALUES (?,?,?,?,?,?,?,?,?,?)', [(*key,*value) for key,value in sites.items()])
@@ -175,6 +199,7 @@ def run(a):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     for name in ['missense','lof-hc','sites','metadata','outdir']: p.add_argument('--'+name,required=True)
+    p.add_argument('--cohort-frequencies');p.add_argument('--frequency-receipt')
     p.add_argument('--threads',type=int,default=2);p.add_argument('--memory',default='3GB')
     try: run(p.parse_args())
     except Exception: raise SystemExit('Pre-carrier filtering failed; inspect task receipt. No protected records printed.')

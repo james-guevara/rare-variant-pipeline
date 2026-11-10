@@ -80,9 +80,9 @@ def aggregate(out,rows,samples,strata,dosage_field='alt_dosage'):
 
 
 def run(a,adapter=None):
-    policy=adapter.POLICY if adapter else POLICY
     context=adapter.Context() if adapter else None
     start=time.perf_counter();out=Path(a.outdir).resolve();meta=json.loads(Path(a.metadata).read_text())
+    policy=adapter.policy_for_meta(meta) if adapter and hasattr(adapter,'policy_for_meta') else (adapter.POLICY if adapter else POLICY)
     units=meta['units'];chrom=meta['chromosome'].removeprefix('chr')
     if not units or len({u['unit_id'] for u in units})!=len(units) or not len(units)==len(a.carriers)==len(a.samples)==len(a.receipts):
         raise ValidationError('Unique units and matching input lists required')

@@ -177,3 +177,41 @@ def test_legacy_gather_rejects_new_policy(tmp_path):
         receipts=[str(out/'receipt.json')],metadata=str(meta),outdir=str(tmp_path/'gather'))
     with pytest.raises(ValidationError):gather(g)
     assert json.loads((Path(g.outdir)/'receipt.json').read_text())['status']=='failed'
+
+
+@pytest.mark.parametrize('site,accepted',[('PASS',True),('.',True),('LowQual',False),('',False),('PASS;LowQual',False)])
+def test_explicit_pass_or_missing_policy(site,accepted):
+    c=context('chr22');c.site_filter_policy='pass_or_missing'
+    row=base_row(site_FILTER=site,GT='0/1',AD='5,5')
+    _,bad,extra=c.evaluate(row)
+    assert (not bad)==accepted
+    assert row['site_FILTER']==site
+    assert adapter.policy_for_run(Namespace(site_filter_policy='pass_or_missing'))['site_FILTER']=='PASS or .'
+    assert adapter.policy_for_run(Namespace())==adapter.POLICY
+
+
+@pytest.mark.parametrize('changes,reason',[({'GQ':'1'},'gq_below_min'),({'DP':'1'},'dp_below_min'),({'AD':'9,1'},'ab_out_of_range'),({'GT':'./1'},'partial_call')])
+def test_missing_site_filter_preserves_other_qc(changes,reason):
+    c=context('chr22');c.site_filter_policy='pass_or_missing'
+    row=base_row(site_FILTER='.',GT='0/1',AD='5,5');row.update(changes)
+    _,bad,_=c.evaluate(row)
+    assert reason in bad and 'site_filter' not in bad
+
+
+def test_missing_filter_receipt_and_input_preservation(tmp_path):
+    a=fixture(tmp_path,'chr22')
+    data=rows(a.carriers)
+    for row in data:row['site_FILTER']='.'
+    write_table(Path(a.carriers),list(data[0]),data)
+    src=json.loads(Path(a.source_receipt).read_text())
+    src['outputs']['carriers.rare.tsv.gz']=identity(a.carriers)
+    Path(a.source_receipt).write_text(json.dumps(src))
+    before=identity(a.carriers)
+    a.site_filter_policy='pass_or_missing'
+    run(a,adapter)
+    receipt=json.loads((Path(a.outdir)/'receipt.json').read_text())
+    assert receipt['pass_rows']>0
+    assert receipt['policy']['site_filter_policy']=='pass_or_missing'
+    assert receipt['independent_failures']['site_filter']==0
+    assert identity(a.carriers)==before
+    assert all(r['site_FILTER']=='.' for r in rows(Path(a.outdir)/'carriers.qc.tsv.gz'))

@@ -113,7 +113,7 @@ def run(a,adapter=None):
     meta=json.loads(Path(a.metadata).read_text());start=time.perf_counter()
     products=['carriers.qc.tsv.gz','qc_audit.tsv.gz','samples.tsv','sample_burden.tsv','sample_gene_burden.tsv','gene_burden.tsv','sample_distinct_alleles.tsv']
     reasons=adapter.REASONS if adapter else REASONS
-    policy=adapter.POLICY if adapter else POLICY
+    policy=(adapter.policy_for_run(a) if hasattr(adapter,'policy_for_run') else adapter.POLICY) if adapter else POLICY
     inputs={k:Path(getattr(a,k)).resolve() for k in ['carriers','samples','source_receipt']+(['psam'] if adapter else [])}
     if any(out/n in inputs.values() for n in products+['receipt.json']):raise ValidationError('Separate QC output directory required')
     receipt=dict(schema_version=1,status='failed',stage='post_rarity_qc' if adapter else 'post_extraction_qc',unit_id=meta['unit_id'],sources=meta,policy=policy,

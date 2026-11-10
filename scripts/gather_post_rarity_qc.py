@@ -5,8 +5,12 @@ from pathlib import Path
 import re
 import sys
 import gather_post_qc as core
-from qc_post_rarity import POLICY, EXTRA_FIELDS
+from qc_post_rarity import POLICY, EXTRA_FIELDS, policy_for_run
 from carrier_frequencies import frequency_region, expected_ploidy
+
+
+def policy_for_meta(meta):
+    return policy_for_run(argparse.Namespace(site_filter_policy=meta.get('site_filter_policy','pass')))
 
 
 class Context:
