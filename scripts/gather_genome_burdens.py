@@ -91,10 +91,12 @@ def run(manifest, expected, outdir):
             strata = {(x['candidate_type'], x['allele_class'], x['tier']) for x in r['by_stratum']}
             require(len(strata) == len(r['by_stratum']), 'Duplicate receipt strata')
             if policy is None:
-                policy, psam, declared_strata = r['policy'], r['psam_identity'], strata
-                db.executemany('INSERT INTO strata VALUES (?,?,?)', sorted(strata))
-            require((policy, psam, declared_strata) == (r['policy'], r['psam_identity'], strata),
-                    'Chromosome policies, PSAM identities or strata differ')
+                policy, psam, declared_strata = r['policy'], r['psam_identity'], set()
+            require((policy, psam) == (r['policy'], r['psam_identity']), 'Chromosome policies or PSAM identities differ')
+            # Chromosome receipts list only the strata they observed or declare; a rare stratum (e.g. a tiered
+            # spanning deletion) can be absent from one chromosome. The genome strata are the union, zero-filled.
+            db.executemany('INSERT OR IGNORE INTO strata VALUES (?,?,?)', sorted(strata))
+            declared_strata |= strata
             ids = {}
             for name in ['samples.tsv', 'carriers.qc.tsv.gz']:
                 ids[name] = identity(directory / name)

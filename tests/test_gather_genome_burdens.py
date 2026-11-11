@@ -48,6 +48,27 @@ def test_union_dosage_zeros_and_gene_across_chromosomes(tmp_path):
     assert list(g.table(out/'sample_distinct_alleles.tsv'))[0]['sequence_distinct_variant_count']=='2'
 
 
+def test_stratum_absent_from_one_chromosome_is_zero_filled(tmp_path):
+    """A rare stratum (seen in SSC chr14: tiered spanning deletion) may be missing from one chromosome's receipt."""
+    m=fixture(tmp_path);p=tmp_path/'chr2'
+    with gzip.open(p/'carriers.qc.tsv.gz','rt') as f:
+        rows=[x for x in csv.DictReader(f,delimiter='\t') if x['allele_class']!='spanning_deletion']
+    with gzip.open(p/'carriers.qc.tsv.gz','wt') as f:
+        w=csv.DictWriter(f,fieldnames=list(rows[0]),delimiter='\t');w.writeheader();w.writerows(rows)
+    r=json.loads((p/'receipt.json').read_text())
+    r['by_stratum']=[x for x in r['by_stratum'] if x['allele_class']!='spanning_deletion']
+    r['carrier_annotation_records']=2;r['source_counts']={'pass_rows':2}
+    r['outputs']['carriers.qc.tsv.gz']=g.identity(p/'carriers.qc.tsv.gz')
+    (p/'receipt.json').write_text(json.dumps(r))
+    for order in (['1','2'],['2','1']):
+        out=tmp_path/('out'+order[0]);res=g.run(m,order,out)
+        assert res['carrier_annotation_records']==5
+        strata={(x['candidate_type'],x['allele_class'],x['tier']):x for x in res['by_stratum']}
+        assert set(strata)==set(STRATA)
+        assert strata[('lof_hc','spanning_deletion','untiered')]['carrier_annotation_records']==1
+        assert len([x for x in g.table(out/'sample_burden.tsv') if x['sample']=='zero'])==3
+
+
 @pytest.mark.parametrize('change',['missing','duplicate','policy','psam','incomplete','checksum','stratum'])
 def test_fail_closed(tmp_path,change):
     m=fixture(tmp_path)
