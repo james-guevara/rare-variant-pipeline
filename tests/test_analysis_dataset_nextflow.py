@@ -15,7 +15,7 @@ def test_reusable_analysis_workflow_has_optional_component_contract():
     assert "--missing-rare-policy" in workflow
     assert "--missing-cnv-policy" in workflow
     assert "analysis_dataset.tsv" in workflow
-    assert "analysis_dictionary.tsv" in workflow
+    assert "analysis_dataset_dictionary.tsv" in workflow  # renamed in 0410698
     assert "analysis_qc.json" in workflow
     assert "analysis_exclusions.tsv" in workflow
 

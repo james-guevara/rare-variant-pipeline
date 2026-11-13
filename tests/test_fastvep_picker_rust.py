@@ -1,4 +1,9 @@
+import shutil
 import subprocess
+
+import pytest
+
+pytestmark = pytest.mark.skipif(shutil.which("cargo") is None, reason="cargo not available")
 from pathlib import Path
 
 

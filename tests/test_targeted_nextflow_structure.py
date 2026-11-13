@@ -1,4 +1,9 @@
+import shutil
 import subprocess
+
+import pytest
+
+pytestmark = pytest.mark.skipif(shutil.which("nextflow") is None, reason="nextflow not available")
 from pathlib import Path
 
 
