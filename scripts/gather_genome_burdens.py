@@ -57,6 +57,8 @@ def run(manifest, expected, outdir):
     policy = None
     psam = None
     declared_strata = None
+    stage = None
+    call_qc_policy = None
     expected_counts = Counter()
     total = 0
     with tempfile.TemporaryDirectory(prefix='genome-burdens-') as tmp:
@@ -78,9 +80,13 @@ def run(manifest, expected, outdir):
             rid = identity(rp)
             r = json.loads(rp.read_text())
             c = chrom(s['chromosome'])
-            require(r.get('stage') == 'post_rarity_qc_gather' and r.get('status') == 'passed' and
+            # Inputs are per-chromosome gathers or their call-QC outputs (post_rarity_call_qc); never a mix.
+            require(r.get('stage') in ('post_rarity_qc_gather', 'post_rarity_call_qc') and r.get('status') == 'passed' and
                     r.get('reconciliation', {}).get('passed') and r.get('full_manifest_selected'),
-                    'Passed complete chromosome gather required')
+                    'Passed complete chromosome gather (or its call QC) required')
+            if stage is None:
+                stage, call_qc_policy = r['stage'], r.get('call_qc_policy')
+            require(r['stage'] == stage and r.get('call_qc_policy') == call_qc_policy, 'Chromosome stages or call-QC policies differ')
             require(chrom(r['chromosome']) == c, 'Receipt chromosome mismatch')
             require(r.get('summary_dosage_field') == 'qc_effective_alt_dosage', 'Effective dosage required')
             require(r.get('psam_identity') and r.get('policy'), 'Policy and PSAM provenance required')
@@ -131,7 +137,9 @@ def run(manifest, expected, outdir):
             declared = Counter({(x['candidate_type'],x['allele_class'],x['tier']):x['carrier_annotation_records'] for x in r['by_stratum']})
             declared_doses = Counter({(x['candidate_type'],x['allele_class'],x['tier']):x['observed_alt_alleles'] for x in r['by_stratum']})
             require(+observed == +declared and +doses == +declared_doses, 'Chromosome stratum reconciliation failed')
-            require(sum(observed.values()) == r['carrier_annotation_records'] == r['source_counts']['pass_rows'], 'Chromosome total mismatch')
+            require(sum(observed.values()) == r['carrier_annotation_records'], 'Chromosome total mismatch')
+            if stage == 'post_rarity_qc_gather':
+                require(r['carrier_annotation_records'] == r['source_counts']['pass_rows'], 'Chromosome total mismatch')
             total += sum(observed.values())
             expected_counts.update(observed)
             for name, value in ids.items():
@@ -189,6 +197,7 @@ def run(manifest, expected, outdir):
             w=csv.writer(f,delimiter='\t',lineterminator='\n');w.writerow(['chromosome','directory'])
             w.writerows((x['chromosome'],x['directory']) for x in lineage)
         receipt=dict(schema_version=1,stage='post_rarity_genome_burdens',status='passed',chromosomes=['chr'+c for c in expected],
+                     source_stage=stage,call_qc_policy=call_qc_policy,
                      policy=policy,psam_identity=psam,samples_in_source=len(samples),carrier_annotation_records=total,
                      by_stratum=stratum_report,by_allele_class=classes,lineage=lineage,summary_dosage_field='qc_effective_alt_dosage',
                      reconciliation=dict(passed=True,source_counts_match=True,unique_samples_recomputed=True,zero_carrier_samples_retained=True),

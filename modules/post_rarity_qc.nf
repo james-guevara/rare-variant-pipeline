@@ -10,6 +10,7 @@ process POST_RARITY_QC {
     path runner
     path helpers
     path psam,stageAs:'input/samples.psam'
+    path rescue,stageAs:'input/dnm_rescue.tsv.gz'
     output:
     tuple val(meta),path('carriers.qc.tsv.gz'),emit:carriers
     path 'qc_audit.tsv.gz',emit:audit
@@ -18,8 +19,9 @@ process POST_RARITY_QC {
     script:
     def encoded=groovy.json.JsonOutput.toJson(meta).bytes.encodeBase64().toString()
     def policy=meta.sex_chromosome_policy ? "--sex-chromosome-policy ${meta.sex_chromosome_policy}" : ''
+    def rescueArg=meta.dnm_rescue ? "--dnm-rescue '${rescue}'" : ''
     """
     printf '%s' '${encoded}' | base64 -d > unit.json
-    python '${runner}' --metadata unit.json --carriers '${carriers}' --samples '${samples}' --source-receipt '${source_receipt}' --psam '${psam}' --outdir . --site-filter-policy ${meta.site_filter_policy} ${policy} 2> private-input.log
+    python '${runner}' --metadata unit.json --carriers '${carriers}' --samples '${samples}' --source-receipt '${source_receipt}' --psam '${psam}' --outdir . --site-filter-policy ${meta.site_filter_policy} ${policy} ${rescueArg} 2> private-input.log
     """
 }
