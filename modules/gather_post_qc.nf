@@ -11,6 +11,7 @@ process GATHER_POST_QC {
     path helper
     output:
     path 'carriers.qc.tsv.gz',emit:carriers
+    path 'carriers.qc.parquet',emit:carriers_parquet
     path '*.tsv',emit:summaries
     path 'receipt.json',emit:receipt
     script:

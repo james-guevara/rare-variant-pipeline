@@ -10,10 +10,32 @@ import sys
 import time
 from qc_filtered_carriers import CLASSES, TYPES, POLICY, KEYS, ValidationError, identity, row_key, group, write_table
 
-PRODUCTS=['carriers.qc.tsv.gz','samples.tsv','sample_burden.tsv','sample_gene_burden.tsv',
+PRODUCTS=['carriers.qc.tsv.gz','carriers.qc.parquet','samples.tsv','sample_burden.tsv','sample_gene_burden.tsv',
           'gene_burden.tsv','sample_distinct_alleles.tsv','sample_gene_distinct_alleles.tsv']
 REQUIRED=KEYS+['sample','candidate_type','allele_class','tier','Gene','Feature','SYMBOL',
                'GT','GQ','DP','AD','FT','site_FILTER','alt_dosage','qc_AB']
+
+
+# Typed columns in the Parquet copy of the gathered carriers; every other column stays text exactly as in the TSV.
+# '.' (missing) becomes NULL; any other value that does not cast fails the gather.
+PARQUET_TYPES={'POS':'BIGINT','GQ':'INTEGER','DP':'INTEGER','alt_dosage':'INTEGER','qc_AB':'DOUBLE',
+               'qc_effective_alt_dosage':'INTEGER','qc_expected_ploidy':'INTEGER','source_variant_index':'BIGINT','source_alt_index':'INTEGER'}
+
+
+def write_parquet(tsv,path,fields,n_rows):
+    """Parquet copy of the gathered carrier TSV (same rows, order and columns; numeric columns typed)."""
+    import duckdb
+    lit=lambda s:"'"+str(s).replace("'","''")+"'"
+    ident=lambda s:'"'+s.replace('"','""')+'"'
+    cols=','.join(f"{lit(f)}:'VARCHAR'" for f in fields)
+    select=','.join(f"CAST(NULLIF({ident(f)},'.') AS {PARQUET_TYPES[f]}) AS {ident(f)}" if f in PARQUET_TYPES else ident(f) for f in fields)
+    con=duckdb.connect();con.execute('SET threads=1;SET preserve_insertion_order=true')
+    src=f"read_csv({lit(tsv)},delim='\t',header=true,auto_detect=false,quote='',escape='',columns={{{cols}}})"
+    con.execute(f"COPY (SELECT {select} FROM {src}) TO {lit(path)} (FORMAT PARQUET,COMPRESSION ZSTD)")
+    got=con.execute(f"SELECT count(*) FROM read_parquet({lit(path)})").fetchone()[0]
+    names=[r[0] for r in con.execute(f"DESCRIBE SELECT * FROM read_parquet({lit(path)})").fetchall()]
+    con.close()
+    if got!=n_rows or names!=list(fields):raise ValidationError('Parquet carrier copy does not reconcile with the TSV')
 
 
 def table(path,required=None):
@@ -143,6 +165,7 @@ def run(a,adapter=None):
         if any(receipt['duplicate_checks'].values()):raise ValidationError('Cross-block duplicates detected; no burdens published')
         rows.sort(key=lambda r:(row_key(r),group(r),r['Gene'],r['Feature']))
         write_table(out/'carriers.qc.tsv.gz',fields+['source_unit_id'],rows)
+        write_parquet(out/'carriers.qc.tsv.gz',out/'carriers.qc.parquet',fields+['source_unit_id'],len(rows))
         write_table(out/'samples.tsv',['sample'],(dict(sample=s) for s in samples))
         strata_report,classes=aggregate(out,rows,samples,strata,'qc_effective_alt_dosage' if adapter else 'alt_dosage')
         if len(rows)!=source_counts['pass_rows'] or sum(expected.values())!=len(rows):raise ValidationError('Gather count reconciliation failed')
