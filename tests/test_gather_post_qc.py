@@ -117,3 +117,29 @@ def test_output_cannot_overwrite_input(tmp_path):
     before=identity(a.carriers[0])
     with pytest.raises(ValidationError):run(a)
     assert identity(a.carriers[0])==before
+
+
+def test_parquet_copy_matches_tsv(tmp_path):
+    import duckdb
+    from gather_post_qc import PARQUET_TYPES
+    a=make(tmp_path);run(a)
+    out=Path(a.outdir);r=json.loads((out/'receipt.json').read_text())
+    assert r['outputs']['carriers.qc.parquet']==identity(out/'carriers.qc.parquet')
+    tsv=rows(out/'carriers.qc.tsv.gz')
+    con=duckdb.connect()
+    pq=con.execute(f"SELECT * FROM read_parquet('{out/'carriers.qc.parquet'}')").fetchall()
+    names=[c[0] for c in con.execute(f"DESCRIBE SELECT * FROM read_parquet('{out/'carriers.qc.parquet'}')").fetchall()]
+    assert names==list(tsv[0]) and len(pq)==len(tsv)==6
+    for x,y in zip(tsv,pq):
+        for (k,v),w in zip(x.items(),y):
+            if k not in PARQUET_TYPES:assert w==v  # text columns are copied exactly, '.' included
+            elif v=='.':assert w is None
+            elif k=='qc_AB':assert abs(float(v)-w)<1e-12
+            else:assert str(w)==v
+
+
+def test_empty_gather_writes_empty_parquet(tmp_path):
+    import duckdb
+    a=make(tmp_path,empty=True);run(a)
+    out=Path(a.outdir)
+    assert duckdb.connect().execute(f"SELECT count(*) FROM read_parquet('{out/'carriers.qc.parquet'}')").fetchone()[0]==0

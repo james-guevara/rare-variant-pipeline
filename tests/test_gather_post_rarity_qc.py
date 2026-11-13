@@ -153,3 +153,25 @@ def test_explicit_pass_or_missing_gather_policy(tmp_path):
     meta=json.loads(Path(a.metadata).read_text());meta['site_filter_policy']='pass_or_missing'
     Path(a.metadata).write_text(json.dumps(meta));gather(a,adapter)
     assert json.loads((Path(a.outdir)/'receipt.json').read_text())['policy']==policy
+
+
+def test_parquet_copy_matches_tsv(tmp_path):
+    import duckdb
+    from gather_post_qc import PARQUET_TYPES
+    a=make(tmp_path);gather(a,adapter)
+    out=Path(a.outdir);r=json.loads((out/'receipt.json').read_text())
+    assert r['outputs']['carriers.qc.parquet']==identity(out/'carriers.qc.parquet')
+    tsv=rows(out/'carriers.qc.tsv.gz')
+    con=duckdb.connect()
+    cols=con.execute(f"DESCRIBE SELECT * FROM read_parquet('{out/'carriers.qc.parquet'}')").fetchall()
+    assert [c[0] for c in cols]==list(tsv[0])
+    types={c[0]:c[1] for c in cols}
+    assert types['POS']=='BIGINT' and types['qc_AB']=='DOUBLE' and types['qc_effective_alt_dosage']=='INTEGER' and types['GT']=='VARCHAR'
+    pq=con.execute(f"SELECT * FROM read_parquet('{out/'carriers.qc.parquet'}')").fetchall()
+    assert len(pq)==len(tsv)==8
+    for x,y in zip(tsv,pq):
+        for (k,v),w in zip(x.items(),y):
+            if k not in PARQUET_TYPES:assert w==v  # text columns are copied exactly, '.' included
+            elif v=='.':assert w is None
+            elif k in ('qc_AB',):assert abs(float(v)-w)<1e-12
+            else:assert str(w)==v
