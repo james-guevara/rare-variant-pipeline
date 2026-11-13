@@ -1,0 +1,5 @@
+transcript_id	transcript_version	mane_select	mane_plus_clinical	canonical	appris	tsl	protein_coding	ccds	length	ensembl	refseq
+ENST_OTHER	1	0	0	1	100	1	1	1	-100	1	1
+ENST_MANE	2	1	0	0	100	100	1	0	-90	1	1
+ENST_SHORT	1	0	0	0	100	100	1	0	-100	1	1
+ENST_LONG	1	0	0	0	100	100	1	0	-500	1	1

@@ -58,11 +58,11 @@ case "$STAGE" in
         --vep_vcf_dir "$VEP/vep" --outdir "$SPLITVEP" --trace_prefix "split_vep_"
     run -entry RUN_PREPARE_VARIANTS_ONLY -profile "$COHORT" --chroms "$CHROMS" \
         --split_vep_dir "$SPLITVEP/variants" --mode "${MODE:-coding_and_utr}" \
-        --max_cohort_af "${MAX_COHORT_AF:-0.01}" \
+        --max_cohort_af "${MAX_COHORT_AF:-1.0}" \
         --outdir "$RV" --trace_prefix "prepare_variants_" ;;
   carriers)
     run -entry RUN_CARRIER_EXTRACTION -profile "$COHORT" --chroms "$CHROMS" \
-        --normed_vcf_dir "$NORMED/norm" --max_cohort_af "${MAX_COHORT_AF:-0.01}" \
+        --normed_vcf_dir "$NORMED/norm" --max_cohort_af "${MAX_COHORT_AF:-1.0}" \
         --outdir "$RV" --trace_prefix "carrier_" ;;
   export)
     run -entry RUN_EXPORT -profile "$COHORT" --chroms "$CHROMS" \

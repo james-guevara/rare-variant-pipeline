@@ -11,12 +11,13 @@ Joins (all on SYMBOL == constraint.gene):
     gnomad_lof_pLI_canonical    = lof.pLI where canonical is TRUE
     gnomad_lof_LOEUF_canonical  = lof.oe_ci.upper where canonical is TRUE
 
-  GeneBayes (one row per gene already; joins by gene symbol):
+  GeneBayes (one row per gene already; joins by version-normalized Ensembl gene ID):
     genebayes_obs_lof, genebayes_exp_lof, genebayes_prior_mean,
     genebayes_post_mean, genebayes_post_lower_95, genebayes_post_upper_95
 
-Join key: SYMBOL (gene symbol). Variants without a SYMBOL or where the gene
-isn't in the constraint/GeneBayes tables get NULL for all new columns.
+Join keys: SYMBOL for gnomAD constraint; version-normalized Gene/ensg for
+GeneBayes. Variants without a matching key get NULL for the corresponding
+columns.
 
 Usage:
     python join_gene_constraint.py --cohort ssc --chrom chr22 --resources config/resources.json
@@ -82,7 +83,7 @@ def main() -> int:
     # GeneBayes: already per-gene; join on ensg (Ensembl gene ID)
     con.execute(f"""
         CREATE TABLE _gb AS
-        SELECT ensg,
+        SELECT regexp_replace(ensg, '\\.[0-9]+$', '') AS stable_ensg,
                TRY_CAST(obs_lof AS DOUBLE)        AS genebayes_obs_lof,
                TRY_CAST(exp_lof AS DOUBLE)        AS genebayes_exp_lof,
                TRY_CAST(prior_mean AS DOUBLE)     AS genebayes_prior_mean,
@@ -111,7 +112,8 @@ def main() -> int:
                    b.genebayes_post_upper_95
             FROM read_parquet('{in_parquet}') c
             LEFT JOIN _gnomad g ON c.SYMBOL = g.gene
-            LEFT JOIN _gb     b ON c.Gene = b.ensg
+            LEFT JOIN _gb b
+              ON regexp_replace(c.Gene, '\\.[0-9]+$', '') = b.stable_ensg
         ) TO '{out_parquet}' (FORMAT PARQUET, COMPRESSION ZSTD)
     """)
     rows_out = con.execute(f"SELECT COUNT(*) FROM read_parquet('{out_parquet}')").fetchone()[0]

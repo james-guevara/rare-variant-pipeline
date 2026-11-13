@@ -22,3 +22,14 @@ __pycache__/
 
 # Downloaded region tracks
 resources/repeats/
+resources/gene-sets/raw/
+
+# Terraform local state, private environment values, and saved plans
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfplan
+backend.hcl
+crash.log
+rust/**/target/

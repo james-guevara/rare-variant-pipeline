@@ -4,10 +4,12 @@
 A row is KEPT only if all of:
   GQ >= min_gq
   DP >= min_dp
-  het GT     AND AB within [het_ab_min, het_ab_max]
-  hom-alt GT AND AB >= hom_ab_min
+  diploid alt dosage 1 AND AB within [het_ab_min, het_ab_max]
+  diploid alt dosage 2 OR haploid alt dosage 1 AND AB >= hom_ab_min
 
-Any other GT (i.e. AB unevaluable) is dropped, as is any row where GQ, DP or AB
+The decision uses mask-derived ``called_ploidy`` and ``alt_dosage`` rather than
+the formatting of GT. Thus haploid calls encoded as ``1``, ``1/.``, or ``./1``
+are equivalent. Any other state is dropped, as is any row where GQ, DP or AB
 is missing -- the keep condition is wrapped in COALESCE(..., FALSE) so absent
 values fail CLOSED rather than slipping through on SQL three-valued logic.
 
@@ -47,20 +49,15 @@ def main() -> int:
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.resources).read_text())
-    cohort_cfg = cfg["cohorts"][args.cohort]
-    base = Path(cfg["output_base"]) / args.cohort
-    in_parquet = base / "region_filtered" / f"{args.chrom}.parquet"
-    out_dir = base / "qc_filtered"
-    if not args.output:
-        out_dir.mkdir(parents=True, exist_ok=True)
-    out_parquet = out_dir / f"{args.chrom}.parquet"
-
-    # Explicit-path overrides (used by the Nextflow POSTPROCESS subworkflow).
-    if args.input:
-        in_parquet = Path(args.input)
+    base = Path(cfg.get("output_base", ".")) / args.cohort
+    in_parquet = Path(args.input) if args.input else base / "region_filtered" / f"{args.chrom}.parquet"
     if args.output:
         out_parquet = Path(args.output)
         out_parquet.parent.mkdir(parents=True, exist_ok=True)
+    else:
+        out_dir = base / "qc_filtered"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_parquet = out_dir / f"{args.chrom}.parquet"
 
     passthrough = {c.strip() for c in args.passthrough_chroms.split(",") if c.strip()}
     if args.chrom in passthrough:
@@ -78,6 +75,36 @@ def main() -> int:
     print(f"[{args.cohort} {args.chrom}] qc_genotype: {in_parquet} -> {out_parquet}", file=sys.stderr)
 
     con = duckdb.connect()
+    columns = {
+        row[0]
+        for row in con.execute(
+            f"DESCRIBE SELECT * FROM read_parquet('{in_parquet}')"
+        ).fetchall()
+    }
+    has_mask_derived_state = {"called_ploidy", "alt_dosage"}.issubset(columns)
+    if has_mask_derived_state:
+        genotype_state = """
+                    (called_ploidy = 2 AND alt_dosage = 1
+                       AND AB IS NOT NULL
+                       AND AB BETWEEN {het_ab_min} AND {het_ab_max})
+                    OR
+                    ((called_ploidy = 2 AND alt_dosage = 2)
+                       OR (called_ploidy = 1 AND alt_dosage = 1))
+                       AND AB IS NOT NULL
+                       AND AB >= {hom_ab_min}
+        """.format(**q)
+    else:
+        # Compatibility for carrier Parquets produced before called_ploidy was
+        # added. New production output always takes the branch above.
+        genotype_state = """
+                    (GT IN ('0/1','1/0','0|1','1|0')
+                       AND AB IS NOT NULL
+                       AND AB BETWEEN {het_ab_min} AND {het_ab_max})
+                    OR
+                    (GT IN ('1/1','1|1','1','1/.','./1','1|.','.|1')
+                       AND AB IS NOT NULL
+                       AND AB >= {hom_ab_min})
+        """.format(**q)
     rows_in = con.execute(f"SELECT COUNT(*) FROM read_parquet('{in_parquet}')").fetchone()[0]
 
     # Per-row keep flag. COALESCE(..., FALSE) makes missing GQ/DP/AB fail closed.
@@ -103,15 +130,7 @@ def main() -> int:
             WHERE COALESCE(
                 GQ_n >= {q['min_gq']}
                 AND DP_n >= {q['min_dp']}
-                AND (
-                    (GT IN ('0/1','1/0','0|1','1|0')
-                       AND AB IS NOT NULL
-                       AND AB BETWEEN {q['het_ab_min']} AND {q['het_ab_max']})
-                    OR
-                    (GT IN ('1/1','1|1','1')
-                       AND AB IS NOT NULL
-                       AND AB >= {q['hom_ab_min']})
-                ), FALSE)
+                AND ({genotype_state}), FALSE)
         ) TO '{out_parquet}' (FORMAT PARQUET, COMPRESSION ZSTD)
     """)
 

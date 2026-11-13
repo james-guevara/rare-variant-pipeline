@@ -1,0 +1,51 @@
+variable	role	data_type	nullable	default_analysis_use	source	description
+FID	identifier	string	true	family/cluster identifier	pedigree or cohort sample manifest	Family identifier used for relatedness-aware models and clustered standard errors; never infer it from IID text. Required when a validated pedigree mapping is available.
+IID	identifier	string	false	participant join key	PGS analysis_dataset.tsv IID; rare-variant SAMPLE/sample_id	Participant/sample identifier; unique within the G2MH analysis dataset.
+SEX	covariate	categorical	true	sex covariate and stratification	validated cohort phenotype/sample manifest	Validated analysis sex category. Keep its coding and source explicit; do not derive it from IID or silently substitute inferred karyotype.
+ANCESTRY	covariate	categorical	false	stratification and model covariate	PGS analysis_dataset.tsv	Assigned global ancestry or uncertain label.
+GLOBAL_PC1	covariate	float	false	global ancestry covariate	PGS analysis_dataset.tsv	PC1 projected from the fixed 1000 Genomes reference.
+GLOBAL_PC2	covariate	float	false	global ancestry covariate	PGS analysis_dataset.tsv	PC2 projected from the fixed 1000 Genomes reference.
+GLOBAL_PC3	covariate	float	false	global ancestry covariate	PGS analysis_dataset.tsv	PC3 projected from the fixed 1000 Genomes reference.
+GLOBAL_PC4	covariate	float	false	global ancestry covariate	PGS analysis_dataset.tsv	PC4 projected from the fixed 1000 Genomes reference.
+GLOBAL_PC5	covariate	float	false	global ancestry covariate	PGS analysis_dataset.tsv	PC5 projected from the fixed 1000 Genomes reference.
+GLOBAL_PC6	covariate	float	false	global ancestry covariate	PGS analysis_dataset.tsv	PC6 projected from the fixed 1000 Genomes reference.
+GLOBAL_PC7	covariate	float	false	global ancestry covariate	PGS analysis_dataset.tsv	PC7 projected from the fixed 1000 Genomes reference.
+GLOBAL_PC8	covariate	float	false	global ancestry covariate	PGS analysis_dataset.tsv	PC8 projected from the fixed 1000 Genomes reference.
+GLOBAL_PC9	covariate	float	false	global ancestry covariate	PGS analysis_dataset.tsv	PC9 projected from the fixed 1000 Genomes reference.
+GLOBAL_PC10	covariate	float	false	global ancestry covariate	PGS analysis_dataset.tsv	PC10 projected from the fixed 1000 Genomes reference.
+WITHIN_PC1	covariate	float	true	within-ancestry covariate	PGS analysis_dataset.tsv	Within-ancestry PC1; comparable only within assigned ancestry and unavailable for some groups.
+WITHIN_PC2	covariate	float	true	within-ancestry covariate	PGS analysis_dataset.tsv	Within-ancestry PC2; comparable only within assigned ancestry and unavailable for some groups.
+WITHIN_PC3	covariate	float	true	within-ancestry covariate	PGS analysis_dataset.tsv	Within-ancestry PC3; comparable only within assigned ancestry and unavailable for some groups.
+WITHIN_PC4	covariate	float	true	within-ancestry covariate	PGS analysis_dataset.tsv	Within-ancestry PC4; comparable only within assigned ancestry and unavailable for some groups.
+WITHIN_PC5	covariate	float	true	within-ancestry covariate	PGS analysis_dataset.tsv	Within-ancestry PC5; comparable only within assigned ancestry and unavailable for some groups.
+WITHIN_PC6	covariate	float	true	within-ancestry covariate	PGS analysis_dataset.tsv	Within-ancestry PC6; comparable only within assigned ancestry and unavailable for some groups.
+WITHIN_PC7	covariate	float	true	within-ancestry covariate	PGS analysis_dataset.tsv	Within-ancestry PC7; comparable only within assigned ancestry and unavailable for some groups.
+WITHIN_PC8	covariate	float	true	within-ancestry covariate	PGS analysis_dataset.tsv	Within-ancestry PC8; comparable only within assigned ancestry and unavailable for some groups.
+WITHIN_PC9	covariate	float	true	within-ancestry covariate	PGS analysis_dataset.tsv	Within-ancestry PC9; comparable only within assigned ancestry and unavailable for some groups.
+WITHIN_PC10	covariate	float	true	within-ancestry covariate	PGS analysis_dataset.tsv	Within-ancestry PC10; comparable only within assigned ancestry and unavailable for some groups.
+PGS_adhd_2022	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_afb_2018	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_agesmk_2022	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_asd_ipsych_dbs	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_asd_loSSC	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_bip_2024	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_bmi_2018	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_cigperday_2022	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_drinks_2022	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_edu_2022	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_haircolor_black_2025	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_haircolor_darkbrown_2025	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_height_2022	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_iq_2018	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_mdd_2025	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_no2_2018	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_pm25_2018	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_scz_2022	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_smkces_2022	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+PGS_smoking_2022	predictor	float	false	polygenic predictor	PGS analysis_dataset.tsv	Centered PLINK SCORE1_AVG; not residualized or standardized.
+lof_t1	predictor	integer	false	rare-variant burden predictor	aggregated primary-eligible rare-variant output	Qualifying lof_t1 allele count across autosomes plus primary-eligible sex-chromosome calls.
+lof_t2	predictor	integer	false	rare-variant burden predictor	aggregated primary-eligible rare-variant output	Qualifying lof_t2 allele count across autosomes plus primary-eligible sex-chromosome calls.
+miss_t1	predictor	integer	false	rare-variant burden predictor	aggregated primary-eligible rare-variant output	Qualifying missense allele count satisfying four of four score criteria across autosomes plus primary-eligible sex-chromosome calls.
+miss_t2	predictor	integer	false	rare-variant burden predictor	aggregated primary-eligible rare-variant output	Qualifying missense allele count satisfying three of four score criteria across autosomes plus primary-eligible sex-chromosome calls.
+miss_t3	predictor	integer	false	rare-variant burden predictor	aggregated primary-eligible rare-variant output	Qualifying missense allele count satisfying two of four score criteria across autosomes plus primary-eligible sex-chromosome calls.
+miss_t4	predictor	integer	false	rare-variant burden predictor	aggregated primary-eligible rare-variant output	Qualifying missense allele count satisfying one of four score criteria across autosomes plus primary-eligible sex-chromosome calls.

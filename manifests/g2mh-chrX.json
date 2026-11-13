@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "cohort": "g2mh",
+  "chromosome": "chrX",
+  "contig": "X",
+  "contig_length": 156040895,
+  "reference_build": "GRCh38",
+  "annotation_release": "Ensembl 115",
+  "thresholds": {
+    "population_af_max": 0.01,
+    "cohort_af_max": 0.01
+  },
+  "qc": {
+    "min_gq": 20,
+    "min_dp": 10,
+    "het_ab_min": 0.25,
+    "het_ab_max": 0.75,
+    "hom_ab_min": 0.9
+  },
+  "resources": {
+    "zarr_store": {"kind": "directory", "sentinel": "zarr.json"},
+    "annotation_root": {
+      "kind": "directory",
+      "sentinel": "Homo_sapiens.GRCh38.115.chrX.gff3.fastvep.cache"
+    },
+    "loftee_root": {
+      "kind": "directory",
+      "sentinel": "ensembl-115/transcripts.sqlite"
+    },
+    "genebayes": {
+      "kind": "file",
+      "sha256": "d5a88129246bb8a1f157c29d6bb566a81234fc752a3b1dd05fce0a422d7e49f3"
+    },
+    "missense_candidates": {
+      "kind": "file",
+      "sha256": "7ceb1d8a3e54fef78453b8ffc6cd0f056120ddc971e24b41be5278424cddbbad"
+    },
+    "sample_sex_qc": {
+      "kind": "file",
+      "sha256": "68b379dab3e0212e7e101149c087ad9c9077d0e17ebc33ce6cdaedfd94957487"
+    },
+    "sex_chromosome_regions": {
+      "kind": "file",
+      "sha256": "1facfec20f5d0ebdedd6b40847448a98550bc19ae233c843e6a43e430f60d317"
+    },
+    "postprocess_config": {
+      "kind": "file",
+      "sha256": "06b7fc47d7a5bb7dfab8f1f200d9ddadd71b51b6f1e3188bf6b6aad3dd021eaf"
+    }
+  }
+}

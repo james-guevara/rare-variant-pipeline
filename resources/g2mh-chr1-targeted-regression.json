@@ -1,0 +1,46 @@
+{
+  "description": "Validated current-container G2MH chr1 portable regression, exact across AWS and Expanse on 2026-08-28",
+  "reference_build": "GRCh38",
+  "annotation_release": "Ensembl 115",
+  "container_digest": "sha256:27a7acd7cff30767610a688eaabc01c6452821a8495010b24f4c5d58e32ecb86",
+  "validated_source_revision": "d6bd22e",
+  "target_bed_sha256": "f5cc727bd14a4ee0e07484ac3686113216917aafa68818b5c5ca498bc4fe32ee",
+  "missense_candidates_sha256": "ce929e45bb7aa9372ac0755683ce7cde01b329dc278ae1030c6106a70e49219e",
+  "expected_counts": {
+    "target_intervals": 26160,
+    "targeted_alleles": 123262,
+    "plof_rows": 1499,
+    "lof_t1": 36,
+    "lof_t2": 168,
+    "qualifying_lof": 204,
+    "lof_carrier_rows": 780,
+    "lof_carrier_samples": 461,
+    "observed_missense_candidates": 5156,
+    "selected_missense": 4833,
+    "missense_carrier_rows": 31677,
+    "region_filtered_rows": 9335,
+    "genotype_qc_rows": 8966,
+    "population_af_eligible_rows": 4533,
+    "burden_eligible_rows": 4533,
+    "burden_eligible_alleles": 3672,
+    "burden_eligible_samples": 1048,
+    "final_miss_t1_rows": 10,
+    "final_miss_t2_rows": 48,
+    "final_miss_t3_rows": 389,
+    "final_miss_t4_rows": 4086
+  },
+  "canonical_lof_hashes": {
+    "carrier_sha256": "0c8bc501e94e178269ae3269a2be69d7c75f95a2803b84ed0aa8557bfbd32ded",
+    "variant_sha256": "d8ecb9bec9bc00927481b7009179c947888f92eb92d5ca19f5d7399e64c9a335",
+    "coordinate_sha256": "cc1a12adf3ea438519da7d6d6a54261085a94ffe7bc90507d11797cd69ea872f",
+    "variant_core_sha256": "5729efdc9ce8a8e7405c5f5c8ce3011c42821c2dfbb36f248dc6a1765e8a0083",
+    "carrier_core_sha256": "62cee1b1155f0d616c93f84f5371da3a61fb5fbe3e7ca072b91bec2027cfef6b"
+  },
+  "canonical_missense_hashes": {
+    "carrier_sha256": "484157a937896da9408f2d5ba3d6a0956433d9d458ba0a9f075b0704a5de171c",
+    "variant_sha256": "a64dceae82f531351f272109920c9815962c1cdb86f8b942a89788bee342c4fe",
+    "coordinate_sha256": "5ed589dfa0025e35100cff587c9203143d93d76a7284c16e420f2d4922726962",
+    "variant_core_sha256": "b68b31fd26a9d435d2ccb2ce738ed93eacb20d57409b64ea0cdd574ecfc4d35d",
+    "carrier_core_sha256": "d0a14f3f28cf19ba0f12f0380c8e4e813fcec2fce62a9a949cc53b316b12a25c"
+  }
+}

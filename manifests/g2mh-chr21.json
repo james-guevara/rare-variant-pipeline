@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "cohort": "g2mh",
+  "chromosome": "chr21",
+  "contig": "21",
+  "contig_length": 46709983,
+  "reference_build": "GRCh38",
+  "annotation_release": "Ensembl 115",
+  "thresholds": {
+    "population_af_max": 0.01,
+    "cohort_af_max": 0.01
+  },
+  "qc": {
+    "min_gq": 20,
+    "min_dp": 10,
+    "het_ab_min": 0.25,
+    "het_ab_max": 0.75,
+    "hom_ab_min": 0.9
+  },
+  "resources": {
+    "zarr_store": {
+      "kind": "directory",
+      "sentinel": "zarr.json"
+    },
+    "annotation_root": {
+      "kind": "directory",
+      "sentinel": "Homo_sapiens.GRCh38.115.chr21.gff3.fastvep.cache"
+    },
+    "loftee_root": {
+      "kind": "directory",
+      "sentinel": "ensembl-115/transcripts.sqlite"
+    },
+    "genebayes": {
+      "kind": "file"
+    },
+    "missense_candidates": {
+      "kind": "file",
+      "sha256": "0b04a64845a688767b7d88a2176aab52a2c25d9183ef8f09cc423c675dc8336a"
+    },
+    "postprocess_config": {
+      "kind": "file",
+      "sha256": "a1fcfb0bdcdc43ee42a1b0acab4e5d172818001177393eac7da10863de077f56"
+    }
+  }
+}
