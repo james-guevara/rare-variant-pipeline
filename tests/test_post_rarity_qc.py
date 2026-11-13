@@ -215,3 +215,42 @@ def test_missing_filter_receipt_and_input_preservation(tmp_path):
     assert receipt['independent_failures']['site_filter']==0
     assert identity(a.carriers)==before
     assert all(r['site_FILTER']=='.' for r in rows(Path(a.outdir)/'carriers.qc.tsv.gz'))
+
+
+@pytest.mark.parametrize('changes,listed,passed,rescued',[
+    ({'site_FILTER':'VQSRTrancheINDEL99.00to100.00'},True,True,True),     # only site FILTER fails and listed -> rescued
+    ({'site_FILTER':'VQSRTrancheINDEL99.00to100.00'},False,False,False),  # not listed -> still fails
+    ({'site_FILTER':'LowQual','AD':'9,1'},True,False,False),              # genotype QC also fails -> never rescued
+    ({'site_FILTER':'LowQual','GQ':'1'},True,False,False),
+    ({},True,True,False),                                                 # passes anyway -> not marked rescued
+])
+def test_dnm_rescue_only_overrides_site_filter(changes,listed,passed,rescued):
+    c=context('chr22');c.rescue={('S1','22',10,'A','G')} if listed else set()
+    row=base_row(GT='0/1',AD='5,5');row.update(changes)
+    _,bad,extra=c.evaluate(row)
+    assert (not bad)==passed and extra['qc_dnm_rescued']==rescued
+    if not passed:assert 'site_filter' in bad or changes.get('site_FILTER') in (None,'PASS')
+
+
+def test_dnm_rescue_list_end_to_end(tmp_path):
+    import gzip
+    a=fixture(tmp_path,'chr22')
+    data=rows(a.carriers)
+    data[2]['site_FILTER']='VQSRTrancheSNP99.90to100.00'
+    write_table(Path(a.carriers),list(data[0]),data)
+    src=json.loads(Path(a.source_receipt).read_text());src['outputs']['carriers.rare.tsv.gz']=identity(a.carriers);Path(a.source_receipt).write_text(json.dumps(src))
+    without=Namespace(**vars(a));without.outdir=str(tmp_path/'no_rescue');run(without,adapter)
+    rescue=tmp_path/'rescue.tsv.gz'
+    with gzip.open(rescue,'wt') as f:
+        f.write('sample\tCHROM\tPOS\tREF\tALT\n'+'\t'.join([data[2]['sample'],data[2]['CHROM'],data[2]['POS'],data[2]['REF'],data[2]['ALT']])+'\n'+'S9\tchr1\t5\tA\tC\n')
+    a.dnm_rescue=str(rescue);run(a,adapter)
+    r0=json.loads((tmp_path/'no_rescue/receipt.json').read_text());r1=json.loads((Path(a.outdir)/'receipt.json').read_text())
+    assert r1['pass_rows']==r0['pass_rows']+1 and r1['dnm_rescue']['rescued_rows']==1 and r1['dnm_rescue']['chromosome_keys']==1
+    assert r0['dnm_rescue']['identity'] is None and r1['dnm_rescue']['identity']==identity(rescue)
+    kept=[x for x in rows(Path(a.outdir)/'carriers.qc.tsv.gz') if x['qc_dnm_rescued']=='True']
+    assert len(kept)==1 and kept[0]['site_FILTER']=='VQSRTrancheSNP99.90to100.00'
+
+
+def test_dnm_rescue_list_schema_is_checked(tmp_path):
+    bad=tmp_path/'bad.tsv';bad.write_text('child\tCHROM\tPOS\tREF\tALT\n')
+    with pytest.raises(ValidationError):adapter.load_rescue(bad,'chr22')

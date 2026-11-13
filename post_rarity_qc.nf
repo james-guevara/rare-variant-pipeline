@@ -22,10 +22,11 @@ workflow {
         CarrierQcManifest.load(file(params.post_rarity_qc_manifest, checkIfExists: true)), params.select_units)
     if (rows.any { it.chromosome in ['chrX','chrY'] } && params.sex_chromosome_policy!='grch38_x_only_par') error 'X/Y QC requires --sex_chromosome_policy grch38_x_only_par'
     def entries = Channel.fromList(rows).map { row ->
-        def meta = row + [container: params.post_rarity_qc_container, container_identity: containerIdentity, psam: params.psam, sex_chromosome_policy: params.sex_chromosome_policy, site_filter_policy: params.site_filter_policy]
+        def meta = row + [container: params.post_rarity_qc_container, container_identity: containerIdentity, psam: params.psam, sex_chromosome_policy: params.sex_chromosome_policy, site_filter_policy: params.site_filter_policy, dnm_rescue: params.dnm_rescue ? true : false]
         tuple(meta, file(row.carriers), file(row.samples), file(row.source_receipt))
     }
     POST_RARITY_QC(entries, Channel.value(file("${projectDir}/scripts/qc_post_rarity.py")),
         Channel.value(['qc_filtered_carriers.py','filter_final_rarity.py','carrier_frequencies.py','carrier_psam.py','extract_exact_carriers.py'].collect { file("${projectDir}/scripts/${it}") }),
-        Channel.value(file(params.psam,checkIfExists:true)))
+        Channel.value(file(params.psam,checkIfExists:true)),
+        Channel.value(params.dnm_rescue ? file(params.dnm_rescue,checkIfExists:true) : file("${projectDir}/assets/NO_DNM_RESCUE.tsv.gz",checkIfExists:true)))
 }

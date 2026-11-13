@@ -2,6 +2,8 @@
 """Post-rarity receipt adapter and explicit sex/PAR-aware genotype QC."""
 import argparse
 from collections import Counter
+import csv
+import gzip
 from pathlib import Path
 import re
 import sys
@@ -12,7 +14,10 @@ from carrier_frequencies import (SEX_POLICY, PAR, normalize_sex, expected_ploidy
 from filter_final_rarity import POLICY as RARITY_POLICY
 
 REASONS=core.REASONS+('unknown_sex','female_y','unexpected_ploidy','partial_call','haploid_heterozygous')
-EXTRA_FIELDS=['qc_expected_ploidy','qc_frequency_region','qc_sex','qc_effective_alt_dosage']
+EXTRA_FIELDS=['qc_expected_ploidy','qc_frequency_region','qc_sex','qc_effective_alt_dosage','qc_dnm_rescued']
+# DNM rescue: a call whose ONLY QC failure is site_filter passes if its sample + allele is in the de novo rescue list
+# (e.g. revised DNM callsets; raw and normalized alleles both listed). Genotype QC is never overridden.
+RESCUE_FIELDS=['sample','CHROM','POS','REF','ALT']
 POLICY=dict(core.POLICY,version='post-rarity-grch38-x-only-par-qc-v1',
     upstream='passed final_rarity; saved unrelated_af <0.001 and unrelated_an >0',
     sex_chromosome_policy=SEX_POLICY,par_coordinates_1based_inclusive={k:[list(v) for v in intervals] for k,intervals in PAR.items()},
@@ -31,6 +36,18 @@ def policy_for_run(a):
     if mode=='pass':return POLICY
     return dict(POLICY,version='post-rarity-grch38-x-only-par-qc-v2',
                 site_FILTER='PASS or .',site_filter_policy=mode)
+
+
+def load_rescue(path,chromosome):
+    """Rescue keys (sample, chromosome without 'chr', POS, REF, ALT) for one chromosome from a TSV(.gz) with RESCUE_FIELDS."""
+    c=chromosome.removeprefix('chr');keys=set()
+    with (gzip.open(path,'rt') if str(path).endswith('.gz') else open(path)) as f:
+        reader=csv.DictReader(f,delimiter='\t')
+        if reader.fieldnames!=RESCUE_FIELDS:raise core.ValidationError('DNM rescue list must have columns '+','.join(RESCUE_FIELDS))
+        for r in reader:
+            if None in r or any(v in (None,'') for v in r.values()) or not r['POS'].isdigit():raise core.ValidationError('Malformed DNM rescue row')
+            if r['CHROM'].removeprefix('chr')==c:keys.add((r['sample'],c,int(r['POS']),r['REF'],r['ALT']))
+    return keys
 
 
 def validate_source(source,meta):
@@ -58,6 +75,9 @@ class Context:
         if self.chromosome.removeprefix('chr') in ('X','Y') and source['source_frequency_policy'].get('sex_chromosomes')!=SEX_POLICY:
             raise core.ValidationError('Final-rarity source does not declare GRCh38 X-only PAR frequencies')
         self.psam=a.psam
+        self.rescue_path=getattr(a,'dnm_rescue',None)
+        self.rescue=load_rescue(self.rescue_path,self.chromosome) if self.rescue_path else set()
+        self.rescued=0
 
     def evaluate(self,row):
         try:region=frequency_region(self.chromosome,int(row['POS']))
@@ -76,9 +96,12 @@ class Context:
         # AB interpretation is inapplicable to sex/ploidy-ineligible calls.
         if ploidy_bad:bad=[x for x in bad if x!='ab_out_of_range']
         bad+=ploidy_bad
+        rescued=False
+        if bad==['site_filter'] and (row['sample'],row['CHROM'].removeprefix('chr'),int(row['POS']),row['REF'],row['ALT']) in getattr(self,'rescue',()):
+            bad=[];rescued=True;self.rescued=getattr(self,'rescued',0)+1
         effective=None if bad else 1 if ploidy==1 else alleles.count('1')
         return ab,tuple(bad),dict(qc_expected_ploidy=ploidy,qc_frequency_region=region,
-            qc_sex=sex,qc_effective_alt_dosage=effective)
+            qc_sex=sex,qc_effective_alt_dosage=effective,qc_dnm_rescued=rescued)
 
     def receipt(self,passed):
         dosage={c:dict(raw_observed_alt_alleles=sum(int(r['alt_dosage']) for r in passed if r['allele_class']==c),
@@ -90,6 +113,9 @@ class Context:
             adapter_identity=core.identity(__file__),
             helper_identities={n:core.identity(Path(__file__).with_name(n)) for n in
                 ['carrier_frequencies.py','carrier_psam.py','extract_exact_carriers.py','filter_final_rarity.py']},
+            dnm_rescue=dict(policy='calls failing only site_filter pass when sample + allele is in the DNM rescue list; genotype QC never overridden',
+                            identity=core.identity(self.rescue_path) if getattr(self,'rescue_path',None) else None,
+                            chromosome_keys=len(getattr(self,'rescue',())),rescued_rows=getattr(self,'rescued',0)),
             downstream_gather='Legacy gather_post_qc rejects this stage/policy. A post-rarity adapter must validate this policy and sum qc_effective_alt_dosage.')
 
 
@@ -98,5 +124,6 @@ if __name__=='__main__':
     for n in ['carriers','samples','source-receipt','psam','metadata','outdir']:p.add_argument('--'+n,required=True)
     p.add_argument('--site-filter-policy',choices=['pass','pass_or_missing'],default='pass')
     p.add_argument('--sex-chromosome-policy',choices=[SEX_POLICY])
+    p.add_argument('--dnm-rescue',help='TSV(.gz) with sample,CHROM,POS,REF,ALT: calls failing only site FILTER are kept if listed')
     try:core.run(p.parse_args(),adapter=sys.modules[__name__])
     except Exception:sys.exit('Post-rarity QC failed; inspect local receipt. No protected records printed.')
