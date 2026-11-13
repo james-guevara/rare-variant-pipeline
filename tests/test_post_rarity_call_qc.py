@@ -104,9 +104,9 @@ def test_strand_rule_from_zarr(tmp_path):
     store = tmp_path / 'zarr'; store.mkdir()
     g = zarr.open_group(str(store / 'chr22.no-pl.zarr'), mode='w')
     n_var = 700
-    g.create_array('sample_id', data=np.array(['S1', 'S2', 'S3', 'S4'], dtype=object), dtype=str)
+    g.create_array('sample_id', data=np.asarray(['S1', 'S2', 'S3', 'S4']))
     al = np.full((n_var, 3), '', dtype=object); al[:, 0] = 'A'; al[:, 1] = 'G'; al[300, 1] = 'AT'; al[400, 1] = 'A'; al[100, 2] = 'C'
-    g.create_array('variant_allele', data=al, dtype=str)
+    g.create_array('variant_allele', data=np.asarray(al.tolist()))
     gt = np.zeros((n_var, 4, 2), dtype='i1'); sb = np.full((n_var, 4, 4), 5, dtype='i2')
     for r in DATA: gt[int(r['POS']), int(r['sample'][1]) - 1] = [0, 1]
     sb[500, 3] = [10, 10, 0, 8]   # one-strand ALT on the exempt de novo -> still kept (exempt)
