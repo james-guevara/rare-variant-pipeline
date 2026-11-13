@@ -1,0 +1,17 @@
+{
+  "description": "Validated G2MH chr22 targeted LoF workflow regression",
+  "reference_build": "GRCh38",
+  "annotation_release": "Ensembl 115",
+  "fastvep_commit": "3bdb862b3153a90ef8cca0b07f02f357a15a3eb0",
+  "container_digest": "sha256:1cdd3ec46e0e79739f210cc456b733bb366ec90853fa3ab822ac33b6fca491dc",
+  "target_intervals": 5391,
+  "target_bed_sha256": "a21cdb5936b9c3afcbf8e4de42ac24ec5e6b83ece66f0d9c882873c56fd86bf1",
+  "expected_counts": {
+    "targeted_alleles": 28966,
+    "qualifying_variants": 53,
+    "lof_t1": 10,
+    "lof_t2": 43,
+    "carrier_rows": 1341,
+    "carrier_samples": 1055
+  }
+}

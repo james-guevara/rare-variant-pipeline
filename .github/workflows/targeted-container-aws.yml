@@ -1,0 +1,83 @@
+name: build-targeted-container-aws
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: targeted-container-aws-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Validate local configuration
+        run: |
+          set -euo pipefail
+          test -n "${{ vars.AWS_REGION }}"
+          test -n "${{ vars.AWS_CODEBUILD_PROJECT }}"
+          test -n "${{ vars.AWS_CODEBUILD_ROLE_ARN }}"
+          bash -n scripts/ci/codebuild_targeted_container.sh
+          docker buildx build \
+            --check \
+            --file docker/targeted-annotation/Dockerfile \
+            .
+          terraform -chdir=infra/terraform/container-ci fmt -check
+          terraform -chdir=infra/terraform/container-ci init -backend=false
+          terraform -chdir=infra/terraform/container-ci validate
+
+  build:
+    needs: preflight
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure short-lived AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ vars.AWS_CODEBUILD_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Verify AWS resources before starting compute
+        run: |
+          set -euo pipefail
+          aws sts get-caller-identity
+          aws codebuild batch-get-projects \
+            --names "${{ vars.AWS_CODEBUILD_PROJECT }}" \
+            --query 'projects[0].{name:name,serviceRole:serviceRole,compute:environment.computeType}'
+
+      - name: Start build
+        id: start
+        run: |
+          set -euo pipefail
+          build_id="$(aws codebuild start-build \
+            --project-name "${{ vars.AWS_CODEBUILD_PROJECT }}" \
+            --environment-variables-override \
+              name=GITHUB_REPOSITORY,value="${{ github.repository }}",type=PLAINTEXT \
+              name=GITHUB_SHA,value="${{ github.sha }}",type=PLAINTEXT \
+            --query 'build.id' --output text)"
+          test -n "$build_id"
+          echo "build_id=$build_id" >> "$GITHUB_OUTPUT"
+          echo "Started $build_id"
+
+      - name: Wait for build
+        env:
+          BUILD_ID: ${{ steps.start.outputs.build_id }}
+        run: |
+          set -euo pipefail
+          while true; do
+            status="$(aws codebuild batch-get-builds \
+              --ids "$BUILD_ID" --query 'builds[0].buildStatus' --output text)"
+            echo "CodeBuild status: $status"
+            case "$status" in
+              SUCCEEDED) break ;;
+              FAILED|FAULT|STOPPED|TIMED_OUT) exit 1 ;;
+            esac
+            sleep 20
+          done
+          aws codebuild batch-get-builds --ids "$BUILD_ID" \
+            --query 'builds[0].exportedEnvironmentVariables'

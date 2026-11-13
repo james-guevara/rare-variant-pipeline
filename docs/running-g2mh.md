@@ -190,9 +190,10 @@ Tier convention: **`t1` is always the most severe**, for both LoF and missense.
 ## 5. Cohort-specific things to know
 
 **Cohort AF thresholds do not transfer from the large cohorts.** At N = 1,065,
-`AF < 0.001` means AC ≤ 2 — singletons and doubletons only. The `g2mh` profile uses
-`pop_af_max: 0.01` in `scripts/postprocess/resources.json` for this reason, and
-`--max_cohort_af 0.01` upstream.
+`AF < 0.001` means AC ≤ 2 — singletons and doubletons only. The canonical workflow
+therefore annotates cohort AC/AN/AF without filtering. If an analysis needs a cap,
+run the explicit final eligibility step and record its threshold; do not apply it
+before annotation or carrier extraction. Population AF is likewise annotation-only.
 
 **Site `FILTER` is uninformative here.** DRAGEN's gVCF-genotyper emits `PASS` at every
 site (verified: 300,000/300,000 on raw chr22). The real per-sample quality signal is

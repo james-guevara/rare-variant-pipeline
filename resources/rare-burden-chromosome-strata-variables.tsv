@@ -1,0 +1,13 @@
+variable	role	data_type	nullable	description
+FID	identifier	string	true	Validated family identifier from pedigree/sample metadata; never inferred from IID.
+IID	identifier	string	false	Participant/sample identifier.
+SEX	covariate	categorical	true	Validated analysis sex category from cohort metadata.
+burden_partition	stratum	categorical	false	One of autosomal, sex_chromosome_primary, or sex_chromosome_sensitivity.
+included_in_primary_total	policy	boolean	false	Whether this partition contributes to the six primary burden variables.
+chromosomes_complete	quality_control	boolean	false	Whether every chromosome required for this partition completed successfully.
+lof_t1	burden	integer	true	Qualifying lof_t1 allele count in this partition; null when incomplete, zero only when complete and no qualifying alleles were observed.
+lof_t2	burden	integer	true	Qualifying lof_t2 allele count in this partition; null when incomplete, zero only when complete and no qualifying alleles were observed.
+miss_t1	burden	integer	true	Qualifying miss_t1 allele count in this partition; null when incomplete, zero only when complete and no qualifying alleles were observed.
+miss_t2	burden	integer	true	Qualifying miss_t2 allele count in this partition; null when incomplete, zero only when complete and no qualifying alleles were observed.
+miss_t3	burden	integer	true	Qualifying miss_t3 allele count in this partition; null when incomplete, zero only when complete and no qualifying alleles were observed.
+miss_t4	burden	integer	true	Qualifying miss_t4 allele count in this partition; null when incomplete, zero only when complete and no qualifying alleles were observed.

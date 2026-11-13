@@ -1,0 +1,6 @@
+chromosome	manifest	bindings
+chr1	manifests/g2mh-chr1.json	config/bindings/aws-g2mh-chr1.json
+chr21	manifests/g2mh-chr21.json	config/bindings/aws-g2mh-chr21.json
+chr22	manifests/g2mh-chr22.json	config/bindings/aws-g2mh-chr22.json
+chrX	manifests/g2mh-chrX.json	config/bindings/aws-g2mh-chrX.json
+chrY	manifests/g2mh-chrY.json	config/bindings/aws-g2mh-chrY.json

@@ -1,0 +1,5 @@
+##fileformat=VCFv4.2
+##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations. Format: Allele|Consequence|IMPACT|SYMBOL|Gene|Feature_type|Feature|BIOTYPE|EXON|INTRON|CDS_position|Protein_position|HGVS_OFFSET|MANE_SELECT|MANE_PLUS_CLINICAL|CANONICAL|TSL|APPRIS|CCDS">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+22	100	r1	A	G	.	PASS	CSQ=G|stop_gained|HIGH|GENE1|ENSG1|Transcript|ENST_OTHER|protein_coding|1/2||1|1||||YES|1|P1|CCDS1,G|missense_variant|MODERATE|GENE1|ENSG1|Transcript|ENST_MANE.2|protein_coding|1/2||1|1||NM_1.1||||P1|
+22	200	r2	C	T	.	PASS	CSQ=T|synonymous_variant|LOW|GENE2|ENSG2|Transcript|ENST_SHORT|protein_coding|2/2||2|2||||||||,T|synonymous_variant|LOW|GENE2|ENSG2|Transcript|ENST_LONG|protein_coding|2/2||2|2||||||||

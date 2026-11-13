@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "release_id": "g2mh-comprehensive-v1",
+  "description": "Validated comprehensive G2MH LoF and missense burden release across chr1-22, chrX, and chrY",
+  "validated_on": "2026-08-29",
+  "reference_build": "GRCh38",
+  "annotation_release": "Ensembl 115",
+  "dbnsfp_release": "5.3.1a",
+  "genebayes_lof_t1_min_post_mean": 0.18,
+  "genebayes_lof_t2_min_post_mean": 0.03,
+  "nextflow_version": "26.04.6",
+  "source_revision": "364e350",
+  "fastvep_revision": "cb8113d7bab2db42cb06bb2b2a40c57b60ea2561",
+  "container": {
+    "uri": "640838474376.dkr.ecr.us-east-1.amazonaws.com/rare-variant-pipeline-targeted@sha256:c4840b98ed4e328f2838261c8a2b99782f9d26cc4d4124b0ee39f136adc7c155",
+    "digest": "sha256:c4840b98ed4e328f2838261c8a2b99782f9d26cc4d4124b0ee39f136adc7c155",
+    "aws_batch_job_definition": "rare-variant-targeted-portable:13"
+  },
+  "validated_input": {
+    "cohort": "g2mh",
+    "samples": 1065,
+    "chromosomes": "chr1-chr22,chrX,chrY",
+    "zarr_layout": "sharded Zarr v3",
+    "run_root": "/fsx/loftee-parity/workflows/g2mh/all-observed-v1-corrected"
+  },
+  "missense_thresholds": {
+    "ClinPred_rankscore": 0.4298,
+    "AlphaMissense_rankscore": 0.9603,
+    "popEVE_converted_rankscore": 0.9209,
+    "MPC_rankscore": 0.8947
+  },
+  "tier_direction": {
+    "miss_t1": "four_of_four",
+    "miss_t2": "three_of_four",
+    "miss_t3": "two_of_four",
+    "miss_t4": "one_of_four"
+  },
+  "filters": {
+    "population_af_max": 0.01,
+    "cohort_joint_af_max": 0.01,
+    "minimum_gq": 20,
+    "minimum_dp": 10,
+    "heterozygous_ab": [0.25, 0.75],
+    "homozygous_alt_min_ab": 0.9,
+    "mane_is_inclusion_filter": false
+  },
+  "resource_contracts": [
+    "ensembl115-autosomes-chr2-20-bundle.json",
+    "dbnsfp-5.3.1a-parquet-scores-af-chr2-20.sha256",
+    "dbnsfp-sex-chromosome-files.json",
+    "grch38-sex-chromosome-regions.json"
+  ],
+  "expected_outputs": {
+    "sample_count": 1065,
+    "strata_rows": 3195,
+    "primary_tier_sums": {
+      "lof_t1": 198,
+      "lof_t2": 1212,
+      "miss_t1": 113,
+      "miss_t2": 611,
+      "miss_t3": 3693,
+      "miss_t4": 41148
+    },
+    "rare_burdens_sha256": "b999ff9973f972ccdc688e160f5c140b55e4503f4e2de6c7494def672cbf3489",
+    "chromosome_strata_sha256": "ad59e8999b468918365a499fa223034b4f1f839920767a2dd7dd0a4cd5d7ee38"
+  },
+  "validation_notes": [
+    "g2mh-comprehensive-missense-validation.md",
+    "indel-consequence-adjudication.md",
+    "sex-chromosome-handling.md"
+  ]
+}

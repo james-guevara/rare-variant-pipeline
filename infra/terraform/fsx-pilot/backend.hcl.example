@@ -1,0 +1,5 @@
+bucket       = "<encrypted-versioned-terraform-state-bucket>"
+key          = "rare-variant-pipeline/fsx-pilot/terraform.tfstate"
+region       = "us-east-1"
+encrypt      = true
+use_lockfile = true

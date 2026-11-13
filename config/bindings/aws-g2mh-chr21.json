@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "regression": "/opt/rvp/resources/g2mh-chr21-targeted-regression.json",
+  "run_root": "/fsx/loftee-parity/workflows/g2mh/manifest-preflight-chr21",
+  "resources": {
+    "zarr_store": "/fsx/rare-variant-pilot/g2mh-vcz-v3/v1/chr21.sharded-v3.zarr",
+    "annotation_root": "/fsx/rare-variant-resources/v1/targeted-annotation/ensembl-115",
+    "loftee_root": "/fsx/rare-variant-resources/v1",
+    "genebayes": "/fsx/rare-variant-resources/v1/targeted-annotation/GeneBayes.Supplementary_Table_1.tsv",
+    "missense_candidates": "/fsx/rare-variant-resources/v1/targeted-annotation/inputs/chr21.observed-missense-candidates.parquet",
+    "postprocess_config": "/fsx/rare-variant-resources/v1/postprocess/g2mh-chr21/config.json"
+  }
+}

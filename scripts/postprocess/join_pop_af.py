@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Left-join population AF columns from dbNSFP onto the qc_filtered parquets,
-then drop rows that fail the configured pop-AF rare-variant cap.
+"""Left-join population AF columns from dbNSFP onto the qc_filtered parquets.
 
 Adds 14 population AF columns (no scores — those are in a later step):
   gnomAD4.1_joint_AF, gnomAD4.1_joint_POPMAX_AF, gnomAD4.1_joint_nhomalt,
@@ -8,9 +7,8 @@ Adds 14 population AF columns (no scores — those are in a later step):
   ALFA_Total_AF, RegeneronME_ALL_AF, TOPMed_frz8_AC, TOPMed_frz8_AF,
   TOPMed_frz8_AN, dbNSFP_POPMAX_AC, dbNSFP_POPMAX_AF
 
-Then filters: keep rows where the configured AF column (default
-gnomAD4.1_joint_POPMAX_AF) is NULL OR < max (default 0.001). NULL = variant
-absent from gnomAD = treated as rare.
+This stage is annotation-only: it never removes input rows. Population AF fields
+are retained for analysis and later, explicitly named eligibility steps.
 
 Join keys: dbNSFP uses '#chr' (no 'chr' prefix), 'pos(1-based)', 'ref', 'alt'.
 
@@ -53,20 +51,18 @@ def main() -> int:
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.resources).read_text())
-    dbnsfp_dir = cfg["dbnsfp_af_dir"]
-    base = Path(cfg["output_base"]) / args.cohort
-    in_parquet = base / "qc_filtered" / f"{args.chrom}.parquet"
-    out_dir = base / "with_pop_af"
-    if not args.output:
-        out_dir.mkdir(parents=True, exist_ok=True)
-    out_parquet = out_dir / f"{args.chrom}.parquet"
-
-    # Explicit-path overrides (used by the Nextflow POSTPROCESS subworkflow).
-    if args.input:
-        in_parquet = Path(args.input)
+    dbnsfp_dir = Path(cfg["dbnsfp_af_dir"])
+    if not dbnsfp_dir.is_absolute():
+        dbnsfp_dir = Path(args.resources).resolve().parent / dbnsfp_dir
+    base = Path(cfg.get("output_base", ".")) / args.cohort
+    in_parquet = Path(args.input) if args.input else base / "qc_filtered" / f"{args.chrom}.parquet"
     if args.output:
         out_parquet = Path(args.output)
         out_parquet.parent.mkdir(parents=True, exist_ok=True)
+    else:
+        out_dir = base / "with_pop_af"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_parquet = out_dir / f"{args.chrom}.parquet"
     dbnsfp_parquet = Path(dbnsfp_dir) / f"{args.chrom}.parquet"
 
     print(f"[{args.cohort} {args.chrom}] join_pop_af: {in_parquet} -> {out_parquet}", file=sys.stderr)
@@ -90,39 +86,29 @@ def main() -> int:
     n_dbnsfp = con.execute("SELECT COUNT(*) FROM _dbnsfp").fetchone()[0]
     print(f"  dbNSFP rows for {args.chrom}: {n_dbnsfp:,}", file=sys.stderr)
 
-    filter_cfg = cfg["pop_af_filter"]
-    filter_col = filter_cfg["column"]
-    # Per-cohort override of the AF cap; falls back to global default.
-    filter_max = cfg["cohorts"][args.cohort].get("pop_af_max", filter_cfg["max"])
-    print(f"  filter: {filter_col} IS NULL OR < {filter_max}", file=sys.stderr)
-
     con.execute(f"""
         COPY (
-            WITH joined AS (
-                SELECT c.*, {af_cols_quoted}
-                FROM read_parquet('{in_parquet}') c
-                LEFT JOIN _dbnsfp d
-                  ON c."#CHROM" = d."#CHROM"
-                 AND CAST(c.POS AS BIGINT) = d.POS
-                 AND c.REF = d.REF
-                 AND c.ALT = d.ALT
-            )
-            SELECT *
-            FROM joined
-            WHERE TRY_CAST("{filter_col}" AS DOUBLE) IS NULL
-               OR TRY_CAST("{filter_col}" AS DOUBLE) < {filter_max}
+            SELECT c.*, {af_cols_quoted}
+            FROM read_parquet('{in_parquet}') c
+            LEFT JOIN _dbnsfp d
+              ON c."#CHROM" = d."#CHROM"
+             AND CAST(c.POS AS BIGINT) = d.POS
+             AND c.REF = d.REF
+             AND c.ALT = d.ALT
         ) TO '{out_parquet}' (FORMAT PARQUET, COMPRESSION ZSTD)
     """)
     rows_out = con.execute(f"SELECT COUNT(*) FROM read_parquet('{out_parquet}')").fetchone()[0]
-    dropped = rows_in - rows_out
-    pct = 100 * dropped / max(rows_in, 1)
+    if rows_out != rows_in:
+        raise RuntimeError(
+            f"population-AF annotation changed row count: {rows_in:,} -> {rows_out:,}"
+        )
     n_hit = con.execute(f"""
         SELECT COUNT(*) FROM read_parquet('{out_parquet}')
         WHERE "gnomAD4.1_joint_AF" IS NOT NULL
     """).fetchone()[0]
     pct_hit = 100 * n_hit / max(rows_out, 1)
-    print(f"  rows: {rows_in:,} -> {rows_out:,} (dropped {dropped:,} = {pct:.1f}%)", file=sys.stderr)
-    print(f"  gnomAD AF non-null in kept: {n_hit:,} = {pct_hit:.1f}%", file=sys.stderr)
+    print(f"  rows: {rows_in:,} -> {rows_out:,} (annotation only; dropped 0)", file=sys.stderr)
+    print(f"  gnomAD AF non-null: {n_hit:,} = {pct_hit:.1f}%", file=sys.stderr)
     return 0
 
 
