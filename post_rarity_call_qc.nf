@@ -5,7 +5,7 @@ workflow {
     if (!params.call_qc_manifest) error 'Required: --call_qc_manifest (chromosome<TAB>directory of GATHER_POST_RARITY_QC outputs)'
     def rows = file(params.call_qc_manifest,checkIfExists:true).readLines().findAll { it.trim() }
     if (rows[0] != 'chromosome\tdirectory') error 'Manifest header must be chromosome<TAB>directory'
-    def entries = rows.drop(1).collect { it.split('\t',-1) }
+    def entries = rows.drop(1).collect { it.split('\t',-1) as List }
     if (!entries || entries.any { it.size()!=2 } || entries.collect { it[0] }.unique().size()!=entries.size()) error 'Invalid call-QC manifest'
     if (params.zarr_dir) file(params.zarr_dir,checkIfExists:true)
     def ch = Channel.fromList(entries).map { c, d ->

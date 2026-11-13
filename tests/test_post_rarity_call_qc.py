@@ -118,3 +118,18 @@ def test_strand_rule_from_zarr(tmp_path):
     assert s1 and all('strand' in x['callqc_reason'] for x in s1) and len(s1) == 2   # both annotations of the allele/sample
     assert r['strand_status']['one_strand_alt_ref_both'] >= 1 and r['zarr_sb_reads'] > 0
     assert next(x for x in rows(out / 'carriers.qc.tsv.gz') if x['POS'] == '100' and x['sample'] == 'S2')['callqc_n_alt_alleles'] == '2'
+
+
+def test_nextflow_call_qc_workflow(tmp_path):
+    import shutil, subprocess
+    if not shutil.which('nextflow'): pytest.skip('nextflow not available')
+    root = Path(__file__).resolve().parents[1]
+    d = gather_dir(tmp_path, DATA)
+    m = tmp_path / 'manifest.tsv'; m.write_text('chromosome\tdirectory\nchr22\t' + str(d) + '\n')
+    cfg = tmp_path / 'python.config'; cfg.write_text('process.beforeScript = "export PATH=' + str(Path(sys.executable).parent) + ':\\$PATH"\n')
+    r = subprocess.run(['nextflow', '-C', str(root / 'post_rarity_call_qc.config') + ',' + str(cfg), 'run', str(root / 'post_rarity_call_qc.nf'), '-ansi-log', 'false',
+                        '--call_qc_manifest', str(m), '--outdir', str(tmp_path / 'published'), '--call_qc_memory', '1 GB'],
+                       cwd=tmp_path, capture_output=True, text=True, timeout=180)
+    assert r.returncode == 0, r.stdout + r.stderr
+    rec = json.loads((tmp_path / 'published/post-rarity-call-qc/chr22/out/receipt.json').read_text())
+    assert rec['status'] == 'passed' and rec['removed_rows'] == 4 and rec['dnm_rescue_identity'] is None
